@@ -19,7 +19,6 @@ async function initializeData() {
   const logger = getLogger();
   logger.info('Initializing connection to the database');
 
-
   const knexOptions = {
     client: DATABASE_CLIENT,
     connection: {
@@ -42,32 +41,6 @@ async function initializeData() {
 
   knexInstance = knex(knexOptions);
 
-  try {
-    await knexInstance.raw('SELECT 1+1 AS result');
-    await knexInstance.raw(`CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME}`);
-
-    // We need to update the Knex configuration and reconnect to use the created database by default
-    // USE ... would not work because a pool of connections is used
-    await knexInstance.destroy();
-
-    knexOptions.connection.database = DATABASE_NAME;
-    knexInstance = knex(knexOptions);
-    await knexInstance.raw('SELECT 1+1 AS result');
-  } catch (error) {
-    logger.error(error.message, { error });
-    throw new Error('Could not initialize the data layer');
-  }
-  
-
-  try {
-    await knexInstance.migrate.latest();
-  } catch (error) {
-    logger.error('Error while migrating the database', {
-      error,
-    });
-    throw new Error('Migrations failed, check the logs');
-  }
-
   if (isDevelopment) {
     try {
       await knexInstance.seed.run();
@@ -78,6 +51,14 @@ async function initializeData() {
     }
   }
 
+  try {
+    await knexInstance.migrate.latest();
+  } catch (error) {
+    logger.error('Error while migrating the database', {
+      error,
+    });
+    throw new Error('Migrations failed, check the logs');
+  }
   logger.info('Succesfully connected to the database');
   return knexInstance;
 }
@@ -90,11 +71,9 @@ function getKnex() {
   return knexInstance;
 }
 
-
 const tables = Object.freeze({
   adres: 'adres',
   bedrijf: 'bedrijf',
-  user: 'user',
   leverancier: 'leverancier',
   klant: 'klant',
   order: 'order',

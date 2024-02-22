@@ -21,7 +21,7 @@
     "env-cmd": "^10.1.0",
     "jest": "^29.7.0",
     "nodemon": "^3.0.1",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.4"
   },
   "main": "src/index.js",
   "nodemonConfig": {
@@ -41,7 +41,7 @@
   },
   "scripts": {
     "start": "env-cmd nodemon src/index.js",
-    "test": "env-cmd -f .env.test jest --runInBand",
+    "test": "jest",
     "test:coverage": "env-cmd -f .env.test jest --runInBand --coverage"
   },
   "name": "delaware",
