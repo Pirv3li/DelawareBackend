@@ -10,6 +10,7 @@ module.exports = {
       table.jsonb('roles').notNullable();
       table.string('klantnummer').notNullable();
       table.string('leveranciernummer').notNullable();
+      
       table.integer('idBedrijf').unsigned().notNullable();
 
       table.foreign('idBedrijf', "fk_user_bedrijf")

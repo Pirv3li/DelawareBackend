@@ -92,8 +92,11 @@ function getKnex() {
 
 
 const tables = Object.freeze({
+  adres: 'adres',
   bedrijf: 'bedrijf',
   user: 'user',
+  leverancier: 'leverancier',
+  klant: 'klant',
   order: 'order',
   notificatie: 'notificatie',
   product: 'product',
