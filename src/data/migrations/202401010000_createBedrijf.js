@@ -12,7 +12,7 @@ module.exports = {
       table.integer('postcode').notNullable();
       table.string('stad', 255).notNullable();
       table.string('iban', 255).notNullable();
-      table.string('btwNumer', 255).notNullable();
+      table.string('btwNummer', 255).notNullable();
       table.string('telefoonnummer', 255).notNullable();
       table.timestamp('gebruikerSinds').notNullable();
       
