@@ -9,7 +9,7 @@ module.exports = {
       table.string('gebruikersnaam', 255).notNullable();
       table.string('password_hash').notNullable(); 
       table.boolean('isActief').notNullable();
-      table.jsonb('soort').notNullable();
+      table.jsonb('roles').notNullable();
       table.string('klantnummer').notNullable();
       table.string('leveranciernummer').notNullable();
 
