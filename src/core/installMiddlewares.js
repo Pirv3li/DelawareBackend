@@ -8,9 +8,6 @@ const ServiceError = require('./serviceError');
 const NODE_ENV = config.get('env');
 const {getLogger} = require('./logging');
 const koaHelmet = require('koa-helmet');
-const { koaSwagger } = require('koa2-swagger-ui');
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerOptions = require('../swagger.config');
 const isDevelopment = NODE_ENV==='development';
 
 
@@ -76,20 +73,6 @@ module.exports = function installMiddleware(app) {
       ctx.body = errorBody; 
     }
   });
-
-  if (isDevelopment) {
-    const spec = swaggerJsdoc(swaggerOptions);
-    app.use(
-      koaSwagger({
-        routePrefix: '/swagger',
-        specPrefix: '/openapi.json',
-        exposeSpec: true,
-        swaggerOptions: {
-          spec,
-        },
-      }),
-    );
-  }
   
   // Handle 404 not found with uniform response
   app.use(async (ctx, next) => {

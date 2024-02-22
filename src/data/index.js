@@ -2,7 +2,7 @@ const knex = require('knex');
 const {join} = require('path');
 
 const config = require('config');
-
+const {getLogger} = require('../core/logging')
 const NODE_ENV = config.get('env');
 const isDevelopment = NODE_ENV === 'development';
 
