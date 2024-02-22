@@ -2,7 +2,7 @@ const { tables } = require('..');
 
 module.exports = {
   up: async (knex) => {
-    await knex.schema.createTable(tables.user, (table) => {
+    await knex.schema.createTable(tables.gebruiker, (table) => {
       table.increments('idUser').primary();
       table.string('soort', 255).notNullable();
 
@@ -13,9 +13,10 @@ module.exports = {
       table.string('klantnummer').notNullable();
       table.string('leveranciernummer').notNullable();
 
+      table.integer("idBedrijf").unsigned().notNullable();
 
       table
-        .foreign('idBedrijf')
+        .foreign('idBedrijf', "fk_user_bedrijf")
         .references(`${tables.bedrijf}.idBedrijf`)
         .onDelete('CASCADE');
     });
