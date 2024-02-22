@@ -78,11 +78,11 @@ function getKnex() {
 
 const tables = Object.freeze({
   bedrijf: 'bedrijf',
-  gebruiker: 'user',
+  user: 'user',
   order: 'order',
-  notificatie: 'transacties',
-  product: 'games',
-  orderDetails: 'Orderdetails'
+  notificatie: 'notificatie',
+  product: 'product',
+  orderDetails: 'orderdetails'
 });
 
 async function shutdownData() {
