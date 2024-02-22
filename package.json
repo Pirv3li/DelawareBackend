@@ -1,0 +1,57 @@
+{
+  "dependencies": {
+    "@koa/cors": "^4.0.0",
+    "@koa/router": "^12.0.0",
+    "argon2": "^0.31.1",
+    "config": "^3.3.9",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.0.1",
+    "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.1",
+    "koa-helmet": "^7.0.2",
+    "koa2-swagger-ui": "^5.10.0",
+    "mysql2": "^3.6.1",
+    "swagger-jsdoc": "^6.2.8",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  },
+  "main": "src/index.js",
+  "nodemonConfig": {
+    "signal": "SIGTERM",
+    "ignore": [
+      "node_modules/*",
+      ".vscode/*"
+    ],
+    "delay": "80",
+    "watch": [
+      "config",
+      "src"
+    ],
+    "ext": "js,json",
+    "legacyWatch": true,
+    "exec": "node --inspect=0.0.0.0:9001 --trace-warnings src/index.js"
+  },
+  "scripts": {
+    "start": "env-cmd nodemon src/index.js",
+    "test": "env-cmd -f .env.test jest --runInBand",
+    "test:coverage": "env-cmd -f .env.test jest --runInBand --coverage"
+  },
+  "name": "delaware",
+  "version": "1.0.0",
+  "description": "backend voor project",
+  "repository": "https://github.com/Web-IV/2324-webservices-PapunaN.git",
+  "author": "Papuna Noniashvili",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "npm": ">=9.8.0",
+    "node": ">=20.6.0",
+    "yarn": ">=1.22.0"
+  }
+}
