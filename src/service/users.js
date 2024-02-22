@@ -17,8 +17,26 @@ const makeLoginData = async (user) => {
   }; 
 };
 
-const login = async (userName, password) => {
-  const user = await userRepository.findByUsername(userName);
+const loginKlant = async (userName, password) => {
+  const user = await userRepository.findKlantByUsername(userName);
+  if (!user) {
+    throw ServiceError.unauthorized(
+      'The given username and password do not match'
+    );
+  }
+
+  const passwordValid = await verifyPassword(password, user.password_hash); 
+
+  if (!passwordValid) {
+    throw ServiceError.unauthorized(
+      'The given email and password do not match'
+    );
+  }
+  return await makeLoginData(user); 
+};
+
+const loginLeverancier = async (userName, password) => {
+  const user = await userRepository.findLeverancierByUsername(userName);
   if (!user) {
     throw ServiceError.unauthorized(
       'The given username and password do not match'
@@ -36,5 +54,6 @@ const login = async (userName, password) => {
 };
 
 module.exports = {
-  login,
+  loginLeverancier,
+  loginKlant,
 };

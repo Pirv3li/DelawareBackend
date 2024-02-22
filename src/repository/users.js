@@ -1,9 +1,14 @@
 const { tables, getKnex } = require('../data/index');
 
-const findByUsername = (userName) => {
-  return getKnex()(tables.user).where('gebruikersnaam', userName).first();
+const findKlantByUsername = (userName) => {
+  return getKnex()(tables.klant).where('gebruikersnaam', userName).first();
+};
+
+const findLeverancierByUsername = (userName) => {
+  return getKnex()(tables.leverancier).where('gebruikersnaam', userName).first();
 };
 
 module.exports = {
-  findByUsername,
+  findKlantByUsername,
+  findLeverancierByUsername,
 };

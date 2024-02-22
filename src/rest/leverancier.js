@@ -5,7 +5,7 @@ const Joi = require('joi');
 
 const login = async (ctx) => {
   const { username, password } = ctx.request.body; 
-  const token = await userService.login(username, password); 
+  const token = await userService.loginLeverancier(username, password); 
   ctx.body = token; 
 };
 login.validationScheme = { 

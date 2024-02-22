@@ -5,12 +5,9 @@ module.exports = {
     await knex.schema.createTable(tables.klant, (table) => {
       table.increments('idKlant').primary();
       table.string('klantNummer', 255).notNullable();
-
-      table.integer('idUser').unsigned().notNullable();
-
-      table.foreign('idUser', "fk_klant_user")
-        .references(`${tables.user}.idUser`)
-        .onDelete('CASCADE');
+      table.string('gebruikersnaam', 25).notNullable();
+      table.string('password_hash').notNullable();
+      table.boolean('isActief');
     });
   },
   down: async (knex) => {
