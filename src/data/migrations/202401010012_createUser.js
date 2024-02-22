@@ -14,6 +14,7 @@ module.exports = {
       table.string('leveranciernummer').notNullable();
 
       table.integer("idBedrijf").unsigned().notNullable();
+      //comment
 
       table
         .foreign('idBedrijf', "fk_user_bedrijf")
