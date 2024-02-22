@@ -41,11 +41,7 @@ async function initializeData() {
 
   knexInstance = knex(knexOptions);
 
-<<<<<<< HEAD
   if (isDevelopment){
-=======
-  if (isDevelopment) {
->>>>>>> fec2e85 (testing)
     try {
       await knexInstance.migrate.latest();
     } catch (error) {
@@ -67,19 +63,6 @@ async function initializeData() {
         throw new Error('Seeding failed, check the logs');
       }
     }
-<<<<<<< HEAD
-=======
-  }
-
-  try {
-    await knexInstance.migrate.latest();
-  } catch (error) {
-    logger.error('Error while migrating the database', {
-      error,
-    });
-    throw new Error('Migrations failed, check the logs');
-  }
->>>>>>> fec2e85 (testing)
   logger.info('Succesfully connected to the database');
   return knexInstance;
 }
@@ -94,14 +77,21 @@ function getKnex() {
 
 const tables = Object.freeze({
 <<<<<<< HEAD
+<<<<<<< HEAD
   adres: 'adres',
   bedrijf: 'bedrijf',
+=======
+  adres: 'adres',
+  bedrijf: 'bedrijf',
+  user: 'user',
+>>>>>>> b116a8e (nieuwe migraties en seeds)
   leverancier: 'leverancier',
   klant: 'klant',
   order: 'order',
   notificatie: 'notificatie',
   product: 'product',
   orderDetails: 'orderdetails'
+<<<<<<< HEAD
 =======
   bedrijf: 'Bedrijf',
   gebruiker: 'User',
@@ -110,6 +100,8 @@ const tables = Object.freeze({
   product: 'Games',
   orderDetails: 'OrderDetails'
 >>>>>>> fec2e85 (testing)
+=======
+>>>>>>> b116a8e (nieuwe migraties en seeds)
 });
 
 async function shutdownData() {
