@@ -3,9 +3,9 @@ const Role = require('../../core/roles');
 
 module.exports = {
   seed: async (knex) => {
-    await knex(tables.user).delete(); 
+    await knex(tables.User).delete(); 
 
-    await knex(tables.user).insert([{
+    await knex(tables.User).insert([{
         id: 1,
         username: 'klant',
         name: 'klant',
