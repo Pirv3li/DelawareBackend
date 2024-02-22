@@ -2,7 +2,7 @@ const { tables } = require('..');
 
 module.exports = {
   up: async (knex) => {
-    await knex.schema.createTable(tables.Bedrijf, (table) => {
+    await knex.schema.createTable(tables.bedrijf, (table) => {
       table.increments('idBedrijf').primary();
       table.string('naam', 255).notNullable();
       table.string('logo', 255).notNullable();

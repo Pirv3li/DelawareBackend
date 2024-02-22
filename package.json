@@ -12,6 +12,7 @@
     "koa-helmet": "^7.0.2",
     "koa2-swagger-ui": "^5.10.0",
     "mysql2": "^3.6.1",
+    "swagger": "^0.7.5",
     "swagger-jsdoc": "^6.2.8",
     "winston": "^3.10.0"
   },
