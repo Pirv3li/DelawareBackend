@@ -1,5 +1,5 @@
 const Router = require('@koa/router');
-const installUserRouter = require('./users');
+const installUserRouter = require('./klant');
 
 /**
  * Install all routes in the given Koa application.
@@ -10,7 +10,7 @@ module.exports = (app) => {
   const router = new Router({
     prefix: '/api',
   });
-  
+
   installUserRouter(router);
 
   app.use(async (ctx, next) => {

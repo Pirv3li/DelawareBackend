@@ -4,13 +4,13 @@ const userService = require('../service/users');
 const Joi = require('joi');
 
 const login = async (ctx) => {
-  const { email, password } = ctx.request.body; 
-  const token = await userService.login(email, password); 
+  const { username, password } = ctx.request.body; 
+  const token = await userService.login(username, password); 
   ctx.body = token; 
 };
 login.validationScheme = { 
   body: {
-    email: Joi.string().email(),
+    username: Joi.string(),
     password: Joi.string(),
   },
 };
@@ -22,7 +22,7 @@ login.validationScheme = {
  */
 module.exports = (router) => {
   const userRouter = new KoaRouter({
-    prefix: '/users',
+    prefix: '/leverancier',
   });
   // public
   userRouter.post('/login', validate(login.validationScheme), login);
