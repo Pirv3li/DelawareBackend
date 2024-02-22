@@ -12,7 +12,10 @@ const config = {
     './src/rest/**/*.js',
   ],
   coverageDirectory: '__tests__/coverage',
+<<<<<<< HEAD
   
+=======
+>>>>>>> fec2e85 (testing)
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -68,10 +71,17 @@ const config = {
   // forceCoverageMatch: [],
 
   // A path to a module which exports an async function that is triggered once before all test suites
+<<<<<<< HEAD
      globalSetup: './__tests__/global.setup.js',
 
   // A path to a module which exports an async function that is triggered once after all test suites
      globalTeardown: './__tests__/global.teardown.js',
+=======
+  globalSetup: './__tests__/global.setup.js',
+
+  // A path to a module which exports an async function that is triggered once after all test suites
+  globalTeardown: './__tests__/global.teardown.js',
+>>>>>>> fec2e85 (testing)
 
   // A set of global variables that need to be available in all test environments
   // globals: {},

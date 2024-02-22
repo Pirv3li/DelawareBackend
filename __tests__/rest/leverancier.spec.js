@@ -24,7 +24,10 @@ describe('Users API', () => {
         });
 
       expect(response.status).toBe(200);
+<<<<<<< HEAD
       console.log(response.body);
+=======
+>>>>>>> fec2e85 (testing)
       expect(response.body).toBeDefined();
     });
 

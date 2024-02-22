@@ -22,10 +22,17 @@ module.exports = async () => {
       gebruikersnaam: 'Test Klant User',
       password_hash:
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
+<<<<<<< HEAD
       isActief: true,
       roles: JSON.stringify([Role.KLANT]),
       klantnummer: 123456789,
       leveranciernummer: '/',
+=======
+      isActief: 1,
+      roles: JSON.stringify([Role.KLANT]),
+      klantnummer: 123456789,
+      bedrijfnummer: null,
+>>>>>>> fec2e85 (testing)
       idBedrijf: 1,
     },
     {
@@ -33,10 +40,17 @@ module.exports = async () => {
       gebruikersnaam: 'Test Leverancier User',
       password_hash:
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
+<<<<<<< HEAD
       isActief: true,
       roles: JSON.stringify([Role.LEVER]),
       klantnummer: '/',
       leveranciernummer: 123456789,
+=======
+      isActief: 1,
+      roles: JSON.stringify([Role.LEVER]),
+      klantnummer: null,
+      bedrijfnummer: 123456789,
+>>>>>>> fec2e85 (testing)
       idBedrijf: 2,
     },
     {
@@ -44,10 +58,17 @@ module.exports = async () => {
       gebruikersnaam: 'Test Admin User',
       password_hash:
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
+<<<<<<< HEAD
       isActief: true,
       roles: JSON.stringify([Role.ADMIN]),
       klantnummer: '/',
       leveranciernummer: '/',
+=======
+      isActief: 1,
+      roles: JSON.stringify([Role.ADMIN]),
+      klantnummer: null,
+      bedrijfnummer: null,
+>>>>>>> fec2e85 (testing)
       idBedrijf: 3,
     },
   ]);
