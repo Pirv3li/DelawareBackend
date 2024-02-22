@@ -4,7 +4,6 @@ module.exports = {
   up: async (knex) => {
     await knex.schema.createTable(tables.user, (table) => {
       table.increments('idUser').primary();
-      table.string('soort', 255).notNullable();
       table.string('gebruikersnaam', 255).notNullable();
       table.string('password_hash').notNullable(); 
       table.boolean('isActief').notNullable();

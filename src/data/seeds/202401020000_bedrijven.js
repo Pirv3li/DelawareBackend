@@ -1,5 +1,4 @@
 const { tables } = require('..');
-const Role = require('../../core/roles');
 
 module.exports = {
   seed: async (knex) => {
