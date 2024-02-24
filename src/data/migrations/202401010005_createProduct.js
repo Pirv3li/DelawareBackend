@@ -5,7 +5,7 @@ module.exports = {
     await knex.schema.createTable(tables.product, (table) => {
       table.increments('idProduct').primary();
       table.string('naam', 255).notNullable();
-      table.string('eenheidsprijs', 255).notNullable();
+      table.double('eenheidsprijs', 255).notNullable();
       table.integer('btwtarrief').notNullable();
       
       table.integer('idLeverancier').unsigned().notNullable();
