@@ -14,9 +14,9 @@ module.exports = async () => {
 
   const knex = getKnex(); 
 
-  await getKnex()(tables.user).delete(); 
+  await getKnex()(tables.gebruiker).delete(); 
 
-  await knex(tables.user).insert([
+  await knex(tables.gebruiker).insert([
     {
       idUser: 1,
       gebruikersnaam: 'Test Klant User',

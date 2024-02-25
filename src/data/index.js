@@ -41,24 +41,28 @@ async function initializeData() {
 
   knexInstance = knex(knexOptions);
 
-  if (isDevelopment) {
+  if (isDevelopment){
     try {
-      await knexInstance.seed.run();
+      await knexInstance.migrate.latest();
     } catch (error) {
-      logger.error('Error while seeding database', {
+      logger.error('Error while migrating the database', {
         error,
       });
+  
+      throw new Error('Migrations failed, check the logs');
+      }
     }
-  }
-
-  try {
-    await knexInstance.migrate.latest();
-  } catch (error) {
-    logger.error('Error while migrating the database', {
-      error,
-    });
-    throw new Error('Migrations failed, check the logs');
-  }
+    if (isDevelopment) {
+      try {
+        await knexInstance.seed.run();
+      } catch (error) {
+        logger.error('Error while seeding the database', {
+          error,
+        });
+    
+        throw new Error('Seeding failed, check the logs');
+      }
+    }
   logger.info('Succesfully connected to the database');
   return knexInstance;
 }
