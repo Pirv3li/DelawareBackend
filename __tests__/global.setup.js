@@ -14,14 +14,15 @@ module.exports = async () => {
 
   const knex = getKnex(); 
 
-  await getKnex()(tables.gebruiker).delete(); 
+  await getKnex()(tables.user).delete(); 
 
-  await knex(tables.gebruiker).insert([
+  await knex(tables.user).insert([
     {
       idUser: 1,
       gebruikersnaam: 'Test Klant User',
       password_hash:
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
+<<<<<<< HEAD
 <<<<<<< HEAD
       isActief: true,
       roles: JSON.stringify([Role.KLANT]),
@@ -33,6 +34,12 @@ module.exports = async () => {
       klantnummer: 123456789,
       bedrijfnummer: null,
 >>>>>>> fec2e85 (testing)
+=======
+      isActief: true,
+      roles: JSON.stringify([Role.KLANT]),
+      klantnummer: 123456789,
+      leveranciernummer: '/',
+>>>>>>> 53bc831 (test setup fixed)
       idBedrijf: 1,
     },
     {
@@ -40,6 +47,7 @@ module.exports = async () => {
       gebruikersnaam: 'Test Leverancier User',
       password_hash:
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
+<<<<<<< HEAD
 <<<<<<< HEAD
       isActief: true,
       roles: JSON.stringify([Role.LEVER]),
@@ -51,6 +59,12 @@ module.exports = async () => {
       klantnummer: null,
       bedrijfnummer: 123456789,
 >>>>>>> fec2e85 (testing)
+=======
+      isActief: true,
+      roles: JSON.stringify([Role.LEVER]),
+      klantnummer: '/',
+      leveranciernummer: 123456789,
+>>>>>>> 53bc831 (test setup fixed)
       idBedrijf: 2,
     },
     {
@@ -58,6 +72,7 @@ module.exports = async () => {
       gebruikersnaam: 'Test Admin User',
       password_hash:
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
+<<<<<<< HEAD
 <<<<<<< HEAD
       isActief: true,
       roles: JSON.stringify([Role.ADMIN]),
@@ -69,6 +84,12 @@ module.exports = async () => {
       klantnummer: null,
       bedrijfnummer: null,
 >>>>>>> fec2e85 (testing)
+=======
+      isActief: true,
+      roles: JSON.stringify([Role.ADMIN]),
+      klantnummer: '/',
+      leveranciernummer: '/',
+>>>>>>> 53bc831 (test setup fixed)
       idBedrijf: 3,
     },
   ]);
