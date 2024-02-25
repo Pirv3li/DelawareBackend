@@ -24,6 +24,7 @@ describe('Users API', () => {
         });
 
       expect(response.status).toBe(200);
+      console.log(response.body);
       expect(response.body).toBeDefined();
     });
 
