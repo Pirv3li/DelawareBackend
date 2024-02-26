@@ -8,7 +8,7 @@ module.exports = {
     await knex(tables.leverancier).insert([{
         idLeverancier: 1,
         leverancierNummer: '87654321',
-        gebruikersnaam: 'user1',
+        gebruikersnaam: 'leverancier1',
         password_hash: '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
         isActief: true,
       },
@@ -16,14 +16,14 @@ module.exports = {
       {
         idLeverancier: 2,
         leverancierNummer: '87654321',
-        gebruikersnaam: 'user2',
+        gebruikersnaam: 'leverancier2',
         password_hash: '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
         isActief: true,
       },
       {
         idLeverancier: 3,
         leverancierNummer: '87654321',
-        gebruikersnaam: 'user3',
+        gebruikersnaam: 'leverancier3',
         password_hash: '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
         isActief: true,
       },
