@@ -4,7 +4,7 @@ const { getKnex } = require('../src/data');
 
 const KlantLogin = async (supertest) => {
   const response = await supertest.post('/api/klant/login').send({
-    username: 'Test Klant User',
+    username: 'Test Klant User2',
     password: '12345678',
   });
 
@@ -17,7 +17,7 @@ const KlantLogin = async (supertest) => {
 
 const LeverancierLogin = async (supertest) => {
   const response = await supertest.post('/api/leverancier/login').send({
-    email: 'Test Leverancier User',
+    username: 'Test Leverancier User2',
     password: '12345678',
   });
 

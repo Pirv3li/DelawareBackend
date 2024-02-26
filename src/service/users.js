@@ -1,6 +1,7 @@
 const userRepository = require('../repository/users');
 const {verifyPassword} = require('../core/password');
 const { generateJWT } = require('../core/jwt'); 
+const ServiceError = require('../core/serviceError');
 
 const makeExposedUser = ({ idKlant, klantNummer, idLeverancier, leverancierNummer, gebruikersnaam, isActief }) => ({
   idKlant,

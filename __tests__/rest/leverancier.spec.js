@@ -22,7 +22,6 @@ describe('Users API', () => {
           username: 'Test Leverancier User',
           password: '12345678',
         });
-
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
     });
