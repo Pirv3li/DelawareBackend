@@ -2,11 +2,14 @@ const userRepository = require('../repository/users');
 const {verifyPassword} = require('../core/password');
 const { generateJWT } = require('../core/jwt'); 
 
-const makeExposedUser = ({ id, name, email, roles }) => ({
-  id,
-  name,
-  email,
-  roles,
+const makeExposedUser = ({ idKlant, klantNummer, idLeverancier, leverancierNummer, gebruikersnaam, isActief }) => ({
+  idKlant,
+  klantNummer,
+  idLeverancier,
+  leverancierNummer,
+  gebruikersnaam,
+  isActief,
+  
 });
 
 const makeLoginData = async (user) => {

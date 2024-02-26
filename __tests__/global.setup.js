@@ -14,83 +14,28 @@ module.exports = async () => {
 
   const knex = getKnex(); 
 
-  await getKnex()(tables.user).delete(); 
+  await getKnex()(tables.klant).delete(); 
 
-  await knex(tables.user).insert([
+  await knex(tables.klant).insert([
     {
-      idUser: 1,
+      idKlant: 1,
       gebruikersnaam: 'Test Klant User',
       password_hash:
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
-<<<<<<< HEAD
-<<<<<<< HEAD
       isActief: true,
-      roles: JSON.stringify([Role.KLANT]),
       klantnummer: 123456789,
-      leveranciernummer: '/',
-=======
-      isActief: 1,
-      roles: JSON.stringify([Role.KLANT]),
-      klantnummer: 123456789,
-      bedrijfnummer: null,
->>>>>>> fec2e85 (testing)
-=======
-      isActief: true,
-      roles: JSON.stringify([Role.KLANT]),
-      klantnummer: 123456789,
-      leveranciernummer: '/',
->>>>>>> 53bc831 (test setup fixed)
-      idBedrijf: 1,
-    },
-    {
-      idUser: 2,
+    }]);
+
+    await getKnex()(tables.leverancier).delete(); 
+
+    await knex(tables.leverancier).insert([
+       {
+      idLeverancier: 2,
       gebruikersnaam: 'Test Leverancier User',
       password_hash:
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
-<<<<<<< HEAD
-<<<<<<< HEAD
       isActief: true,
-      roles: JSON.stringify([Role.LEVER]),
-      klantnummer: '/',
       leveranciernummer: 123456789,
-=======
-      isActief: 1,
-      roles: JSON.stringify([Role.LEVER]),
-      klantnummer: null,
-      bedrijfnummer: 123456789,
->>>>>>> fec2e85 (testing)
-=======
-      isActief: true,
-      roles: JSON.stringify([Role.LEVER]),
-      klantnummer: '/',
-      leveranciernummer: 123456789,
->>>>>>> 53bc831 (test setup fixed)
-      idBedrijf: 2,
     },
-    {
-      idUser: 3,
-      gebruikersnaam: 'Test Admin User',
-      password_hash:
-        '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
-<<<<<<< HEAD
-<<<<<<< HEAD
-      isActief: true,
-      roles: JSON.stringify([Role.ADMIN]),
-      klantnummer: '/',
-      leveranciernummer: '/',
-=======
-      isActief: 1,
-      roles: JSON.stringify([Role.ADMIN]),
-      klantnummer: null,
-      bedrijfnummer: null,
->>>>>>> fec2e85 (testing)
-=======
-      isActief: true,
-      roles: JSON.stringify([Role.ADMIN]),
-      klantnummer: '/',
-      leveranciernummer: '/',
->>>>>>> 53bc831 (test setup fixed)
-      idBedrijf: 3,
-    },
-  ]);
+    ]);
 };

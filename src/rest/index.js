@@ -1,5 +1,6 @@
 const Router = require('@koa/router');
-const installUserRouter = require('./klant');
+const installKlantRouter = require('./klant');
+const installLeverancierRouter = require('./leverancier');
 
 /**
  * Install all routes in the given Koa application.
@@ -11,7 +12,8 @@ module.exports = (app) => {
     prefix: '/api',
   });
 
-  installUserRouter(router);
+  installKlantRouter(router);
+  installLeverancierRouter(router);
 
   app.use(async (ctx, next) => {
     ctx.set('Access-Control-Allow-Origin', '*');
