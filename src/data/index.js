@@ -76,32 +76,16 @@ function getKnex() {
 }
 
 const tables = Object.freeze({
-<<<<<<< HEAD
-<<<<<<< HEAD
+
   adres: 'adres',
   bedrijf: 'bedrijf',
-=======
-  adres: 'adres',
-  bedrijf: 'bedrijf',
-  user: 'user',
->>>>>>> b116a8e (nieuwe migraties en seeds)
   leverancier: 'leverancier',
   klant: 'klant',
   order: 'order',
   notificatie: 'notificatie',
   product: 'product',
   orderDetails: 'orderdetails'
-<<<<<<< HEAD
-=======
-  bedrijf: 'Bedrijf',
-  gebruiker: 'User',
-  order: 'Order',
-  notificatie: 'Transacties',
-  product: 'Games',
-  orderDetails: 'OrderDetails'
->>>>>>> fec2e85 (testing)
-=======
->>>>>>> b116a8e (nieuwe migraties en seeds)
+
 });
 
 async function shutdownData() {
