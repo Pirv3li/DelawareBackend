@@ -1,8 +1,8 @@
 const KoaRouter = require('@koa/router'); 
 const validate = require('../core/validation');
 const userService = require('../service/users');
-const userRepository = require('../repository/users');
 const Joi = require('joi');
+const { requireAuthentication } = require('../core/auth'); 
 
 const login = async (ctx) => {
   const { username, password } = ctx.request.body; 
@@ -19,7 +19,7 @@ login.validationScheme = {
 const getKlant = async (ctx) => {
   try {
     const { idKlant } = ctx.state.session;
-    const klant = await userRepository.getKlantById(idKlant);
+    const klant = await userService.getKlantById(idKlant);
 
     if (klant) {
       ctx.status = 200;
@@ -33,11 +33,7 @@ const getKlant = async (ctx) => {
     ctx.body = { message: 'Error fetching klant data' };
   }
 };
-getKlant.validationScheme = {
-  params: {
-    idKlant: Joi.number().integer().required(),
-  }
-};
+getKlant.validationScheme = null;
 
 /**
  * Install team routes in the given router.
@@ -50,7 +46,7 @@ module.exports = (router) => {
   });
   // public
   userRouter.post('/login', validate(login.validationScheme), login);
-  userRouter.get('/', validate(getKlant.validationScheme), getKlant);
+  userRouter.get('/', requireAuthentication, validate(getKlant.validationScheme), getKlant);
 
   router.use(userRouter.routes()).use(router.allowedMethods());
 }

@@ -1,7 +1,7 @@
 const KoaRouter = require('@koa/router'); 
 const validate = require('../core/validation');
 const userService = require('../service/users');
-const userRepository = require('../repository/users');
+const { requireAuthentication } = require('../core/auth'); 
 const Joi = require('joi');
 
 const login = async (ctx) => {
@@ -19,7 +19,7 @@ login.validationScheme = {
 const getLeverancier = async (ctx) => {
   try {
     const { idLeverancier } = ctx.state.session;
-    const leverancier = await userRepository.getLeverancierById(idLeverancier);
+    const leverancier = await userService.getLeverancierById(idLeverancier);
 
     if (leverancier) {
       ctx.status = 200;
@@ -33,11 +33,7 @@ const getLeverancier = async (ctx) => {
     ctx.body = { message: 'Error fetching leverancier data' };
   }
 };
-getLeverancier.validationScheme = {
-  params: {
-    idLeverancier: Joi.number().integer().required(),
-  }
-};
+getLeverancier.validationScheme = null;
 
 /**
  * Install team routes in the given router.
@@ -50,7 +46,7 @@ module.exports = (router) => {
   });
   // public
   userRouter.post('/login', validate(login.validationScheme), login);
-  userRouter.get('/', validate(getLeverancier.validationScheme), getLeverancier);
+  userRouter.get('/', requireAuthentication, validate(getLeverancier.validationScheme), getLeverancier);
 
   router.use(userRouter.routes()).use(router.allowedMethods());
 }
