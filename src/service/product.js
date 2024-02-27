@@ -1,4 +1,4 @@
-const repoProducten = require('../repository/producten');
+const repoProducten = require('../repository/product');
 
 
 

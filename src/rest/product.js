@@ -1,7 +1,7 @@
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
 const validate = require('../core/validation');
-const ServiceProducten = require("../service/producten");
+const ServiceProducten = require("../service/product");
 
 const getProducten = async (ctx) => {
   try {
@@ -38,8 +38,8 @@ createProducten.validationScheme = {
     leverID: Joi.string().required(),
     picture: Joi.string().required(),
     prodName: Joi.string().required(),
-    unitprice: Joi.integer().positive().required(),
-    taxprice: Joi.integer().positive().required() 
+    unitprice: Joi.number().positive().required(),
+    taxprice: Joi.number().positive().required() 
   },
 };
 
