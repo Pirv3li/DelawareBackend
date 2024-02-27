@@ -46,5 +46,11 @@ describe('Users API', () => {
 
       expect(response.status).toBe(200);
     });
+    it('should give unathorized error', async () => {
+      const response = await request
+      .get('/api/leverancier');
+
+      expect(response.body.code).toBe('UNAUTHORIZED');
+    });
   });
 });
