@@ -10,6 +10,7 @@ module.exports = {
         naam: 'kaas',
         eenheidsprijs: 4,
         btwtarrief: 6,
+        link: "https/link.com",
       },
 
       {
@@ -18,6 +19,8 @@ module.exports = {
         naam: 'water',
         eenheidsprijs: 1,
         btwtarrief: 6,
+        link: "https/link.com",
+
       },
       {
         idProduct: 3,
@@ -25,6 +28,8 @@ module.exports = {
         naam: 'brood',
         eenheidsprijs: 3,
         btwtarrief: 6,
+        link: "https/link.com",
+
       },
     ]);
   },
