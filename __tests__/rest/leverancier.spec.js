@@ -37,4 +37,14 @@ describe('Users API', () => {
       expect(response.status).toBe(401);
     });
   });
+
+  describe('Get /api/leverancier', () => {
+    it('should get current leverancier', async () => {
+      const response = await request
+      .get('/api/leverancier')
+      .set('Authorization', leverAuth);
+
+      expect(response.status).toBe(200);
+    });
+  });
 });
