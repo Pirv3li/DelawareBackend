@@ -13,9 +13,11 @@ describe("product API", () => {
   beforeAll(async () => {
     leverAuth = await LeverancierLogin(request);
   });
+
+
   describe("GET /api/producten", () => {
     it("should get producten", async () => {
-      const response = await request.get("/api/producten");
+      const response = await request.get('/api/producten');
 
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
@@ -25,7 +27,6 @@ describe("product API", () => {
   describe("POST /api/producten", () => {
     it("should create product", async () => {
       const productData = {
-        leverID: 2,
         picture: "https://media.nu.nl/m/un2xpm3ag029_wd854/zwitserse-kaas.jpg",
         prodName: "kaas",
         unitprice: 10,
@@ -33,7 +34,7 @@ describe("product API", () => {
       };
 
       const response = await request
-      .post("/api/producten")
+      .post('/api/producten')
       .send(productData)
       .set('Authorization', leverAuth)
 
@@ -43,14 +44,13 @@ describe("product API", () => {
 
     it("should handle validation errors during creation", async () => {
       const productData = {
-        leverID: 2,
         prodName: "kaas",
         unitprice: 10,
         taxprice: 2,
       };
 
       const response = await request
-      .post("/api/producten")
+      .post('/api/producten')
       .send(productData)
       .set('Authorization', leverAuth);
 

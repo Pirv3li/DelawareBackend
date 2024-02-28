@@ -1,5 +1,4 @@
 const userService = require('../service/users');
-
 const requireAuthentication = async (ctx, next) => {
   const { authorization } = ctx.headers; 
 
