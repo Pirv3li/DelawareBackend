@@ -1,31 +1,31 @@
-const supertest = require('supertest');
-const createServer = require('../src/createServer');
-const { getKnex } = require('../src/data'); 
+const supertest = require("supertest");
+const createServer = require("../src/createServer");
+const { getKnex } = require("../src/data");
 
 const KlantLogin = async (supertest) => {
-  const response = await supertest.post('/api/klant/login').send({
-    username: 'Test Klant User2',
-    password: '12345678',
+  const response = await supertest.post("/api/klant/login").send({
+    username: "Test Klant User2",
+    password: "12345678",
   });
 
   if (response.statusCode !== 200) {
-    throw new Error(response.body.message || 'Unknown error occured');
+    throw new Error(response.body.message || "Unknown error occured");
   }
 
-  return `Bearer ${response.body.token}`; 
+  return `Bearer ${response.body.token}`;
 };
 
 const LeverancierLogin = async (supertest) => {
-  const response = await supertest.post('/api/leverancier/login').send({
-    username: 'Test Leverancier User2',
-    password: '12345678',
+  const response = await supertest.post("/api/leverancier/login").send({
+    username: "Test Leverancier User2",
+    password: "12345678",
   });
 
   if (response.statusCode !== 200) {
-    throw new Error(response.body.message || 'Unknown error occured');
+    throw new Error(response.body.message || "Unknown error occured");
   }
 
-  return `Bearer ${response.body.token}`; 
+  return `Bearer ${response.body.token}`;
 };
 
 // const AdminLogin = async (supertest) => {
@@ -38,14 +38,14 @@ const LeverancierLogin = async (supertest) => {
 //     throw new Error(response.body.message || 'Unknown error occured');
 //   }
 
-//   return `Bearer ${response.body.token}`; 
+//   return `Bearer ${response.body.token}`;
 // };
 
-const withServer = (setter) => { 
-  let server; 
+const withServer = (setter) => {
+  let server;
 
   beforeAll(async () => {
-    server = await createServer(); 
+    server = await createServer();
 
     setter({
       knex: getKnex(),
@@ -54,7 +54,7 @@ const withServer = (setter) => {
   });
 
   afterAll(async () => {
-    await server.stop(); 
+    await server.stop();
   });
 };
 
@@ -63,4 +63,4 @@ module.exports = {
   withServer,
   //adminLogin,
   LeverancierLogin,
-}; 
+};

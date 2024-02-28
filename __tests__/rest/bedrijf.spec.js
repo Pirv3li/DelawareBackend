@@ -1,7 +1,7 @@
 const { withServer, KlantLogin } = require("../supertest.setup");
 const { testAuthHeader } = require("../common/auth");
 
-describe("Adres", () => {
+describe("bedrijf", () => {
   let request;
   let authHeader;
 
@@ -13,21 +13,24 @@ describe("Adres", () => {
     authHeader = await KlantLogin(request);
   });
 
-  const url = "/api/adres";
+  const url = "/api/bedrijf";
 
-  describe("GET /api/adres", () => {
-    it("should 200 and return all adresses", async () => {
+  describe("GET /api/bedrijf", () => {
+    it("should 200 and return all bedrijven", async () => {
       const response = await request.get(url);
       expect(response.status).toBe(200);
-      expect(response.body.count).toBe(2);
+      expect(response.body.count).toBe(3);
 
       expect(response.body.items[1]).toEqual({
+        idBedrijf: 2,
+        naam: "Another Company",
+        logo: "another-logo.png",
+        sector: "Finance",
+        iban: "NL20INGB0009876543",
+        btwNummer: "NL987654321B01",
+        telefoonnummer: "0987654321",
+        gebruikerSinds: new Date(),
         idAdres: 2,
-        straat: "Test straat2",
-        nummer: "2",
-        stad: "Test stad2",
-        postcode: "1234AC",
-        laatstGebruikt: new Date(),
       });
     });
 
@@ -39,18 +42,21 @@ describe("Adres", () => {
     });
   });
 
-  describe("GET /api/adres/:id", () => {
-    it("should 200 and return the adres", async () => {
+  describe("GET /api/bedrijf/:id", () => {
+    it("should 200 and return the bedrijf", async () => {
       const response = await request.get(`${url}/1`);
       expect(response.status).toBe(200);
 
       expect(response.body).toEqual({
+        idBedrijf: 1,
+        naam: "Test Company",
+        logo: "test-logo.png",
+        sector: "Technology",
+        iban: "NL20INGB0001234567",
+        btwNummer: "NL123456789B01",
+        telefoonnummer: "0123456789",
+        gebruikerSinds: new Date(),
         idAdres: 1,
-        straat: "Test straat",
-        nummer: "1",
-        stad: "Test stad",
-        postcode: "1234AB",
-        laatstGebruikt: new Date(),
       });
     });
 
@@ -62,47 +68,55 @@ describe("Adres", () => {
     });
   });
 
-  describe("POST /api/adres", () => {
-    it("should 201 and return the created adres", async () => {
+  describe("POST /api/bedrijf", () => {
+    it("should 201 and return the created bedrijf", async () => {
       const response = await request
         .post(url)
         .set("Authorization", authHeader)
         .send({
-          straat: "Testerpoststraat",
-          nummer: "3",
-          stad: "Test stad 3",
-          postcode: "1234MB",
-          laatstGebruikt: new Date(),
+          idBedrijf: 4,
+          naam: "Fourth Company",
+          logo: "fourth-logo.png",
+          sector: "Education",
+          iban: "NL20INGB0004444444",
+          btwNummer: "NL444444444B01",
+          telefoonnummer: "0444444444",
+          gebruikerSinds: new Date(),
+          idAdres: 2,
         });
 
       expect(response.status).toBe(201);
-      expect(response.body.idAdres).toBeTruthy();
-      expect(response.body.straat).toBe("Testerpoststraat");
+      expect(response.body.idbedrijf).toBeTruthy();
+      expect(response.body.naam).toBe("Fourth Company");
     });
     testAuthHeader(() => request.post(`${url}`));
   });
 
-  describe("PUT /api/adres/:id", () => {
-    it("should 200 and return the updated adres", async () => {
+  describe("PUT /api/bedrijf/:id", () => {
+    it("should 200 and return the updated bedrijf", async () => {
       const response = await request
         .put(`${url}/2`)
         .set("Authorization", authHeader)
         .send({
-          straat: "Testupdatestraat",
-          nummer: "1",
-          stad: "Test stad",
-          postcode: "1234AB",
-          laatstGebruikt: new Date(),
+          idBedrijf: 2,
+          naam: "Another UPDATED Company",
+          logo: "another-logo.png",
+          sector: "Finance",
+          iban: "NL20INGB0009876543",
+          btwNummer: "NL987654321B01",
+          telefoonnummer: "0987654321",
+          gebruikerSinds: new Date(),
+          idAdres: 2,
         });
 
       expect(response.statusCode).toBe(200);
-      expect(response.body.idAdres).toBe(2);
-      expect(response.body.straat).toBe("Testupdatestraat");
+      expect(response.body.idbedrijf).toBe(2);
+      expect(response.body.naam).toBe("Another UPDATED Company");
     });
     testAuthHeader(() => request.put(`${url}/2`));
   });
 
-  describe("DELETE /api/adres/:id", () => {
+  describe("DELETE /api/bedrijf/:id", () => {
     it("should 204 and return nothing", async () => {
       const response = await request
         .delete(`${url}/3`)
