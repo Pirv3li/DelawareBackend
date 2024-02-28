@@ -1,6 +1,6 @@
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
-
+const { requireAuthentication } = require('../core/auth'); 
 const orderService = require('../service/order');
 const validate = require('../core/validation')
 
@@ -96,26 +96,31 @@ module.exports = (router) => {
 
   orderRouter.get(
     '/',
+    requireAuthentication,
     validate(getAllOrders.validationSheme),
     getAllOrders
   );
   orderRouter.post(
     '/',
+    requireAuthentication,
     validate(createOrder.validationSheme),
     createOrder
   );
   orderRouter.get(
     '/:id',
+    requireAuthentication,
     validate(getOrderById.validationSheme),
     getOrderById
   );
   orderRouter.put(
     '/:id',
+    requireAuthentication,
     validate(updateOrderById.validationSheme),
     updateOrderById
   );
   orderRouter.delete(
     '/:id',
+    requireAuthentication,
     validate(deleteOrderById.validationSheme),
     deleteOrderById
   );

@@ -14,8 +14,6 @@ const getAllBedrijven = async() => {
             `${tables.bedrijf}.gebruikerSinds`,
             `${tables.bedrijf}.idAdres`,
         )
-        .orderBy('voornaam')
-        .orderBy('achternaam')
 };
 
 const getBedrijfById = async (id) => {

@@ -1,6 +1,6 @@
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
-
+const { requireAuthentication } = require('../core/auth'); 
 const notificationService = require('../service/notificatie');
 const validate = require('../core/validation')
 
@@ -88,26 +88,31 @@ module.exports = (router) => {
 
   notificationRouter.get(
     '/',
+    requireAuthentication,
     validate(getAllNotifications.validationSheme),
     getAllNotifications
   );
   notificationRouter.post(
     '/',
+    requireAuthentication,
     validate(createNotification.validationSheme),
     createNotification
   );
   notificationRouter.get(
     '/:id',
+    requireAuthentication,
     validate(getNotificationById.validationSheme),
     getNotificationById
   );
   notificationRouter.put(
     '/:id',
+    requireAuthentication,
     validate(updateNotificationById.validationSheme),
     updateNotificationById
   );
   notificationRouter.delete(
     '/:id',
+    requireAuthentication,
     validate(deleteNotificationById.validationSheme),
     deleteNotificationById
   );

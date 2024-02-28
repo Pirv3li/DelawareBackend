@@ -1,7 +1,6 @@
-
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
-
+const { requireAuthentication } = require('../core/auth'); 
 const adresService = require('../service/adres');
 const validate = require('../core/validation')
 
@@ -90,31 +89,31 @@ module.exports = (router) => {
 
   adresRouter.get(
     '/',
-    //requireAuthentication,
+    requireAuthentication,
     validate(getAllAdressen.validationSheme),
     getAllAdressen
   );
   adresRouter.post(
     '/',
-    //requireAuthentication,
+    requireAuthentication,
     validate(createAdres.validationSheme),
     createAdres
   );
   adresRouter.get(
     '/:id',
-    //requireAuthentication,
+    requireAuthentication,
     validate(getAdresById.validationSheme),
     getAdresById
   );
   adresRouter.put(
     '/:id',
-    //requireAuthentication,
+    requireAuthentication,
     validate(updateAdresById.validationSheme),
     updateAdresById
   );
   adresRouter.delete(
     '/:id',
-    //requireAuthentication,
+    requireAuthentication,
     validate(deleteAdresById.validationSheme),
     deleteAdresById
   );

@@ -16,6 +16,7 @@ module.exports = async () => {
 
   await getKnex()(tables.leverancier).delete(); 
   await getKnex()(tables.klant).delete(); 
+  await getKnex()(tables.adres).delete();
 
   await knex(tables.klant).insert([
     {
@@ -51,6 +52,25 @@ module.exports = async () => {
         '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
       isActief: true,
       leverancierNummer: 123456781,
+    },
+    ]);
+
+    await knex(tables.adres).insert([
+    {
+      idAdres: 1,
+      straat: 'Test straat',
+      nummer: '1',
+      stad: 'Test stad',
+      postcode: '1234AB',
+      laatstGebruikt: new Date(),
+    },
+    {
+      idAdres: 2,
+      straat: 'Test straat2',
+      nummer: '2',
+      stad: 'Test stad2',
+      postcode: '1234AC',
+      laatstGebruikt: new Date(),
     },
     ]);
 };
