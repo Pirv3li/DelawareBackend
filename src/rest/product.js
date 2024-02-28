@@ -2,6 +2,8 @@ const KoaRouter = require("@koa/router");
 const Joi = require('joi');
 const validate = require('../core/validation');
 const ServiceProducten = require("../service/product");
+const { requireAuthentication } = require('../core/auth'); 
+
 
 const getProducten = async (ctx) => {
   try {
@@ -26,10 +28,10 @@ getProducten.validationScheme = {};
 
 const createProducten = async(ctx) => {
   try {
-    const leverID = ctx.state.session.leverId;
+    const { idLeverancier } = ctx.state.session;
     const {picture, prodName, unitprice, taxprice} = ctx.request.body;
 
-    const createdProd = await ServiceProducten.createProducten(leverID, picture, prodName, unitprice, taxprice);
+    const createdProd = await ServiceProducten.createProducten(idLeverancier, picture, prodName, unitprice, taxprice);
     
     ctx.body = {product: createdProd}
     ctx.status = 200
@@ -37,13 +39,13 @@ const createProducten = async(ctx) => {
     if (ctx.status === 403) {
       ctx.body = { message: "Permission denied" };
     } else {
-      
+      ctx.status = 500
+      ctx.body = {message: error}
     }
   }
 }
 createProducten.validationScheme = {
   body: {
-    leverID: Joi.string().required(),
     picture: Joi.string().required(),
     prodName: Joi.string().required(),
     unitprice: Joi.number().positive().required(),
@@ -64,7 +66,7 @@ module.exports = (router) => {
   userRouter.get("/", validate(getProducten.validationScheme), getProducten);
   userRouter.get('/:id',  getProductByID);
   //private
-  userRouter.post("/", validate(createProducten.validationScheme), createProducten)
+  userRouter.post("/",requireAuthentication, validate(createProducten.validationScheme), createProducten)
 
   router.use(userRouter.routes()).use(router.allowedMethods());
 };
