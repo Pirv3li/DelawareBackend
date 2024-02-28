@@ -12,9 +12,6 @@ const SELECT_COLUMNS = [
 ];
 
 
-
-
-
 const getProducten = async() => {
   const producten = getKnex()(tables.product).select('idProduct','idLeverancier', 'naam', 'eenheidsprijs', 'btwtarief', 'foto');
   
@@ -41,6 +38,7 @@ const createProducten = async (leverID,  picture, prodName, unitprice, taxprice)
   };
   
   const [productID] = await getKnex()(tables.product).insert(product);
+
   return productID;
 };
   
