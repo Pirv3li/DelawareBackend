@@ -99,7 +99,17 @@ const getLeverancierById = async (id) => {
   const leverancier = await userRepository.getLeverancierById(id);
   const exposedLeverancier = makeExposedUser(leverancier);
   return exposedLeverancier; 
-}
+};
+
+const checkRole = (role, roles) => {
+  const hasPermission = roles.includes(role);
+
+  if (!hasPermission) {
+    throw ServiceError.forbidden(
+      'You are not allowed to view this part of the application'
+    ); 
+  }
+};
 
 
 module.exports = {
@@ -108,4 +118,5 @@ module.exports = {
   checkAndParseSession,
   getKlantById,
   getLeverancierById,
+  checkRole,
 };
