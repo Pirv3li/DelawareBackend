@@ -3,7 +3,7 @@ const Joi = require("joi");
 const validate = require("../core/validation");
 const ServiceProducten = require("../service/product");
 const { requireAuthentication, makeRequireRole } = require("../core/auth");
-const Role = require('../core/roles');
+const Role = require("../core/roles");
 
 const getProducten = async (ctx) => {
   try {
@@ -24,38 +24,50 @@ const getProductByID = async (ctx) => {
 getProducten.validationScheme = {};
 
 const createProducten = async (ctx) => {
+  // try {
+  const { idLeverancier } = ctx.state.session;
 
-  try {
-    const { idLeverancier } = ctx.state.session;
+  const {
+    foto,
+    naam,
+    eenheidsprijs,
+    btwtarief,
+    aantal,
+    gewicht,
+    beschrijving,
+  } = ctx.request.body;
 
-    const { picture, prodName, unitprice, taxprice } = ctx.request.body;
+  const createdProd = await ServiceProducten.createProducten(
+    idLeverancier,
+    foto,
+    naam,
+    eenheidsprijs,
+    btwtarief,
+    aantal,
+    gewicht,
+    beschrijving
+  );
 
-    const createdProd = await ServiceProducten.createProducten(
-      idLeverancier,
-      picture,
-      prodName,
-      unitprice,
-      taxprice
-    );
-
-
-    ctx.body = { product: createdProd };
-    ctx.status = 200;
-  } catch (error) {
-    if (ctx.status === 403) {
-      ctx.body = { message: "Permission denied" };
-    } else {
-      ctx.status = 500;
-      ctx.body = { message: error };
-    }
-  }
+  ctx.body = createdProd;
+  ctx.status = 200;
+  // } catch (error) {
+  //   if (ctx.status === 403) {
+  //     ctx.body = { message: "Permission denied" };
+  //   } else {
+  //     ctx.status = 500;
+  //     ctx.body = { message: error };
+  //   }
+  // }
 };
 createProducten.validationScheme = {
   body: {
-    picture: Joi.string().required(),
-    prodName: Joi.string().required(),
-    unitprice: Joi.number().positive().required(),
-    taxprice: Joi.number().positive().required(),
+    foto: Joi.string().required(),
+    naam: Joi.string().required(),
+    eenheidsprijs: Joi.number().positive().required(),
+    btwtarief: Joi.number().positive().required(),
+    aantal: Joi.number().integer().required(),
+    gewicht: Joi.number().precision(2).positive().required(),
+    beschrijving: Joi.string().max(255),
   },
 };
 

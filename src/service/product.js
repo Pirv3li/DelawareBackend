@@ -20,25 +20,32 @@ const getProductByID = async (id) => {
 };
 
 const createProducten = async (
-  leverID,
-  picture,
-  prodName,
-  unitprice,
-  taxprice
+  idLeverancier,
+  foto,
+  naam,
+  eenheidsprijs,
+  btwtarief,
+  aantal,
+  gewicht,
+  beschrijving
 ) => {
-  try {
-    const createdProd = await repoProducten.createProducten(
-      leverID,
-      picture,
-      prodName,
-      unitprice,
-      taxprice
-    );
+  // try {
+  const createdProd = await repoProducten.createProducten(
+    idLeverancier,
+    foto,
+    naam,
+    eenheidsprijs,
+    btwtarief,
+    aantal,
+    gewicht,
+    beschrijving
+  );
 
-    return getProductByID(createdProd);
-  } catch (error) {
-    throw new Error("Error while adding product");
-  }
+  return repoProducten.getProductById(createdProd);
+
+  // } catch (error) {
+  //   throw new Error("Error while adding product");
+  // }
 };
 
 module.exports = {
