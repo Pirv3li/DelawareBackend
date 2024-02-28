@@ -11,6 +11,16 @@ const getProducten = async () => {
   }
 };
 
+const getProductByID = async (id) => {
+  const product = await repoProducten.getProductById(id);
+
+  if (!product) {
+    throw ServiceError.notFound(`Geen product met id: ${id} werd gevonden`);
+  }
+
+  return product
+};
+
 
 const createProducten = async (leverID, picture, prodName, unitprice, taxprice ) => {
   try {
@@ -27,5 +37,6 @@ const createProducten = async (leverID, picture, prodName, unitprice, taxprice )
 
 module.exports = {
   getProducten,
-  createProducten
+  createProducten,
+  getProductByID
 };

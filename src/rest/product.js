@@ -14,7 +14,15 @@ const getProducten = async (ctx) => {
     ctx.status = 500;
   }
 };
+
+
+const getProductByID = async (ctx) => {
+  ctx.body = await ServiceProducten.getProductByID(Number(ctx.params.id));
+};
+
+
 getProducten.validationScheme = {};
+
 
 const createProducten = async(ctx) => {
   try {
@@ -54,7 +62,7 @@ module.exports = (router) => {
   });
   // public
   userRouter.get("/", validate(getProducten.validationScheme), getProducten);
-
+  userRouter.get('/:id',  getProductByID);
   //private
   userRouter.post("/", validate(createProducten.validationScheme), createProducten)
 
