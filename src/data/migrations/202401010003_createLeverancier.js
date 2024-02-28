@@ -8,6 +8,7 @@ module.exports = {
       table.string('gebruikersnaam', 25).notNullable();
       table.string('password_hash').notNullable();
       table.boolean('isActief');
+      table.jsonb('roles').notNullable();
     });
   },
   down: async (knex) => {

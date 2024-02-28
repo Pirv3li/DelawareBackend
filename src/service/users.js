@@ -4,14 +4,14 @@ const { generateJWT, verifyJWT } = require('../core/jwt');
 const ServiceError = require('../core/serviceError');
 const { getLogger } = require('../core/logging'); 
 
-const makeExposedUser = ({ idKlant, klantNummer, idLeverancier, leverancierNummer, gebruikersnaam, isActief }) => ({
+const makeExposedUser = ({ idKlant, klantNummer, idLeverancier, leverancierNummer, gebruikersnaam, isActief, roles }) => ({
   idKlant,
   klantNummer,
   idLeverancier,
   leverancierNummer,
   gebruikersnaam,
   isActief,
-  
+  roles,
 });
 
 const makeLoginData = async (user) => {

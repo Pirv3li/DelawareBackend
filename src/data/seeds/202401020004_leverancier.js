@@ -11,6 +11,7 @@ module.exports = {
         gebruikersnaam: 'leverancier1',
         password_hash: '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
         isActief: true,
+        roles: JSON.stringify([Role.LEVER]),
       },
 
       {
@@ -19,6 +20,7 @@ module.exports = {
         gebruikersnaam: 'leverancier2',
         password_hash: '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
         isActief: true,
+        roles: JSON.stringify([Role.LEVER]),
       },
       {
         idLeverancier: 3,
@@ -26,6 +28,7 @@ module.exports = {
         gebruikersnaam: 'leverancier3',
         password_hash: '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
         isActief: true,
+        roles: JSON.stringify([Role.LEVER]),
       },
     ]);
   },
