@@ -1,7 +1,8 @@
 const KoaRouter = require("@koa/router");
 const validate = require("../core/validation");
 const userService = require("../service/users");
-const { requireAuthentication } = require("../core/auth");
+const { requireAuthentication, makeRequireRole } = require("../core/auth");
+const Role = require("../core/roles");
 const Joi = require("joi");
 
 const login = async (ctx) => {
@@ -61,6 +62,8 @@ getLeverancierById.validationScheme = {
   },
 };
 
+const adminRole = makeRequireRole(Role.ADMIN);
+
 /**
  * Install team routes in the given router.
  *
@@ -81,6 +84,7 @@ module.exports = (router) => {
   userRouter.get(
     "/:id",
     requireAuthentication,
+    adminRole,
     validate(getLeverancierById.validationScheme),
     getLeverancierById
   );

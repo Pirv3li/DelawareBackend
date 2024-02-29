@@ -7,6 +7,7 @@ module.exports = {
       table.string("naam", 255).notNullable().unique();
       table.string("logo", 255).notNullable();
       table.string("sector", 255).notNullable();
+      table.string("email", 255).notNullable();
       table.string("iban", 255).notNullable();
       table.string("btwNummer", 255).notNullable();
       table.string("telefoonnummer", 255).notNullable();
