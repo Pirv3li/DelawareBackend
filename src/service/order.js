@@ -22,6 +22,23 @@ const createOrder = async ({ idKlant, idLeverancier, idAdres, datum, orderStatus
   return getOrderById(idNewOrder);
 };
 
+const getOrderByKlantId = async (idKlant) => {
+  const items = await orderRepository.getOrderByKlantId(idKlant);
+  return{
+    items,
+  };
+
+};
+
+const getOrderByLeverancierId = async (idLeverancier) => {
+  const items = await orderRepository.getOrderByLeverancierId(idLeverancier);
+  return{
+    items,
+  };
+  
+};
+
+
 const updateOrderById = async (idOrder, { idKlant, idLeverancier, idAdres, datum, orderStatus, betalingStatus, totaalPrijs }) => {
   await orderRepository.updateOrderById(idOrder, {
     idKlant,
@@ -44,4 +61,6 @@ module.exports = {
   createOrder,
   updateOrderById,
   deleteOrderById,
+  getOrderByKlantId,
+  getOrderByLeverancierId,
 };

@@ -1,8 +1,9 @@
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
-const { requireAuthentication } = require('../core/auth'); 
+const { requireAuthentication, makeRequireRole } = require('../core/auth'); 
 const orderService = require('../service/order');
 const validate = require('../core/validation')
+const Role = require('../core/roles');
 
 const getAllOrders = async (ctx) => {
   ctx.body = await orderService.getAllOrders();
@@ -59,6 +60,8 @@ const updateOrderById = async (ctx) => {
   });
   ctx.status = 200;
 };
+
+
 updateOrderById.validationSheme = {
   params: {
     id: Joi.number().integer().positive(),
@@ -83,6 +86,38 @@ deleteOrderById.validationSheme={
     id: Joi.number().integer().positive(),
   },
 }
+
+
+const getOrderByKlantId = async (ctx) => {
+  const {idKlant} = ctx.state.session;
+  if(Number(ctx.params.id) == idKlant){
+  ctx.body = await orderService.getOrderByKlantId(Number(ctx.params.id));
+  }
+  else{
+    ctx.status = 403;
+    ctx.body = {message: "You are not authorized to view this data"}
+  }
+};
+
+getOrderByKlantId.validationSheme=null
+
+requireKlant = makeRequireRole(Role.KLANT)
+
+
+const getOrderByLeverancierId = async (ctx) => {
+  const {idLeverancier} = ctx.state.session;
+  if(Number(ctx.params.id) == idLeverancier){
+  ctx.body = await orderService.getOrderByLeverancierId(Number(ctx.params.id));
+  }
+  else{
+    ctx.status = 403;
+    ctx.body = {message: "You are not authorized to view this data"}
+  }
+};
+
+getOrderByLeverancierId.validationSheme=null
+
+requireLeverancier = makeRequireRole(Role.LEVER)
 
 /**
  * Install order routes in the given router.
@@ -123,6 +158,19 @@ module.exports = (router) => {
     requireAuthentication,
     validate(deleteOrderById.validationSheme),
     deleteOrderById
+  );
+  orderRouter.get(
+    '/klant/:id',
+    requireAuthentication,
+    requireKlant,
+    getOrderByKlantId
+  );
+
+  orderRouter.get(
+    '/leverancier/:id',
+    requireAuthentication,
+    requireLeverancier,
+    getOrderByLeverancierId
   );
 
   router.use(orderRouter.routes()).use(orderRouter.allowedMethods());

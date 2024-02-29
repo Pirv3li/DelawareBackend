@@ -14,6 +14,23 @@ const getOrderById = async (idOrder) => {
   return order;
 };
 
+const getOrderByKlantId = async (idKlant) => {
+  const order = await getKnex()(tables.order)
+    .where('idKlant', idKlant)
+    
+
+    return order;
+  
+};
+
+const getOrderByLeverancierId = async (idLeverancier) => {
+  const order = await getKnex()(tables.order)
+    .where('idLeverancier', idLeverancier)
+
+    return order;
+  
+};
+
 const createOrder = async ({ idKlant, idLeverancier, idAdres, datum, orderStatus, betalingStatus, totaalPrijs }) => {
   const [id] = await getKnex()(tables.order).insert({
     idKlant,
@@ -54,4 +71,6 @@ module.exports = {
   createOrder,
   updateOrderById,
   deleteOrderById,
+  getOrderByKlantId,
+  getOrderByLeverancierId,
 };
