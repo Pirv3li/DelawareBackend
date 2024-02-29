@@ -15,6 +15,7 @@ module.exports = {
         isActief: true,
         roles: JSON.stringify([Role.KLANT]),
         idBedrijf: 1,
+        email: "klant1@example.com",
       },
 
       {
@@ -26,7 +27,9 @@ module.exports = {
         isActief: true,
         roles: JSON.stringify([Role.KLANT]),
         idBedrijf: 2,
+        email: "klant2@example.com",
       },
+
       {
         idKlant: 3,
         klantNummer: "87654321",
@@ -36,6 +39,7 @@ module.exports = {
         isActief: true,
         roles: JSON.stringify([Role.KLANT]),
         idBedrijf: 3,
+        email: "klant3@example.com",
       },
     ]);
   },

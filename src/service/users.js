@@ -26,6 +26,7 @@ const makeExposedKlant = ({
   idKlant,
   klantNummer,
   gebruikersnaam,
+  email,
   isActief,
   roles,
   idBedrijf,
@@ -42,13 +43,14 @@ const makeExposedKlant = ({
   postcode,
   stad,
 }) => ({
-  Klant: {
+  klant: {
     idKlant,
     klantNummer,
     gebruikersnaam,
+    email,
     isActief,
     roles,
-    Bedrijf: {
+    bedrijf: {
       idBedrijf,
       naam,
       logo,
@@ -57,7 +59,7 @@ const makeExposedKlant = ({
       btwNummer,
       telefoonnummer,
       gebruikerSinds,
-      Adres: { idAdres, straat, nummer, postcode, stad },
+      adres: { idAdres, straat, nummer, postcode, stad },
     },
   },
 });
@@ -66,6 +68,7 @@ const makeExposedLeverancier = ({
   idLeverancier,
   leverancierNummer,
   gebruikersnaam,
+  email,
   isActief,
   roles,
   idBedrijf,
@@ -82,13 +85,14 @@ const makeExposedLeverancier = ({
   postcode,
   stad,
 }) => ({
-  Klant: {
+  leverancier: {
     idLeverancier,
     leverancierNummer,
     gebruikersnaam,
+    email,
     isActief,
     roles,
-    Bedrijf: {
+    bedrijf: {
       idBedrijf,
       naam,
       logo,
@@ -97,7 +101,7 @@ const makeExposedLeverancier = ({
       btwNummer,
       telefoonnummer,
       gebruikerSinds,
-      Adres: { idAdres, straat, nummer, postcode, stad },
+      adres: { idAdres, straat, nummer, postcode, stad },
     },
   },
 });
