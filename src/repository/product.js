@@ -56,7 +56,7 @@ const createProducten = async (
   return idProduct;
 };
 
-const updateUser = async (idProduct, leverancierID, updateData) => {
+const updateProduct = async (idProduct, leverancierID, updateData) => {
   const updatedFields = {};
 
 
@@ -102,4 +102,5 @@ module.exports = {
   getProducten,
   createProducten,
   getProductById,
+  updateProduct
 };

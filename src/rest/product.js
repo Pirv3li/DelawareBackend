@@ -90,7 +90,7 @@ const updateProduct = async (ctx) => {
   const productUpdates = ctx.request.body;
 
   try {
-    const updatedProd = await userService.updateProduct(idProduct, idLeverancier, productUpdates);
+    const updatedProd = await ServiceProducten.updateProduct(idProduct, idLeverancier, productUpdates);
 
     ctx.status = 200;
     ctx.body = updatedProd;
