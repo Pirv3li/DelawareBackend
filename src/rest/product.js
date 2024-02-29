@@ -29,42 +29,46 @@ const getProductByID = async (ctx) => {
 getProducten.validationScheme = {};
 
 const createProducten = async (ctx) => {
-  // try {
-  const {
-    idLeverancier
-  } = ctx.state.session;
+  try {
+    const {
+      idLeverancier
+    } = ctx.state.session;
 
-  const {
-    foto,
-    naam,
-    eenheidsprijs,
-    btwtarief,
-    aantal,
-    gewicht,
-    beschrijving,
-  } = ctx.request.body;
+    const {
+      foto,
+      naam,
+      eenheidsprijs,
+      btwtarief,
+      aantal,
+      gewicht,
+      beschrijving,
+    } = ctx.request.body;
 
-  const createdProd = await ServiceProducten.createProducten(
-    idLeverancier,
-    foto,
-    naam,
-    eenheidsprijs,
-    btwtarief,
-    aantal,
-    gewicht,
-    beschrijving
-  );
+    const createdProd = await ServiceProducten.createProducten(
+      idLeverancier,
+      foto,
+      naam,
+      eenheidsprijs,
+      btwtarief,
+      aantal,
+      gewicht,
+      beschrijving
+    );
 
-  ctx.body = createdProd;
-  ctx.status = 200;
-  // } catch (error) {
-  //   if (ctx.status === 403) {
-  //     ctx.body = { message: "Permission denied" };
-  //   } else {
-  //     ctx.status = 500;
-  //     ctx.body = { message: error };
-  //   }
-  // }
+    ctx.body = createdProd;
+    ctx.status = 200;
+  } catch (error) {
+    if (ctx.status === 403) {
+      ctx.body = {
+        message: "Permission denied"
+      };
+    } else {
+      ctx.status = 500;
+      ctx.body = {
+        message: error
+      };
+    }
+  }
 };
 createProducten.validationScheme = {
   body: {
@@ -78,93 +82,74 @@ createProducten.validationScheme = {
   },
 };
 
-const PutProducten = async (ctx) => {
-      try {
-        const {
-          idLeverancier
-        } = ctx.state.session;
+const updateProduct = async (ctx) => {
+  const {
+    idLeverancier
+  } = ctx.state.session;
+  const idProduct = ctx.params.id;
+  const productUpdates = ctx.request.body;
 
-        const leverancierUpdates = {};
-        if (ctx.request.body.foto) {
-          leverancierUpdates.foto = ctx.request.body.foto;
-        }
+  try {
+    const updatedProd = await userService.updateProduct(idProduct, idLeverancier, productUpdates);
 
-        if (ctx.request.body.naam) {
-          leverancierUpdates.naam = ctx.request.body.naam;
-        }
-
-        if (ctx.request.body.eenheidsprijs) {
-          leverancierUpdates.eenheidsprijs = eenheidsprijs;
-        }
-
-        if (ctx.request.body.btwtarief) {
-          leverancierUpdates.btwtarief = ctx.request.body.btwtarief;
-        }
-
-        if (ctx.request.body.aantal) {
-          leverancierUpdates.aantal = ctx.request.body.aantal;
-        }
-
-        if (ctx.request.body.gewicht) {
-          leverancierUpdates.gewicht = ctx.request.body.gewicht;
-        }
-
-        if (ctx.request.body.beschrijving) {
-          leverancierUpdates.beschrijving = ctx.request.body.beschrijving;
-        }
-
-        const updatedProd = await ServiceProducten.PutProducten(idLeverancier, leverancierUpdates);
-
-        ctx.body = updatedProd;
-        ctx.status = 200;
-      } catch (error) {
-        if (ctx.status === 403) {
-          ctx.body = {
-            message: "Permission denied"
-          };
-        } else {
-          ctx.status = 500;
-          ctx.body = {
-            message: error
-          };
-        }
-      };
-      
-      PutProducten.validationScheme = {
-        body: {
-          foto: Joi.string().optional(),
-          naam: Joi.string().required(),
-          eenheidsprijs: Joi.number().positive().optional(),
-          btwtarief: Joi.number().positive().optional(),
-          aantal: Joi.number().integer().optional(),
-          gewicht: Joi.number().precision(2).positive().optional(),
-          beschrijving: Joi.string().max(255).optional(),
-        },
-      };
+    ctx.status = 200;
+    ctx.body = updatedProd;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = {
+      message: "Error updating product"
+    };
+  }
+};
 
 
-      const requireLeverancier = makeRequireRole(Role.LEVER);
+updateProduct.validationScheme = {
+  params: {
+    id: Joi.number().integer().required(),
+  },
+  body: {
+    idLeverancier: Joi.number().required(),
+    foto: Joi.string().optional(),
+    naam: Joi.string().optional(),
+    eenheidsprijs: Joi.number().positive().optional(),
+    btwtarief: Joi.number().positive().optional(),
+    aantal: Joi.number().integer().optional(),
+    gewicht: Joi.number().precision(2).positive().optional(),
+    beschrijving: Joi.string().max(255).optional(),
+  },
+};
 
-      /**
-       * Install team routes in the given router.
-       *
-       * @param {KoaRouter} router - The Koa router.
-       */
-      module.exports = (router) => {
-        const userRouter = new KoaRouter({
-          prefix: "/producten",
-        });
-        // public
-        userRouter.get("/", validate(getProducten.validationScheme), getProducten);
-        userRouter.get("/:id", getProductByID);
-        //private
-        userRouter.post(
-          "/",
-          requireAuthentication,
-          requireLeverancier,
-          validate(createProducten.validationScheme),
-          createProducten
-        );
 
-        router.use(userRouter.routes()).use(router.allowedMethods());
-      };
+const requireLeverancier = makeRequireRole(Role.LEVER);
+
+/**
+ * Install team routes in the given router.
+ *
+ * @param {KoaRouter} router - The Koa router.
+ */
+module.exports = (router) => {
+  const ProductRouter = new KoaRouter({
+    prefix: "/producten",
+  });
+  // public
+  ProductRouter.get("/", validate(getProducten.validationScheme), getProducten);
+  ProductRouter.get("/:id", getProductByID);
+  //private
+  ProductRouter.post(
+    "/",
+    requireAuthentication,
+    requireLeverancier,
+    validate(createProducten.validationScheme),
+    createProducten
+  );
+
+  ProductRouter.put(
+    "/:id",
+    requireAuthentication,
+    requireLeverancier,
+    validate(updateProduct.validationScheme),
+    updateProduct
+  );
+
+  router.use(ProductRouter.routes()).use(router.allowedMethods());
+};

@@ -1,4 +1,7 @@
-const { tables, getKnex } = require("../data/index");
+const {
+  tables,
+  getKnex
+} = require("../data/index");
 
 const SELECT_COLUMNS = [
   `${tables.product}.idProduct`,
@@ -52,6 +55,48 @@ const createProducten = async (
 
   return idProduct;
 };
+
+const updateUser = async (idProduct, leverancierID, updateData) => {
+  const updatedFields = {};
+
+
+  if (updateData.foto) {
+    updatedFields.foto = updateData.foto;
+  }
+
+  if (updateData.naam) {
+    updatedFields.naam = updateData.naam;
+  }
+
+  if (updateData.eenheidsprijs) {
+    updatedFields.eenheidsprijs = updateData.eenheidsprijs;
+  }
+
+  if (updateData.btwtarief) {
+    updatedFields.btwtarief = updateData.btwtarief;
+  }
+
+  if (updateData.aantal) {
+    updatedFields.aantal = updateData.aantal;
+  }
+
+  if (updateData.gewicht) {
+    updatedFields.gewicht = updateData.gewicht;
+  }
+
+  if (updateData.beschrijving) {
+    updatedFields.beschrijving = updateData.beschrijving;
+  }
+
+
+  await getKnex()(tables.product).where('idLeverancier', leverancierID).update(updatedFields);
+
+  const updatedProduct = await getKnex()(tables.product).where('idProduct', idProduct).first();
+
+  return updatedProduct;
+};
+
+
 
 module.exports = {
   getProducten,
