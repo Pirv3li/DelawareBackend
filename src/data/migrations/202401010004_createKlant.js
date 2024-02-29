@@ -6,6 +6,7 @@ module.exports = {
       table.increments("idKlant").primary();
       table.string("klantNummer", 255).notNullable();
       table.string("gebruikersnaam", 25).notNullable();
+      table.string("email", 25).notNullable();
       table.string("password_hash").notNullable();
       table.boolean("isActief");
       table.jsonb("roles").notNullable();
