@@ -29,15 +29,15 @@ const findBedrijfByName = async (ctx) => {
       naam: Joi.string()
     }
   }
-
 const createBedrijf = async (ctx) => {
-    const {naam, logo, sector, iban, btwNummer, telefoonnummer, gebruikerSinds, idAdres} = ctx.request.body;
+    const {naam, logo, sector, iban, btwNummer, email, telefoonnummer, gebruikerSinds, idAdres} = ctx.request.body;
   const newBedrijf = await bedrijfServer.createBedrijf({
     naam: String(naam),
     logo: String(logo),
     sector: String(sector),
     iban: String(iban),
     btwNummer: String(btwNummer),
+    email: String(email),
     telefoonnummer: String(telefoonnummer),
     gebruikerSinds: String(gebruikerSinds),
     idAdres: Number(idAdres)
@@ -52,6 +52,7 @@ createBedrijf.validationSheme={
         sector: Joi.string().required().invalid(' ', ''),
         iban: Joi.string().required().invalid(' ', ''),
         btwNummer: Joi.string().required().invalid(' ', ''),
+        email: Joi.string().required().invalid(' ', ''),
         telefoonnummer: Joi.string().required().invalid(' ', ''),
         gebruikerSinds: Joi.string().required().invalid(' ', ''),
         idAdres: Joi.number().integer().positive()
@@ -59,13 +60,14 @@ createBedrijf.validationSheme={
 }
 
 const updateBedrijfById = async (ctx) => {
-    const {naam, logo, sector, iban, btwNummer, telefoonnummer, gebruikerSinds, idAdres} = ctx.request.body;
+    const {naam, logo, sector, iban, btwNummer, email, telefoonnummer, gebruikerSinds, idAdres} = ctx.request.body;
   ctx.body = await bedrijfServer.updateBedrijfById(Number(ctx.params.id), {
     naam: String(naam),
     logo: String(logo),
     sector: String(sector),
     iban: String(iban),
     btwNummer: String(btwNummer),
+    email: String(email),
     telefoonnummer: String(telefoonnummer),
     gebruikerSinds: String(gebruikerSinds),
     idAdres: Number(idAdres)
@@ -82,6 +84,7 @@ updateBedrijfById.validationSheme = {
     sector: Joi.string().required().invalid(' ', ''),
     iban: Joi.string().required().invalid(' ', ''),
     btwNummer: Joi.string().required().invalid(' ', ''),
+    email: Joi.string().required().invalid(' ', ''),
     telefoonnummer: Joi.string().required().invalid(' ', ''),
     gebruikerSinds: Joi.string().required().invalid(' ', ''),
     idAdres: Joi.number().integer().positive()

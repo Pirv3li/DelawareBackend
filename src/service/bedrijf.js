@@ -25,18 +25,19 @@ const findBedrijfByName = async(naam) => {
     return bedrijf  
   };
 
-const createBedrijf = async ({ naam, logo, sector, iban, btwNummer, telefoonnummer, gebruikerSinds, idAdres }) => {
+const createBedrijf = async ({ naam, logo, sector, iban, btwNummer, email, telefoonnummer, gebruikerSinds, idAdres }) => {
     //check if naam is unique by using findBedrijfByName() and show error if not
     const existingBedrijf = await bedrijfsRepo.findBedrijfByName(naam);
     if (existingBedrijf) {
         throw new Error('Bedrijf with this naam already exists');
     }
-  const idBedrijf = await bedrijfsRepo.createBedrijf({ naam, logo, sector, iban, btwNummer, telefoonnummer, gebruikerSinds, idAdres })
+  const idBedrijf = await bedrijfsRepo.createBedrijf({ naam, logo, sector, iban, btwNummer, email, telefoonnummer, gebruikerSinds, idAdres })
   return await bedrijfsRepo.getBedrijfById(idBedrijf)
 };
 
-const updateBedrijfById = async (id, { naam, logo, sector, iban, btwNummer, telefoonnummer, gebruikerSinds, idAdres }) => {
-  const idBedrijf = await bedrijfsRepo.updateBedrijfById(id, { naam, logo, sector, iban, btwNummer, telefoonnummer, gebruikerSinds, idAdres })
+const updateBedrijfById = async (id, { naam, logo, sector, iban, btwNummer, email, telefoonnummer, gebruikerSinds, idAdres }) => {
+  console.log("de enige id: " + id);
+  const idBedrijf = await bedrijfsRepo.updateBedrijfById(id, { naam, logo, sector, iban, btwNummer, email, telefoonnummer, gebruikerSinds, idAdres })
   return await bedrijfsRepo.getBedrijfById(idBedrijf)
 };
 
