@@ -10,8 +10,6 @@ module.exports = {
       table.boolean("geopend").notNullable();
       table.boolean("afgehandeld").notNullable();
 
-      table.integer("idAccount").unsigned().notNullable();
-
       table
         .foreign("idOrder", "fk_Notificatie_Order")
         .references(`${tables.order}.idOrder`)

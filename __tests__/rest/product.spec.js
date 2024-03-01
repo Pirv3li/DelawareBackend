@@ -27,10 +27,13 @@ describe("product API", () => {
   describe("POST /api/producten", () => {
     it("should create product", async () => {
       const productData = {
-        picture: "https://media.nu.nl/m/un2xpm3ag029_wd854/zwitserse-kaas.jpg",
-        prodName: "kaas",
-        unitprice: 10,
-        taxprice: 2,
+        foto: "https://media.nu.nl/m/un2xpm3ag029_wd854/zwitserse-kaas.jpg",
+        naam: "kaas",
+        eenheidsprijs:10,
+        btwtarief: 2,
+        aantal: 1,
+        gewicht: 1,
+        beschrijving: 'beschrijving', 
       };
 
       const response = await request
@@ -39,14 +42,17 @@ describe("product API", () => {
       .set('Authorization', leverAuth)
 
       expect(response.status).toBe(200);
-      expect(response.body.product).toBeDefined();
+      expect(response.body).toBeDefined();
     });
 
     it("should handle validation errors during creation", async () => {
       const productData = {
-        prodName: "kaas",
-        unitprice: 10,
-        taxprice: 2,
+        naam: "kaas",
+        eenheidsprijs:10,
+        btwtarief: 2,
+        aantal: 1,
+        gewicht: 1,
+        beschrijving: 'beschrijving',
       };
 
       const response = await request

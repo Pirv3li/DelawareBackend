@@ -1,50 +1,106 @@
-const { tables, getKnex } = require('../data/index');
+const {
+  tables,
+  getKnex
+} = require("../data/index");
 
 const SELECT_COLUMNS = [
   `${tables.product}.idProduct`,
-  'idLeverancier',
-  'naam',
-  'eenheidsprijs',
-  'btwtarief',
-  'foto',
-
-
+  "idLeverancier",
+  "naam",
+  "eenheidsprijs",
+  "btwtarief",
+  "foto",
+  "aantal",
+  "gewicht",
+  "beschrijving",
 ];
 
+const getProducten = async () => {
+  const producten = getKnex()(tables.product).select(...SELECT_COLUMNS);
 
-const getProducten = async() => {
-  const producten = getKnex()(tables.product).select('idProduct','idLeverancier', 'naam', 'eenheidsprijs', 'btwtarief', 'foto');
-  
   return producten;
+};
+
+const getProductById = async (id) => {
+  id = Number(id);
+
+  const product = await getKnex()(tables.product)
+    .where("idProduct", id)
+    .first(...SELECT_COLUMNS);
+
+  return product;
+};
+const createProducten = async (
+  idLeverancier,
+  foto,
+  naam,
+  eenheidsprijs,
+  btwtarief,
+  aantal,
+  gewicht,
+  beschrijving
+) => {
+  const product = {
+    idLeverancier,
+    foto,
+    naam,
+    eenheidsprijs,
+    btwtarief,
+    aantal,
+    gewicht,
+    beschrijving,
+  };
+
+  const [idProduct] = await getKnex()(tables.product).insert(product);
+
+  return idProduct;
+};
+
+const updateProduct = async (idProduct, leverancierID, updateData) => {
+  const updatedFields = {};
+
+
+  if (updateData.foto) {
+    updatedFields.foto = updateData.foto;
   }
 
-  const getProductById = async (id) => {
-    id = Number(id);
-  
-    const product = await getKnex()(tables.product)
-        .where('idProduct', id)
-        .first(...SELECT_COLUMNS);
-  
-    return product;
-  };
+  if (updateData.naam) {
+    updatedFields.naam = updateData.naam;
+  }
 
-const createProducten = async (leverID,  picture, prodName, unitprice, taxprice) => {
-  const product = {
-    idLeverancier: leverID,
-    foto: picture,
-    naam: prodName,
-    eenheidsprijs: unitprice,
-    btwtarief: taxprice
-  };
-  
-  const [productID] = await getKnex()(tables.product).insert(product);
+  if (updateData.eenheidsprijs) {
+    updatedFields.eenheidsprijs = updateData.eenheidsprijs;
+  }
 
-  return productID;
+  if (updateData.btwtarief) {
+    updatedFields.btwtarief = updateData.btwtarief;
+  }
+
+  if (updateData.aantal) {
+    updatedFields.aantal = updateData.aantal;
+  }
+
+  if (updateData.gewicht) {
+    updatedFields.gewicht = updateData.gewicht;
+  }
+
+  if (updateData.beschrijving) {
+    updatedFields.beschrijving = updateData.beschrijving;
+  }
+
+
+  await getKnex()(tables.product).where('idLeverancier', leverancierID).update(updatedFields);
+
+  const updatedProduct = await getKnex()(tables.product).where('idProduct', idProduct).first();
+
+  return updatedProduct;
 };
-  
+
+
 
 module.exports = {
   getProducten,
   createProducten,
-  getProductById
+  getProductById,
+  updateProduct
 };
