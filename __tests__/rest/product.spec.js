@@ -24,7 +24,7 @@ describe("product API", () => {
     });
 
     it("should get product by ID", async () => {
-      const productId = 1; // Assuming the product ID exists in the database
+      const productId = 1;
       const response = await request.get(`/api/producten/${productId}`);
 
       expect(response.status).toBe(200);
@@ -32,7 +32,7 @@ describe("product API", () => {
     });
 
     it("should handle invalid product ID", async () => {
-      const invalidProductId = 9999; // Assuming the product ID does not exist in the database
+      const invalidProductId = 9999;
       const response = await request.get(`/api/producten/${invalidProductId}`);
 
       expect(response.status).toBe(404);
@@ -125,7 +125,7 @@ describe("product API", () => {
 
   describe("DELETE /api/producten/:id", () => {
     it("should delete product", async () => {
-      const productId = 1; // Assuming the product ID exists in the database
+      const productId = 1;
       const response = await request
       .delete(`/api/producten/${productId}`)
       .set('Authorization', leverAuth);
