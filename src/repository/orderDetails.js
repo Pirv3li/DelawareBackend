@@ -13,6 +13,7 @@ const getOrderDetailsById = async (idOrderDetails) => {
   return orderDetails;
 };
 
+
 const createOrderDetails = async ({ eenheidsprijs, aantal, idOrder, idProduct }) => {
   const [id] = await getKnex()(tables.orderDetails).insert({
     eenheidsprijs,

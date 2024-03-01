@@ -8,16 +8,16 @@ module.exports = {
 
         idAdres: 1,
         straat: 'tesstraat',
-        nummer: 1,
-        postcode: 4000,
+        nummer: "1",
+        postcode: "4000",
         stad: 'antwerpen',
         laatstGebruikt: '2022-02-22',
       },
       {
         idAdres: 2,
         straat: 'tesstraat',
-        nummer: 1,
-        postcode: 4000,
+        nummer: "1",
+        postcode: "4000",
         stad: 'antwerpen',
         laatstGebruikt: '2022-02-22',
         
@@ -25,8 +25,8 @@ module.exports = {
       {
         idAdres: 3,
         straat: 'tesstraat',
-        nummer: 1,
-        postcode: 4000,
+        nummer: "1",
+        postcode: "4000",
         stad: 'antwerpen',
         laatstGebruikt: '2022-02-22',
         

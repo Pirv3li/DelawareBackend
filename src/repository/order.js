@@ -1,5 +1,22 @@
 const { getKnex, tables } = require('../data');
 
+const formatOrder = (result) => ({
+  idOrder: result.idOrder,
+  idKlant: result.idKlant,
+  idLeverancier: result.idLeverancier,
+  idAdres: result.idAdres,
+  datum: result.datum,
+  orderStatus: result.orderStatus,
+  betalingStatus: result.betalingStatus,
+  totaalPrijs: result.totaalPrijs,
+  Order: {
+    idOrderDetails: result.idOrderDetails,
+    eenheidsprijs: result.eenheidsprijs,
+    aantal: result.aantal,
+    idProduct: result.idProduct
+  }
+});
+
 const getAllOrders = async () => {
   return getKnex()(tables.order)
     .select('*')
@@ -8,10 +25,15 @@ const getAllOrders = async () => {
 
 const getOrderById = async (idOrder) => {
   const order = await getKnex()(tables.order)
-    .where('idOrder', idOrder)
+    .leftJoin(
+      `${tables.orderDetails}`,
+      `${tables.order}.idOrder`,
+      `${tables.orderDetails}.idOrder`
+    )
+    .where(`${tables.order}.idOrder`, idOrder)
     .first();
 
-  return order;
+  return formatOrder(order);
 };
 
 const getOrderByKlantId = async (idKlant) => {

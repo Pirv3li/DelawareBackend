@@ -98,6 +98,24 @@ deleteBedrijfById.validationSheme={
   },
 }
 
+const getBedrijfByKlantId = async (ctx) => {
+  ctx.body = await bedrijfServer.getBedrijfByKlantId(Number(ctx.params.id));
+}
+getBedrijfByKlantId.validationSheme={
+  params: {
+    id: Joi.number().integer().positive(),
+  },
+}
+
+const getBedrijfByLeverancierId = async (ctx) => {
+  ctx.body = await bedrijfServer.getBedrijfByLeverancierId(Number(ctx.params.id));
+}
+getBedrijfByLeverancierId.validationSheme={
+  params: {
+    id: Joi.number().integer().positive(),
+  },
+}
+
 /**
  * Install Message routes in the given router.
  *
@@ -143,6 +161,18 @@ module.exports = (app) => {
     requireAuthentication,
     validate(deleteBedrijfById.validationSheme),
     deleteBedrijfById
+  );
+  router.get(
+    '/klant/:id',
+    requireAuthentication,
+    validate(getBedrijfByKlantId.validationSheme),
+    getBedrijfByKlantId
+  );
+  router.get(
+    '/leverancier/:id',
+    requireAuthentication,
+    validate(getBedrijfByLeverancierId.validationSheme),
+    getBedrijfByLeverancierId
   );
 
   app.use(router.routes())

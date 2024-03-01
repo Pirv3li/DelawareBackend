@@ -5,8 +5,8 @@ module.exports = {
     await knex.schema.createTable(tables.klant, (table) => {
       table.increments("idKlant").primary();
       table.string("klantNummer", 255).notNullable();
-      table.string("gebruikersnaam", 25).notNullable();
-      table.string("email", 25).notNullable();
+      table.string("gebruikersnaam", 50).notNullable();
+      table.string("email", 50).notNullable();
       table.string("password_hash").notNullable();
       table.boolean("isActief");
       table.jsonb("roles").notNullable();
