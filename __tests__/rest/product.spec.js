@@ -22,6 +22,22 @@ describe("product API", () => {
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
     });
+
+    it("should get product by ID", async () => {
+      const productId = 1; // Assuming the product ID exists in the database
+      const response = await request.get(`/api/producten/${productId}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should handle invalid product ID", async () => {
+      const invalidProductId = 9999; // Assuming the product ID does not exist in the database
+      const response = await request.get(`/api/producten/${invalidProductId}`);
+
+      expect(response.status).toBe(404);
+    });
+
   });
 
   describe("POST /api/producten", () => {
@@ -63,4 +79,70 @@ describe("product API", () => {
       expect(response.status).toBe(400);
     });
   });
+
+  describe("PUT /api/producten/:id", () => {
+    it("should update product", async () => {
+      const productId = 1; 
+      const updatedProductData = {
+        foto: "https://updated_image_url.com",
+        naam: "Updated product name",
+        eenheidsprijs: 20,
+        btwtarief: 3,
+        aantal: 2,
+        gewicht: 2,
+        beschrijving: 'Updated description',
+      };
+
+      const response = await request
+      .put(`/api/producten/${productId}`)
+      .send(updatedProductData)
+      .set('Authorization', leverAuth);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should handle invalid product ID during update", async () => {
+      const invalidProductId = 9999;
+      const updatedProductData = {
+        foto: "https://updated_image_url.com",
+        naam: "Updated product name",
+        eenheidsprijs: 20,
+        btwtarief: 3,
+        aantal: 2,
+        gewicht: 2,
+        beschrijving: 'Updated description',
+      };
+
+      const response = await request
+      .put(`/api/producten/${invalidProductId}`)
+      .send(updatedProductData)
+      .set('Authorization', leverAuth);
+
+      expect(response.status).toBe(404);
+    });
+  });
+
+  describe("DELETE /api/producten/:id", () => {
+    it("should delete product", async () => {
+      const productId = 1; // Assuming the product ID exists in the database
+      const response = await request
+      .delete(`/api/producten/${productId}`)
+      .set('Authorization', leverAuth);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should handle invalid product ID during deletion", async () => {
+      const invalidProductId = 9999;
+      const response = await request
+      .delete(`/api/producten/${invalidProductId}`)
+      .set('Authorization', leverAuth);
+
+      expect(response.status).toBe(404);
+    });
+  });
+
+
 });
