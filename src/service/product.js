@@ -1,5 +1,4 @@
 const repoProducten = require("../repository/product");
-const repoUsers = require('../repository/users')
 
 const getProducten = async () => {
   try {
@@ -86,7 +85,7 @@ const updateProduct = async (idProduct, idLeverancier, updates) => {
       throw new Error("Permission denied");
     }
 
-    const updatedProd = await repoProducten.updateProduct(idProduct, idLeverancier, prodUpdates);
+    const updatedProd = await repoProducten.updateProduct(idProduct, prodUpdates);
 
     return updatedProd
 
@@ -95,9 +94,34 @@ const updateProduct = async (idProduct, idLeverancier, updates) => {
   }
 };
 
+
+const deleteProduct = async (idLeverancier, idProduct) => {
+  try {
+    const product = await repoProducten.getProductById(idProduct);
+    
+    if (idLeverancier !== product.idLeverancier) {
+      throw new Error("Permission denied");
+    } else {
+
+    
+
+    const deletedProduct = await repoProducten.deleteProduct(idProduct);
+    if (!deletedProduct) {
+      getLogger().error(`Product not found`);
+      throw ServiceError.notFound('Product not found');
+    }
+    return { message: 'Product deleted' };
+  }
+  } catch (error) {
+    getLogger().error(`Error deleting user`);
+    throw handleDBError(error);
+  }
+};
+
 module.exports = {
   getProducten,
   createProducten,
   getProductByID,
-  updateProduct
+  updateProduct,
+  deleteProduct
 };
