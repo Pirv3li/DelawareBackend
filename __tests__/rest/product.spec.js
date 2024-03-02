@@ -105,7 +105,7 @@ describe("product API", () => {
       const updatedProductData = {
         idLeverancier: 2,
         naam: "Updated product name",
-        beschrijving: "Updated description",
+        beschrijving: "Updated error description",
       };
 
       const response = await request
