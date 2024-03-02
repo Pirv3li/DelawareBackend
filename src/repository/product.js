@@ -1,7 +1,4 @@
-const {
-  tables,
-  getKnex
-} = require("../data/index");
+const { tables, getKnex } = require("../data/index");
 
 const SELECT_COLUMNS = [
   `${tables.product}.idProduct`,
@@ -56,9 +53,8 @@ const createProducten = async (
   return idProduct;
 };
 
-const updateProduct = async (idProduct, leverancierID, updateData) => {
+const updateProduct = async (idProduct, updateData) => {
   const updatedFields = {};
-
 
   if (updateData.foto) {
     updatedFields.foto = updateData.foto;
@@ -88,19 +84,29 @@ const updateProduct = async (idProduct, leverancierID, updateData) => {
     updatedFields.beschrijving = updateData.beschrijving;
   }
 
+  await getKnex()(tables.product)
+    .where("idProduct", idProduct)
+    .update(updatedFields);
 
-  await getKnex()(tables.product).where('idLeverancier', leverancierID).update(updatedFields);
-
-  const updatedProduct = await getKnex()(tables.product).where('idProduct', idProduct).first();
+  const updatedProduct = await getKnex()(tables.product)
+    .where("idProduct", idProduct)
+    .first();
 
   return updatedProduct;
 };
 
+const deleteProduct = async (idProduct) => {
+  const deletedProduct = await getKnex()(tables.product)
+    .where("idProduct", idProduct)
+    .delete();
 
+  return deletedProduct;
+};
 
 module.exports = {
   getProducten,
   createProducten,
   getProductById,
-  updateProduct
+  updateProduct,
+  deleteProduct,
 };

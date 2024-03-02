@@ -133,7 +133,6 @@ module.exports = async () => {
     },
   ]);
 
-
   await knex(tables.product).insert([
     {
       idProduct: 1,

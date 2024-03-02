@@ -13,6 +13,13 @@ const getOrderDetailsById = async (idOrderDetails) => {
   return orderDetails;
 };
 
+const getOrderDetailsByOrderId = async (idOrder) => {
+  return getKnex()(tables.orderDetails)
+    .join(tables.product, `${tables.orderDetails}.idProduct`, '=', `${tables.product}.idProduct`)
+    .where(`${tables.orderDetails}.idOrder`, idOrder)
+    .select(`${tables.orderDetails}.*`, `${tables.product}.*`);
+};
+
 
 const createOrderDetails = async ({ eenheidsprijs, aantal, idOrder, idProduct }) => {
   const [id] = await getKnex()(tables.orderDetails).insert({
@@ -49,4 +56,5 @@ module.exports = {
   createOrderDetails,
   updateOrderDetailsById,
   deleteOrderDetailsById,
+  getOrderDetailsByOrderId,
 };

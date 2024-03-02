@@ -9,12 +9,9 @@ const formatOrder = (result) => ({
   orderStatus: result.orderStatus,
   betalingStatus: result.betalingStatus,
   totaalPrijs: result.totaalPrijs,
-  Order: {
-    idOrderDetails: result.idOrderDetails,
-    eenheidsprijs: result.eenheidsprijs,
-    aantal: result.aantal,
-    idProduct: result.idProduct
-  }
+  
+
+
 });
 
 const getAllOrders = async () => {
@@ -30,6 +27,12 @@ const getOrderById = async (idOrder) => {
       `${tables.order}.idOrder`,
       `${tables.orderDetails}.idOrder`
     )
+    .leftJoin(
+      `${tables.leverancier}`,
+      `${tables.order}.idLeverancier`,
+      `${tables.leverancier}.idLeverancier`
+    )
+   
     .where(`${tables.order}.idOrder`, idOrder)
     .first();
 

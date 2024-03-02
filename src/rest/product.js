@@ -18,7 +18,7 @@ const getProducten = async (ctx) => {
     ctx.body = {
       message: "Error while fetching producten"
     };
-    ctx.status = 500;
+    //ctx.status = 500;
   }
 };
 
@@ -95,9 +95,9 @@ const updateProduct = async (ctx) => {
     ctx.status = 200;
     ctx.body = updatedProd;
   } catch (error) {
-    ctx.status = 500;
+    //ctx.status = 500;
     ctx.body = {
-      message: "Error updating product"
+      message: error.message
     };
   }
 };
@@ -116,6 +116,35 @@ updateProduct.validationScheme = {
     aantal: Joi.number().integer().optional(),
     gewicht: Joi.number().precision(2).positive().optional(),
     beschrijving: Joi.string().max(255).optional(),
+  },
+};
+
+
+const deleteProduct = async (ctx) => {
+  try {
+    const { idLeverancier } = ctx.state.session;
+    const idProduct = ctx.params.id;
+
+    const deletedProduct = await ServiceProducten.deleteProduct(idLeverancier, idProduct);
+
+    if (deletedProduct) {
+      ctx.status = 200;
+      ctx.body = { message: "Product deleted" };
+    } else {
+      ctx.status = 404;
+      ctx.body = { message: "product not found" };
+    }
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = {
+      message: "Error deleting product"
+    };
+  }
+};
+
+deleteProduct.validationScheme = {
+  params: {
+    id: Joi.number().integer().required(),
   },
 };
 
@@ -149,6 +178,14 @@ module.exports = (router) => {
     requireLeverancier,
     validate(updateProduct.validationScheme),
     updateProduct
+  );
+
+  ProductRouter.delete(
+    "/:id",
+    requireAuthentication,
+    requireLeverancier,
+    validate(deleteProduct.validationScheme),
+    deleteProduct
   );
 
   router.use(ProductRouter.routes()).use(router.allowedMethods());
