@@ -6,12 +6,65 @@ const getAllNotifications = async () => {
 };
 
 const getNotificationById = async (idNotificatie) => {
-  const notification = await getKnex()(tables.notificatie)
-    .where('idNotificatie', idNotificatie)
+  return await getKnex()(tables.notificatie)
+    .leftJoin(
+      `${tables.order}`,
+      `${tables.notificatie}.idOrder`,
+      `${tables.order}.idOrder`
+    )
+    .where(`${tables.notificatie}.idNotificatie`, idNotificatie)
+    .select(`${tables.notificatie}.*`, `${tables.order}.*`)
     .first();
-
-  return notification;
 };
+
+
+const getAllNotificationsByKlantId = async (idKlant) => {
+  return getKnex()(tables.notificatie)
+  .leftJoin(
+    `${tables.order}`,
+    `${tables.notificatie}.idOrder`,
+    `${tables.order}.idOrder`
+  )
+  .where(`${tables.order}.idKlant`, idKlant)
+  .select(`${tables.notificatie}.*`);
+};
+
+const getAllNotificationsByLeverancierId = async (idLeverancier) => {
+  return getKnex()(tables.notificatie)
+  .leftJoin(
+    `${tables.order}`,
+    `${tables.notificatie}.idOrder`,
+    `${tables.order}.idOrder`
+  )
+  .where(`${tables.order}.idLeverancier`, idLeverancier)
+  .select(`${tables.notificatie}.*`);
+};
+
+const countUnopenedNotificationsByKlantId = async (idKlant) => {
+  return getKnex()(tables.notificatie)
+    .leftJoin(
+      `${tables.order}`,
+      `${tables.notificatie}.idOrder`,
+      `${tables.order}.idOrder`
+    )
+    .where(`${tables.order}.idKlant`, idKlant)
+    .andWhere('geopend', false)
+    .count(`${tables.notificatie}.idNotificatie as count`);
+};
+
+const countUnopenedNotificationsByLeverancierId = async (idLeverancier) => {
+  return getKnex()(tables.notificatie)
+    .leftJoin(
+      `${tables.order}`,
+      `${tables.notificatie}.idOrder`,
+      `${tables.order}.idOrder`
+    )
+    .where(`${tables.order}.idLeverancier`, idLeverancier)
+    .andWhere('geopend', false)
+    .count(`${tables.notificatie}.idNotificatie as count`);
+};
+
+
 
 const createNotification = async ({ idOrder, text, onderwerp, geopend, afgehandeld }) => {
   const [id] = await getKnex()(tables.notificatie).insert({
@@ -24,7 +77,7 @@ const createNotification = async ({ idOrder, text, onderwerp, geopend, afgehande
   return id;
 };
 
-const updateNotificationById = async (idNotificatie, { idOrder, text, onderwerp, geopend, afgehandeld }) => {
+const updateNotificationById = async (idNotificatie, { idOrder, text, onderwerp, geopend, afgehandeld,datum }) => {
   await getKnex()(tables.notificatie)
     .where('idNotificatie', idNotificatie)
     .update({
@@ -33,6 +86,7 @@ const updateNotificationById = async (idNotificatie, { idOrder, text, onderwerp,
       onderwerp,
       geopend,
       afgehandeld,
+      datum,
     });
   return idNotificatie;
 };
@@ -49,4 +103,9 @@ module.exports = {
   createNotification,
   updateNotificationById,
   deleteNotificationById,
+  getAllNotificationsByKlantId,
+  getAllNotificationsByLeverancierId,
+  countUnopenedNotificationsByKlantId,
+  countUnopenedNotificationsByLeverancierId,
+  
 };

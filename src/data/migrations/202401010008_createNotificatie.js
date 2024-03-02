@@ -9,6 +9,8 @@ module.exports = {
       table.string("onderwerp").notNullable();
       table.boolean("geopend").notNullable();
       table.boolean("afgehandeld").notNullable();
+      table.timestamp("datum").notNullable();
+
 
       table
         .foreign("idOrder", "fk_Notificatie_Order")

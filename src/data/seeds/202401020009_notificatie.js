@@ -12,6 +12,8 @@ module.exports = {
         onderwerp: "Order",
         geopend: false,
         afgehandeld: false,
+        datum: '2024-02-01',
+
       },
       {
         idNotificatie: 2,
@@ -20,6 +22,8 @@ module.exports = {
         onderwerp: "Shipping",
         geopend: false,
         afgehandeld: false,
+        datum: '2024-02-01',
+
       },
       {
         idNotificatie: 3,
@@ -28,6 +32,8 @@ module.exports = {
         onderwerp: "Delivery",
         geopend: false,
         afgehandeld: false,
+        datum: '2024-02-01',
+
       },
     ]);
   },

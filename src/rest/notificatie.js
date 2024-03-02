@@ -1,8 +1,9 @@
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
-const { requireAuthentication } = require('../core/auth'); 
+const { requireAuthentication, makeRequireRole } = require('../core/auth'); 
 const notificationService = require('../service/notificatie');
 const validate = require('../core/validation')
+const Role = require('../core/roles');
 
 const getAllNotifications = async (ctx) => {
   ctx.body = await notificationService.getAllNotifications();
@@ -13,6 +14,17 @@ const getNotificationById = async (ctx) => {
   ctx.body = await notificationService.getNotificationById(Number(ctx.params.id));
 };
 getNotificationById.validationSheme={
+  params: {
+    id: Joi.number()
+      .integer()
+      .positive()
+  }
+}
+
+const getNotificationByOrderId = async (ctx) => {
+  ctx.body = await notificationService.getNotificationByOrderId(Number(ctx.params.id));
+};
+getNotificationByOrderId.validationSheme={
   params: {
     id: Joi.number()
       .integer()
@@ -32,6 +44,8 @@ const createNotification = async (ctx) => {
   ctx.body = newNotification;
   ctx.status = 201;
 };
+
+
 createNotification.validationSheme={
     body: {
         idOrder: Joi.number().integer().positive().required(),
@@ -43,13 +57,14 @@ createNotification.validationSheme={
 }
 
 const updateNotificationById = async (ctx) => {
-  const {idOrder, text, onderwerp, geopend, afgehandeld} = ctx.request.body;
+  const {idOrder, text, onderwerp, geopend, afgehandeld, datum} = ctx.request.body;
   ctx.body = await notificationService.updateNotificationById(Number(ctx.params.id), {
     idOrder: Number(idOrder),
     text: String(text),
     onderwerp: String(onderwerp),
     geopend: Boolean(geopend),
-    afgehandeld: Boolean(afgehandeld)
+    afgehandeld: Boolean(afgehandeld),
+    datum: new Date(datum),
   });
   ctx.status = 200;
 };
@@ -58,13 +73,14 @@ updateNotificationById.validationSheme = {
     id: Joi.number().integer().positive(),
   },
   body: {
-    idOrder: Joi.number().integer().positive().required(),
-    text: Joi.string().required(),
-    onderwerp: Joi.string().required(),
-    geopend: Joi.boolean().required(),
-    afgehandeld: Joi.boolean().required()
+    idOrder: Joi.number().integer().positive(),
+    text: Joi.string(),
+    onderwerp: Joi.string(),
+    geopend: Joi.boolean(),
+    afgehandeld: Joi.boolean(),
+    datum: Joi.date()
   }
-}
+};
 
 const deleteNotificationById = async (ctx) => {
   notificationService.deleteNotificationById(Number(ctx.params.id));
@@ -75,6 +91,107 @@ deleteNotificationById.validationSheme={
     id: Joi.number().integer().positive(),
   },
 }
+
+
+const getAllNotificationsByKlantId = async (ctx) => {
+  ctx.body = await notificationService.getAllNotificationsByKlantId(Number(ctx.params.id));
+};
+getAllNotificationsByKlantId.validationSheme = {
+  params: {
+    id: Joi.number()
+      .integer()
+      .positive()
+  }
+}
+
+const getAllNotificationsByLeverancierId = async (ctx) => {
+  ctx.body = await notificationService.getAllNotificationsByLeverancierId(Number(ctx.params.id));
+};
+getAllNotificationsByLeverancierId.validationSheme = {
+  params: {
+    id: Joi.number()
+      .integer()
+      .positive()
+  }
+}
+
+countUnopenedNotificationsByKlantId = async (ctx) => {
+  ctx.body = await notificationService.countUnopenedNotificationsByKlantId(Number(ctx.params.id));
+};
+countUnopenedNotificationsByKlantId.validationSheme = {
+  params: {
+    id: Joi.number()
+      .integer()
+      .positive()
+  }
+}
+
+
+countUnopenedNotificationsByLeverancierId = async (ctx) => {
+  ctx.body = await notificationService.countUnopenedNotificationsByLeverancierId(Number(ctx.params.id));
+};
+countUnopenedNotificationsByLeverancierId.validationSheme = {
+  params: {
+    id: Joi.number()
+      .integer()
+      .positive()
+  }
+}
+
+const checkKlantId = (ctx, next) => {
+  const { idKlant, roles } = ctx.state.session;
+  const { id } = ctx.params;
+
+  if (Number(id) !== idKlant && !roles.includes(Role.ADMIN)) {
+    return ctx.throw(
+      403,
+      'U hebt geen toestemming om deze gebruiker te bekijken',
+      {
+        code: 'FORBIDDEN',
+      }
+    );
+  }
+  return next();
+};
+
+const checkLeverancierId = (ctx, next) => {
+  const { idLeverancier, roles } = ctx.state.session;
+  const { id } = ctx.params;
+
+  if (Number(id) !== idLeverancier && !roles.includes(Role.ADMIN)) {
+    return ctx.throw(
+      403,
+      'U hebt geen toestemming om deze gebruiker te bekijken',
+      {
+        code: 'FORBIDDEN',
+      }
+    );
+  }
+  return next();
+};
+
+
+const checkId = async (ctx, next) => {
+  const { idLeverancier, idKlant, roles } = ctx.state.session;
+  const { id } = ctx.params;
+
+  const notification = await notificationService.getNotificationById(Number(id));
+
+  if ((notification.idLeverancier !== idLeverancier && notification.idKlant !== idKlant ) && !roles.includes(Role.ADMIN)) {
+    return ctx.throw(
+      403,
+      `U hebt geen toestemming om deze notificatie te bekijken`,
+      {
+        code: 'FORBIDDEN',
+      }
+    );
+  }
+  return next();
+};
+
+
+
+requireKlant = makeRequireRole(Role.KLANT)
 
 /**
  * Install notification routes in the given router.
@@ -102,6 +219,7 @@ module.exports = (router) => {
     '/:id',
     requireAuthentication,
     validate(getNotificationById.validationSheme),
+    checkId,
     getNotificationById
   );
   notificationRouter.put(
@@ -116,6 +234,40 @@ module.exports = (router) => {
     validate(deleteNotificationById.validationSheme),
     deleteNotificationById
   );
+
+  notificationRouter.get(
+    '/klant/:id',
+    requireAuthentication,
+    validate(getAllNotificationsByKlantId.validationSheme),
+    checkKlantId,
+    getAllNotificationsByKlantId
+  );
+
+  notificationRouter.get(
+    '/leverancier/:id',
+    requireAuthentication,
+    validate(getAllNotificationsByLeverancierId.validationSheme),
+    checkLeverancierId,
+    getAllNotificationsByLeverancierId,
+  );
+
+  notificationRouter.get(
+    '/ongeopend/klant/:id',
+    requireAuthentication,
+    validate(countUnopenedNotificationsByKlantId.validationSheme),
+    checkKlantId,
+    countUnopenedNotificationsByKlantId,
+  );
+
+  notificationRouter.get(
+    '/ongeopend/leverancier/:id',
+    requireAuthentication,
+    validate(countUnopenedNotificationsByLeverancierId.validationSheme),
+    checkLeverancierId,
+    countUnopenedNotificationsByLeverancierId,
+  );
+
+ 
 
   router.use(notificationRouter.routes()).use(notificationRouter.allowedMethods());
 };
