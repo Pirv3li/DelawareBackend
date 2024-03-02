@@ -1,36 +1,44 @@
-const Router = require('@koa/router');
-const Joi = require('joi');
-const { requireAuthentication } = require('../core/auth'); 
-const bedrijfServer = require('../service/bedrijf');
-const validate = require('../core/validation')
+const Router = require("@koa/router");
+const Joi = require("joi");
+const { requireAuthentication } = require("../core/auth");
+const bedrijfServer = require("../service/bedrijf");
+const validate = require("../core/validation");
 
 const getAllBedrijven = async (ctx) => {
   ctx.body = await bedrijfServer.getAllBedrijven();
 };
-getAllBedrijven.validationSheme = null
+getAllBedrijven.validationSheme = null;
 
 const getBedrijfById = async (ctx) => {
   ctx.body = await bedrijfServer.getBedrijfById(Number(ctx.params.id));
 };
-getBedrijfById.validationSheme={
+getBedrijfById.validationSheme = {
   params: {
-    id: Joi.number()
-      .integer()
-      .positive()
-  }
-}
+    id: Joi.number().integer().positive(),
+  },
+};
 
 const findBedrijfByName = async (ctx) => {
-    const { naam } = ctx.request.body;
-    ctx.body = await bedrijfServer.findBedrijfByName(naam);
-  };
-  findBedrijfByName.validationSheme={
-    body: {
-      naam: Joi.string()
-    }
-  }
+  const { naam } = ctx.request.body;
+  ctx.body = await bedrijfServer.findBedrijfByName(naam);
+};
+findBedrijfByName.validationSheme = {
+  body: {
+    naam: Joi.string(),
+  },
+};
 const createBedrijf = async (ctx) => {
-    const {naam, logo, sector, iban, btwNummer, email, telefoonnummer, gebruikerSinds, idAdres} = ctx.request.body;
+  const {
+    naam,
+    logo,
+    sector,
+    iban,
+    btwNummer,
+    email,
+    telefoonnummer,
+    gebruikerSinds,
+    idAdres,
+  } = ctx.request.body;
   const newBedrijf = await bedrijfServer.createBedrijf({
     naam: String(naam),
     logo: String(logo),
@@ -40,84 +48,113 @@ const createBedrijf = async (ctx) => {
     email: String(email),
     telefoonnummer: String(telefoonnummer),
     gebruikerSinds: String(gebruikerSinds),
-    idAdres: Number(idAdres)
+    idAdres: Number(idAdres),
   });
   ctx.body = newBedrijf;
   ctx.status = 201;
 };
-createBedrijf.validationSheme={
-    body: {
-        naam: Joi.string().required().invalid(' ', ''),
-        logo: Joi.string().required().invalid(' ', ''),
-        sector: Joi.string().required().invalid(' ', ''),
-        iban: Joi.string().required().invalid(' ', ''),
-        btwNummer: Joi.string().required().invalid(' ', ''),
-        email: Joi.string().required().invalid(' ', ''),
-        telefoonnummer: Joi.string().required().invalid(' ', ''),
-        gebruikerSinds: Joi.string().required().invalid(' ', ''),
-        idAdres: Joi.number().integer().positive()
-    }
-}
+createBedrijf.validationSheme = {
+  body: {
+    naam: Joi.string().required().invalid(" ", ""),
+    logo: Joi.string().required().invalid(" ", ""),
+    sector: Joi.string().required().invalid(" ", ""),
+    iban: Joi.string().required().invalid(" ", ""),
+    btwNummer: Joi.string().required().invalid(" ", ""),
+    email: Joi.string().required().invalid(" ", ""),
+    telefoonnummer: Joi.string().required().invalid(" ", ""),
+    gebruikerSinds: Joi.string().required().invalid(" ", ""),
+    idAdres: Joi.number().integer().positive(),
+  },
+};
 
 const updateBedrijfById = async (ctx) => {
-    const {naam, logo, sector, iban, btwNummer, email, telefoonnummer, gebruikerSinds, idAdres} = ctx.request.body;
-  ctx.body = await bedrijfServer.updateBedrijfById(Number(ctx.params.id), {
-    naam: String(naam),
-    logo: String(logo),
-    sector: String(sector),
-    iban: String(iban),
-    btwNummer: String(btwNummer),
-    email: String(email),
-    telefoonnummer: String(telefoonnummer),
-    gebruikerSinds: String(gebruikerSinds),
-    idAdres: Number(idAdres)
-  });
+  const bedrijfUpdates = ctx.request.body;
+  const { idLeverancier, idKlant } = ctx.state.session;
+  const idBedrijf = ctx.params.id;
+  const bedrijf = await bedrijfServer.updateBedrijfById(
+    idLeverancier,
+    idKlant,
+    idBedrijf,
+    bedrijfUpdates
+  );
+
+  ctx.body = bedrijf;
   ctx.status = 200;
 };
 updateBedrijfById.validationSheme = {
   params: {
-    id: Joi.number().integer().positive(),
+    id: Joi.number().integer().positive().required(),
   },
   body: {
-    naam: Joi.string().required().invalid(' ', ''),
-    logo: Joi.string().required().invalid(' ', ''),
-    sector: Joi.string().required().invalid(' ', ''),
-    iban: Joi.string().required().invalid(' ', ''),
-    btwNummer: Joi.string().required().invalid(' ', ''),
-    email: Joi.string().required().invalid(' ', ''),
-    telefoonnummer: Joi.string().required().invalid(' ', ''),
-    gebruikerSinds: Joi.string().required().invalid(' ', ''),
-    idAdres: Joi.number().integer().positive()
-  }
-}
+    naam: Joi.string().optional(),
+    logo: Joi.string().optional(),
+    sector: Joi.string().optional(),
+    iban: Joi.string().optional(),
+    btwNummer: Joi.string().optional(),
+    email: Joi.string().optional(),
+    telefoonnummer: Joi.number().optional(),
+    adres: Joi.object()
+      .keys({
+        straat: Joi.string().optional(),
+        stad: Joi.string().optional(),
+        nummer: Joi.number().optional(),
+        postcode: Joi.number().optional(),
+      })
+      .optional()
+      .when(
+        Joi.object({
+          straat: Joi.string().invalid("").required(),
+          stad: Joi.string().invalid("").required(),
+          nummer: Joi.number().required(),
+          postcode: Joi.number().required(),
+        }),
+        {
+          then: Joi.object({
+            straat: Joi.string().required(),
+            stad: Joi.string().required(),
+            nummer: Joi.number().required(),
+            postcode: Joi.number().required(),
+          }),
+          otherwise: Joi.object({
+            straat: Joi.string().optional(),
+            stad: Joi.string().optional(),
+            nummer: Joi.number().optional(),
+            postcode: Joi.number().optional(),
+          }),
+        }
+      ),
+  },
+};
 
 const deleteBedrijfById = async (ctx) => {
   bedrijfServer.deleteBedrijfById(Number(ctx.params.id));
   ctx.status = 204;
 };
-deleteBedrijfById.validationSheme={
+deleteBedrijfById.validationSheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
-}
+};
 
 const getBedrijfByKlantId = async (ctx) => {
   ctx.body = await bedrijfServer.getBedrijfByKlantId(Number(ctx.params.id));
-}
-getBedrijfByKlantId.validationSheme={
+};
+getBedrijfByKlantId.validationSheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
-}
+};
 
 const getBedrijfByLeverancierId = async (ctx) => {
-  ctx.body = await bedrijfServer.getBedrijfByLeverancierId(Number(ctx.params.id));
-}
-getBedrijfByLeverancierId.validationSheme={
+  ctx.body = await bedrijfServer.getBedrijfByLeverancierId(
+    Number(ctx.params.id)
+  );
+};
+getBedrijfByLeverancierId.validationSheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
-}
+};
 
 /**
  * Install Message routes in the given router.
@@ -126,58 +163,57 @@ getBedrijfByLeverancierId.validationSheme={
  */
 module.exports = (app) => {
   const router = new Router({
-    prefix: '/bedrijf',
+    prefix: "/bedrijf",
   });
 
   router.get(
-    '/',
+    "/",
     requireAuthentication,
     validate(getAllBedrijven.validationSheme),
     getAllBedrijven
-);
+  );
   router.post(
-    '/',
+    "/",
     requireAuthentication,
     validate(createBedrijf.validationSheme),
     createBedrijf
-);
+  );
   router.get(
-    '/:id',
+    "/:id",
     requireAuthentication,
     validate(getBedrijfById.validationSheme),
     getBedrijfById
-);
+  );
   router.get(
-    '/:id',
+    "/:id",
     requireAuthentication,
     validate(findBedrijfByName.validationSheme),
     findBedrijfByName
-);
+  );
   router.put(
-    '/:id',
+    "/:id",
     requireAuthentication,
     validate(updateBedrijfById.validationSheme),
     updateBedrijfById
   );
   router.delete(
-    '/:id',
+    "/:id",
     requireAuthentication,
     validate(deleteBedrijfById.validationSheme),
     deleteBedrijfById
   );
   router.get(
-    '/klant/:id',
+    "/klant/:id",
     requireAuthentication,
     validate(getBedrijfByKlantId.validationSheme),
     getBedrijfByKlantId
   );
   router.get(
-    '/leverancier/:id',
+    "/leverancier/:id",
     requireAuthentication,
     validate(getBedrijfByLeverancierId.validationSheme),
     getBedrijfByLeverancierId
   );
 
-  app.use(router.routes())
-     .use(router.allowedMethods());
+  app.use(router.routes()).use(router.allowedMethods());
 };

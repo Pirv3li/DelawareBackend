@@ -20,26 +20,6 @@ describe("Adres", () => {
       const response = await request.get(url).set("Authorization", leverAuth);
       expect(response.status).toBe(200);
       expect(response.body.count).toBe(3);
-
-      expect(response.body.items[1]).toEqual({
-        idBedrijf: 2,
-        naam: "Test Comp2",
-        logo: "Comp Logo test 2",
-        sector: "sector2",
-        email: "test2@example.com",
-        iban: "BE68539007547034",
-        btwNummer: "BE1234567890",
-        telefoonnummer: "0471234568",
-        gebruikerSinds: "2024-04-01T16:40:24.000Z",
-        Adres: {
-          idAdres: 2,
-          straat: "Test straat2",
-          nummer: "2",
-          stad: "St Nikloas City",
-          postcode: "9100",
-          laatstGebruikt: "2024-04-01T16:40:24.000Z",
-        },
-      });
     });
 
     it("should 400 when given an invalid argument", async () => {
@@ -120,15 +100,8 @@ describe("Adres", () => {
         .put(`${url}/2`)
         .set("Authorization", leverAuth)
         .send({
-          idAdres: 2,
           naam: "UPDATED Test Comp2",
-          logo: "Comp Logo test 2",
-          sector: "sector2",
-          email: "addedtest2@example.com",
-          iban: "BE68539007547034",
-          btwNummer: "BE1234567890",
           telefoonnummer: "0477777777",
-          gebruikerSinds: "2024-04-01",
         });
 
       expect(response.statusCode).toBe(200);

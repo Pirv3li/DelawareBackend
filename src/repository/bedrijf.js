@@ -50,23 +50,24 @@ const getAllBedrijven = async () => {
   const bedrijven = await getKnex()(tables.bedrijf)
     .select("*")
     .leftJoin(
-        `${tables.adres}`,
-        `${tables.bedrijf}.idAdres`,
-        `${tables.adres}.idAdres`
-    )
+      `${tables.adres}`,
+      `${tables.bedrijf}.idAdres`,
+      `${tables.adres}.idAdres`
+    );
 
-    return bedrijven.map(formatBedrijf);
+  return bedrijven.map(formatBedrijf);
 };
 
 const getBedrijfById = async (id) => {
   const bedrijf = await getKnex()(tables.bedrijf)
     .select("*")
     .leftJoin(
-        `${tables.adres}`,
-        `${tables.bedrijf}.idAdres`,
-        `${tables.adres}.idAdres`
+      `${tables.adres}`,
+      `${tables.bedrijf}.idAdres`,
+      `${tables.adres}.idAdres`
     )
-    .where(`${tables.bedrijf}.idBedrijf`, id).first()
+    .where(`${tables.bedrijf}.idBedrijf`, id)
+    .first();
 
   return formatBedrijf(bedrijf);
 };
@@ -100,33 +101,18 @@ const createBedrijf = async ({
   return id;
 };
 
-const updateBedrijfById = async (
-  id,
-  {
-    naam,
-    logo,
-    sector,
-    iban,
-    btwNummer,
-    email,
-    telefoonnummer,
-    gebruikerSinds,
-    idAdres,
-  }
-) => {
+const updateBedrijfById = async (id, bedrijfUpdates ) => {
   await getKnex()(tables.bedrijf)
     .where(`${tables.bedrijf}.idBedrijf`, id)
-    .update({
-      naam,
-      logo,
-      sector,
-      iban,
-      btwNummer,
-      email,
-      telefoonnummer,
-      gebruikerSinds,
-      idAdres,
-    });
+    .update(
+      bedrijfUpdates
+    );
+
+  const bedrijf = await getKnex()(tables.bedrijf)
+    .where("idBedrijf", id)
+    .select("*")
+    .first();
+  return formatBedrijf(bedrijf);
 };
 
 const deleteBedrijfById = async (id) => {
@@ -139,16 +125,17 @@ const getBedrijfByKlantId = async (id) => {
   const bedrijf = await getKnex()(tables.bedrijf)
     .select("*")
     .leftJoin(
-        `${tables.adres}`,
-        `${tables.bedrijf}.idAdres`,
-        `${tables.adres}.idAdres`
+      `${tables.adres}`,
+      `${tables.bedrijf}.idAdres`,
+      `${tables.adres}.idAdres`
     )
     .rightJoin(
-        `${tables.klant}`,
-        `${tables.bedrijf}.idBedrijf`,
-        `${tables.klant}.idBedrijf`
+      `${tables.klant}`,
+      `${tables.bedrijf}.idBedrijf`,
+      `${tables.klant}.idBedrijf`
     )
-    .where(`${tables.bedrijf}.idBedrijf`, id).first()
+    .where(`${tables.bedrijf}.idBedrijf`, id)
+    .first();
 
   return formatBedrijf(bedrijf);
 };
@@ -157,16 +144,17 @@ const getBedrijfByLeverancierId = async (id) => {
   const bedrijf = await getKnex()(tables.bedrijf)
     .select("*")
     .leftJoin(
-        `${tables.adres}`,
-        `${tables.bedrijf}.idAdres`,
-        `${tables.adres}.idAdres`
+      `${tables.adres}`,
+      `${tables.bedrijf}.idAdres`,
+      `${tables.adres}.idAdres`
     )
     .rightJoin(
-        `${tables.leverancier}`,
-        `${tables.bedrijf}.idBedrijf`,
-        `${tables.leverancier}.idBedrijf`
+      `${tables.leverancier}`,
+      `${tables.bedrijf}.idBedrijf`,
+      `${tables.leverancier}.idBedrijf`
     )
-    .where(`${tables.bedrijf}.idBedrijf`, id).first()
+    .where(`${tables.bedrijf}.idBedrijf`, id)
+    .first();
 
   return formatBedrijf(bedrijf);
 };

@@ -98,23 +98,21 @@ const updateProduct = async (idProduct, idLeverancier, updates) => {
 };
 
 const deleteProduct = async (idLeverancier, idProduct) => {
-  try {
-    const product = await repoProducten.getProductById(idProduct);
+  const product = await repoProducten.getProductById(idProduct);
+  if (!product) {
+    throw ServiceError.notFound("No product found");
+  }
 
+  try {
     if (idLeverancier !== product.idLeverancier) {
       throw new Error("Permission denied");
     } else {
-      const product = await repoProducten.getProductById(idProduct);
-      if (!product) {
-        throw ServiceError.notFound("No product found");
-      } else {
-        const deletedProduct = await repoProducten.deleteProduct(idProduct);
-        if (!deletedProduct) {
-          getLogger().error(`Product not found`);
-          throw ServiceError.notFound("Product not found");
-        }
-        return { message: "Product deleted" };
+      const deletedProduct = await repoProducten.deleteProduct(idProduct);
+      if (!deletedProduct) {
+        getLogger().error(`Product not found`);
+        throw ServiceError.notFound("Product not found");
       }
+      return { message: "Product deleted" };
     }
   } catch (error) {
     getLogger().error(`Error deleting user`);
