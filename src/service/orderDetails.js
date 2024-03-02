@@ -13,6 +13,11 @@ const getOrderDetailsById = async (idOrderDetails) => {
   if (!orderDetails) {
     throw ServiceError.notFound(`There is no orderDetails with id ${idOrderDetails}.`, { idOrderDetails });
   }
+  
+};
+
+const getOrderDetailsByOrderId = async (idOrder) => {
+  return orderDetailsRepository.getOrderDetailsByOrderId(idOrder);
 };
 
 const createOrderDetails = async ({ eenheidsprijs, aantal, idOrder, idProduct }) => {
@@ -46,4 +51,5 @@ module.exports = {
   createOrderDetails,
   updateOrderDetailsById,
   deleteOrderDetailsById,
+  getOrderDetailsByOrderId,
 };

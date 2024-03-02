@@ -1,6 +1,6 @@
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
-const { requireAuthentication } = require('../core/auth'); 
+const { requireAuthentication } = require('../core/auth');
 const orderDetailsService = require('../service/orderDetails');
 const validate = require('../core/validation')
 
@@ -12,7 +12,7 @@ getAllOrderDetails.validationSheme = null
 const getOrderDetailsById = async (ctx) => {
   ctx.body = await orderDetailsService.getOrderDetailsById(Number(ctx.params.id));
 };
-getOrderDetailsById.validationSheme={
+getOrderDetailsById.validationSheme = {
   params: {
     id: Joi.number()
       .integer()
@@ -20,8 +20,21 @@ getOrderDetailsById.validationSheme={
   }
 }
 
+const getOrderDetailsByOrderId = async (ctx) => {
+  ctx.body = await orderDetailsService.getOrderDetailsByOrderId(Number(ctx.params.id));
+};
+getOrderDetailsByOrderId.validationSheme = {
+  params: {
+    id: Joi.number()
+      .integer()
+      .positive()
+  }
+}
+
+
+
 const createOrderDetails = async (ctx) => {
-  const {eenheidsprijs, aantal, idOrder, idProduct} = ctx.request.body;
+  const { eenheidsprijs, aantal, idOrder, idProduct } = ctx.request.body;
   const newOrderDetails = await orderDetailsService.createOrderDetails({
     eenheidsprijs: Number(eenheidsprijs),
     aantal: Number(aantal),
@@ -31,17 +44,17 @@ const createOrderDetails = async (ctx) => {
   ctx.body = newOrderDetails;
   ctx.status = 201;
 };
-createOrderDetails.validationSheme={
-    body: {
-        eenheidsprijs: Joi.number().positive().required(),
-        aantal: Joi.number().integer().positive().required(),
-        idOrder: Joi.number().integer().positive().required(),
-        idProduct: Joi.number().integer().positive().required()
-    }
+createOrderDetails.validationSheme = {
+  body: {
+    eenheidsprijs: Joi.number().positive().required(),
+    aantal: Joi.number().integer().positive().required(),
+    idOrder: Joi.number().integer().positive().required(),
+    idProduct: Joi.number().integer().positive().required()
+  }
 }
 
 const updateOrderDetailsById = async (ctx) => {
-  const {eenheidsprijs, aantal, idOrder, idProduct} = ctx.request.body;
+  const { eenheidsprijs, aantal, idOrder, idProduct } = ctx.request.body;
   ctx.body = await orderDetailsService.updateOrderDetailsById(Number(ctx.params.id), {
     eenheidsprijs: Number(eenheidsprijs),
     aantal: Number(aantal),
@@ -66,7 +79,7 @@ const deleteOrderDetailsById = async (ctx) => {
   orderDetailsService.deleteOrderDetailsById(Number(ctx.params.id));
   ctx.status = 204;
 };
-deleteOrderDetailsById.validationSheme={
+deleteOrderDetailsById.validationSheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
@@ -88,6 +101,15 @@ module.exports = (router) => {
     validate(getAllOrderDetails.validationSheme),
     getAllOrderDetails
   );
+
+  orderDetailsRouter.get(
+    '/order/:id',
+    requireAuthentication,
+    validate(getOrderDetailsByOrderId.validationSheme),
+    getOrderDetailsByOrderId
+  );
+
+
   orderDetailsRouter.post(
     '/',
     requireAuthentication,
