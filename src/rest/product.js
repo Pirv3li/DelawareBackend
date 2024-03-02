@@ -18,7 +18,7 @@ const getProducten = async (ctx) => {
     ctx.body = {
       message: "Error while fetching producten"
     };
-    ctx.status = 500;
+    //ctx.status = 500;
   }
 };
 
@@ -95,9 +95,9 @@ const updateProduct = async (ctx) => {
     ctx.status = 200;
     ctx.body = updatedProd;
   } catch (error) {
-    ctx.status = 500;
+    //ctx.status = 500;
     ctx.body = {
-      message: "Error updating product"
+      message: error.message
     };
   }
 };

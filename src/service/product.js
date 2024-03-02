@@ -1,3 +1,4 @@
+const ServiceError = require("../core/serviceError");
 const repoProducten = require("../repository/product");
 
 const getProducten = async () => {
@@ -42,14 +43,17 @@ const createProducten = async (
     );
 
     return repoProducten.getProductById(createdProd);
-
   } catch (error) {
     throw new Error("Error while adding product");
   }
-}
+};
 
 const updateProduct = async (idProduct, idLeverancier, updates) => {
   const prodUpdates = {};
+  const product = await repoProducten.getProductById(idProduct);
+  if (!product) {
+    throw ServiceError.notFound("No product found");
+  }
 
   if (updates.foto) {
     prodUpdates.foto = updates.foto;
@@ -79,39 +83,39 @@ const updateProduct = async (idProduct, idLeverancier, updates) => {
     prodUpdates.beschrijving = updates.beschrijving;
   }
   try {
-    if (
-      updates.idLeverancier !== idLeverancier
-    ) {
-      throw new Error("Permission denied");
+    if (updates.idLeverancier !== idLeverancier) {
+      throw ServiceError.isForbidden("Permission denied");
     }
+    const updatedProd = await repoProducten.updateProduct(
+      idProduct,
+      prodUpdates
+    );
 
-    const updatedProd = await repoProducten.updateProduct(idProduct, prodUpdates);
-
-    return updatedProd
-
+    return updatedProd;
   } catch (error) {
     throw handleDBError(error);
   }
 };
 
-
 const deleteProduct = async (idLeverancier, idProduct) => {
   try {
     const product = await repoProducten.getProductById(idProduct);
-    
+
     if (idLeverancier !== product.idLeverancier) {
       throw new Error("Permission denied");
     } else {
-
-    
-
-    const deletedProduct = await repoProducten.deleteProduct(idProduct);
-    if (!deletedProduct) {
-      getLogger().error(`Product not found`);
-      throw ServiceError.notFound('Product not found');
+      const product = await repoProducten.getProductById(idProduct);
+      if (!product) {
+        throw ServiceError.notFound("No product found");
+      } else {
+        const deletedProduct = await repoProducten.deleteProduct(idProduct);
+        if (!deletedProduct) {
+          getLogger().error(`Product not found`);
+          throw ServiceError.notFound("Product not found");
+        }
+        return { message: "Product deleted" };
+      }
     }
-    return { message: 'Product deleted' };
-  }
   } catch (error) {
     getLogger().error(`Error deleting user`);
     throw handleDBError(error);
@@ -123,5 +127,5 @@ module.exports = {
   createProducten,
   getProductByID,
   updateProduct,
-  deleteProduct
+  deleteProduct,
 };
