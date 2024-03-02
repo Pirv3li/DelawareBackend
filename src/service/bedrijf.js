@@ -44,6 +44,22 @@ const deleteBedrijfById = async (id) => {
   await bedrijfsRepo.deleteBedrijfById(id)
 };
 
+const getBedrijfByKlantId = async (id) => {
+  const bedrijf = await bedrijfsRepo.getBedrijfByKlantId(id)
+  if(!bedrijf){
+    throw ServiceError.notFound(`There is no bedrijf with klant id ${id}.`, {id})
+  }
+  return bedrijf  
+}
+
+const getBedrijfByLeverancierId = async (id) => {
+  const bedrijf = await bedrijfsRepo.getBedrijfByLeverancierId(id)
+  if(!bedrijf){
+    throw ServiceError.notFound(`There is no bedrijf with leverancier id ${id}.`, {id})
+  }
+  return bedrijf  
+}
+
 module.exports = {
   getAllBedrijven,
   getBedrijfById,
@@ -51,4 +67,6 @@ module.exports = {
   createBedrijf,
   updateBedrijfById,
   deleteBedrijfById,
+  getBedrijfByKlantId,
+  getBedrijfByLeverancierId
 };
