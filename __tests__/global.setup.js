@@ -155,7 +155,7 @@ module.exports = async () => {
       foto: 'https://assets-willemwever.kro-ncrv.nl/public/styles/hero_small/public/water.jpeg?h=a8e2b6ba&itok=ckfRmCSB',
       aantal: 20,
       gewicht: 1.00,
-      beschrijving: 'Verfrissend flessenwater uit GeorgiÃ«'
+      beschrijving: 'Verfrissend flessenwater uit Georgië'
     },
     {
       idProduct: 3,
