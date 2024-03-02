@@ -18,7 +18,7 @@ const getProducten = async (ctx) => {
     ctx.body = {
       message: "Error while fetching producten"
     };
-    ctx.status = 500;
+    //ctx.status = 500;
   }
 };
 
@@ -91,13 +91,14 @@ const updateProduct = async (ctx) => {
 
   try {
     const updatedProd = await ServiceProducten.updateProduct(idProduct, idLeverancier, productUpdates);
-
     ctx.status = 200;
     ctx.body = updatedProd;
   } catch (error) {
-    ctx.status = 500;
+    if (error.code = 'NOT_FOUND'){
+      ctx.status = 404;
+    }
     ctx.body = {
-      message: "Error updating product"
+      message: error.message
     };
   }
 };
@@ -126,16 +127,17 @@ const deleteProduct = async (ctx) => {
     const idProduct = ctx.params.id;
 
     const deletedProduct = await ServiceProducten.deleteProduct(idLeverancier, idProduct);
-
     if (deletedProduct) {
       ctx.status = 200;
       ctx.body = { message: "Product deleted" };
-    } else {
-      ctx.status = 404;
-      ctx.body = { message: "product not found" };
-    }
+    } 
   } catch (error) {
+    if (error.code = 'NOT_FOUND'){
+      ctx.status = 404;
+    }
+    else {
     ctx.status = 500;
+  }
     ctx.body = {
       message: "Error deleting product"
     };

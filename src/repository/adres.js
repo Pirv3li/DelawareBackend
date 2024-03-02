@@ -14,14 +14,14 @@ const getAdresById = async (id) => {
     return adres;
 }
 
-const createAdres = async ({straat, nummer, stad, postcode, laatstGebruikt}) => {
+const createAdres = async (idAdres, {straat, nummer, stad, postcode}) => {
     const [id] = await getKnex()(tables.adres).insert({
         straat,
         nummer,
         stad,
         postcode,
-        laatstGebruikt,
-    })
+    }).where('idAdres', idAdres)
+     
     return id;
 }
 

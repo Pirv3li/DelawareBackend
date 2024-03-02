@@ -20,14 +20,19 @@ const getKlantById = (id) => {
       `${tables.adres}.idAdres`
     )
     .select("*")
-    .where("idKlant", id)
-    .first();
+    .where("idKlant", id);
 };
 
 // Leverancier
 const findLeverancierByUsername = (userName) => {
   return getKnex()(tables.leverancier)
     .where("gebruikersnaam", userName)
+    .first();
+};
+
+const findLeverancierById = (id) => {
+  return getKnex()(tables.leverancier)
+    .where("idLeverancier", id)
     .first();
 };
 
@@ -46,13 +51,14 @@ const getLeverancierById = (id) => {
       `${tables.adres}.idAdres`
     )
     .select("*")
-    .where("idLeverancier", id)
-    .first();
+    .where("idLeverancier", id);
 };
+
 
 module.exports = {
   findKlantByUsername,
   findLeverancierByUsername,
   getKlantById,
   getLeverancierById,
+  findLeverancierById
 };

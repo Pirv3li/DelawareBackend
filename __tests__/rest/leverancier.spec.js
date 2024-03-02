@@ -17,7 +17,7 @@ describe("Users API", () => {
   describe("POST /api/leverancier/login", () => {
     it("should login and return a token", async () => {
       const response = await request.post("/api/leverancier/login").send({
-        username: "Test Leverancier User",
+        username: "test_leverancier1",
         password: "12345678",
       });
       expect(response.status).toBe(200);
