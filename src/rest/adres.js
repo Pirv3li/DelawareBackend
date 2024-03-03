@@ -4,6 +4,7 @@ const { requireAuthentication } = require('../core/auth');
 const adresService = require('../service/adres');
 const validate = require('../core/validation')
 
+
 const getAllAdressen = async (ctx) => {
   ctx.body = await adresService.getAllAdressen();
 };
