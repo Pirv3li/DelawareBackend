@@ -1,5 +1,5 @@
 const userRepository = require("../repository/users");
-const { verifyPassword } = require("../core/password");
+const { verifyPassword, hashPassword } = require("../core/password");
 const { generateJWT, verifyJWT } = require("../core/jwt");
 const ServiceError = require("../core/serviceError");
 const { getLogger } = require("../core/logging");
@@ -160,7 +160,7 @@ const loginKlant = async (userName, password) => {
 
 const getKlantById = async (id) => {
   const klant = await userRepository.getKlantById(id);
-  const exposedKlant = makeExposedKlant(klant);
+  const exposedKlant = klant.map(makeExposedKlant);
   return exposedKlant;
 };
 
@@ -185,7 +185,7 @@ const loginLeverancier = async (userName, password) => {
 
 const getLeverancierById = async (id) => {
   const leverancier = await userRepository.getLeverancierById(id);
-  const exposedLeverancier = makeExposedLeverancier(leverancier);
+  const exposedLeverancier = leverancier.map(makeExposedLeverancier);
   return exposedLeverancier;
 };
 
@@ -199,6 +199,14 @@ const checkRole = (role, roles) => {
   }
 };
 
+const updateKlant = async (id, body) => {
+  if(body.password != undefined) {
+  body.password = await hashPassword(body.password);
+  };
+  const updatedKlant = await userRepository.updateKlant(id, body);
+  return updatedKlant;
+}
+
 module.exports = {
   loginLeverancier,
   loginKlant,
@@ -206,4 +214,5 @@ module.exports = {
   getKlantById,
   getLeverancierById,
   checkRole,
+  updateKlant,
 };

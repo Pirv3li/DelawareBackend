@@ -5,6 +5,25 @@ const findKlantByUsername = (userName) => {
   return getKnex()(tables.klant).where("gebruikersnaam", userName).first();
 };
 
+const updateKlant = async (id, {username, password}) => {
+
+  const updateData = {};
+  if (username !== undefined) {
+    updateData.gebruikersnaam = username;
+  }
+  if (password !== undefined) {
+    updateData.password_hash = password;
+  }
+  
+  if (Object.keys(updateData).length > 0) {
+    await getKnex()(tables.klant)
+      .where('idKlant', id)
+      .update(updateData);
+  }
+  return { id, ...updateData };
+}
+
+
 const getKlantById = (id) => {
   return getKnex()(tables.klant)
     .join(
@@ -60,5 +79,6 @@ module.exports = {
   findLeverancierByUsername,
   getKlantById,
   getLeverancierById,
-  findLeverancierById
+  findLeverancierById,
+  updateKlant,
 };

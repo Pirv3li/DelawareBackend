@@ -21,7 +21,7 @@ const getKlant = async (ctx) => {
   try {
     const { idKlant } = ctx.state.session;
     const klant = await userService.getKlantById(idKlant);
-
+    console.log(klant);
     if (klant) {
       ctx.status = 200;
       ctx.body = klant;
@@ -60,6 +60,20 @@ getKlantById.validationScheme = {
   },
 };
 
+const updateKlant = async (ctx) => {
+  const {idKlant} = ctx.state.session;
+  const body = ctx.request.body;
+  const updateKlant = await userService.updateKlant(idKlant,body);
+  return updateKlant;
+}
+
+updateKlant.validationScheme = {
+  body: {
+    username: Joi.string().optional(),
+    password: Joi.string().optional(),
+  }
+};
+
 const adminRole = makeRequireRole(Role.ADMIN);
 
 /**
@@ -79,6 +93,12 @@ module.exports = (router) => {
     validate(getKlant.validationScheme),
     getKlant
   );
+  userRouter.put(
+    "/",
+    requireAuthentication,
+    validate(updateKlant.validationScheme),
+    updateKlant
+  );
   userRouter.get(
     "/:id",
     requireAuthentication,
@@ -86,5 +106,6 @@ module.exports = (router) => {
     validate(getKlantById.validationScheme),
     getKlantById
   );
+
   router.use(userRouter.routes()).use(router.allowedMethods());
 };
