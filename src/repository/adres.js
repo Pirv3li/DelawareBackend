@@ -6,6 +6,7 @@ const getAllAdressen = async() => {
         .orderBy('laatstGebruikt', 'desc');
 };
 
+
 const getAdresById = async (id) => {
     const adres = await getKnex()(tables.adres)
     .where('idAdres', id)
