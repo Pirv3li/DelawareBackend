@@ -6,6 +6,7 @@ const installBedrijfRouter = require('./bedrijf');
 const installOrderRouter = require('./order');
 const installOrderDetailsRouter = require('./orderDetails');
 const installNotificatieRouter = require('./notificatie');
+const installAdresRouter = require('./adres');
 /**
  * Install all routes in the given Koa application.
  *
@@ -23,6 +24,8 @@ module.exports = (app) => {
   installOrderRouter(router);
   installOrderDetailsRouter(router);
   installNotificatieRouter(router);
+  installAdresRouter(router);
+  
 
   app.use(async (ctx, next) => {
     ctx.set('Access-Control-Allow-Origin', '*');
