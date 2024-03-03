@@ -61,10 +61,20 @@ getKlantById.validationScheme = {
 };
 
 const updateKlant = async (ctx) => {
+  try{
   const {idKlant} = ctx.state.session;
   const body = ctx.request.body;
   const updateKlant = await userService.updateKlant(idKlant,body);
-  return updateKlant;
+  if(updateKlant){
+    ctx.status = 200;
+    ctx.body = updateKlant;
+  }
+  else {
+    ctx.status = 404;
+  }
+  }catch(error){
+    ctx.status=500;
+  }
 }
 
 updateKlant.validationScheme = {

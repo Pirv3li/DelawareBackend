@@ -207,6 +207,14 @@ const updateKlant = async (id, body) => {
   return updatedKlant;
 }
 
+const updateLeverancier = async (id, body) => {
+  if(body.password != undefined) {
+  body.password = await hashPassword(body.password);
+  };
+  const updateLeverancier = await userRepository.updateLeverancier(id, body);
+  return updateLeverancier;
+}
+
 module.exports = {
   loginLeverancier,
   loginKlant,
@@ -215,4 +223,5 @@ module.exports = {
   getLeverancierById,
   checkRole,
   updateKlant,
+  updateLeverancier,
 };

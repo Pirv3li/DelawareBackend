@@ -62,6 +62,30 @@ getLeverancierById.validationScheme = {
   },
 };
 
+const updateLeverancier = async (ctx) => {
+  try{
+  const {idLeverancier} = ctx.state.session;
+  const body = ctx.request.body;
+  const updateLeverancier = await userService.updateLeverancier(idLeverancier,body);
+  if(updateLeverancier){
+    ctx.status = 200;
+    ctx.body = updateLeverancier;
+  }
+  else {
+    ctx.status = 404;
+  }
+  }catch(error){
+    ctx.status=500;
+  }
+};
+updateLeverancier.validationScheme = {
+  body: {
+    username: Joi.string().optional(),
+    password: Joi.string().optional(),
+  }
+};
+
+
 const adminRole = makeRequireRole(Role.ADMIN);
 
 /**
@@ -80,6 +104,12 @@ module.exports = (router) => {
     requireAuthentication,
     validate(getLeverancier.validationScheme),
     getLeverancier
+  );
+  userRouter.put(
+    "/",
+    requireAuthentication,
+    validate(updateLeverancier.validationScheme),
+    updateLeverancier
   );
   userRouter.get(
     "/:id",

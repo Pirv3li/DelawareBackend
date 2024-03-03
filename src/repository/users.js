@@ -20,7 +20,25 @@ const updateKlant = async (id, {username, password}) => {
       .where('idKlant', id)
       .update(updateData);
   }
-  return { id, ...updateData };
+  return { id, username };
+}
+
+const updateLeverancier = async (id, {username, password}) => {
+
+  const updateData = {};
+  if (username !== undefined) {
+    updateData.gebruikersnaam = username;
+  }
+  if (password !== undefined) {
+    updateData.password_hash = password;
+  }
+  
+  if (Object.keys(updateData).length > 0) {
+    await getKnex()(tables.leverancier)
+      .where('idLeverancier', id)
+      .update(updateData);
+  }
+  return { id, username };
 }
 
 
@@ -81,4 +99,5 @@ module.exports = {
   getLeverancierById,
   findLeverancierById,
   updateKlant,
+  updateLeverancier,
 };
