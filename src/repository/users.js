@@ -41,6 +41,13 @@ const updateLeverancier = async (id, {username, password}) => {
   return { id, username };
 }
 
+const deleteKlantById = async (id) => {
+  const deletedKlant = await getKnex()(tables.klant)
+  .where('idKlant', id)
+  .delete();
+
+  return deletedKlant;
+};
 
 const getKlantById = (id) => {
   return getKnex()(tables.klant)
@@ -91,6 +98,14 @@ const getLeverancierById = (id) => {
     .where("idLeverancier", id);
 };
 
+const deleteLeverancierById = async (id) => {
+  const deletedLeverancier = await getKnex()(tables.leverancier)
+  .where('idLeverancier', id)
+  .delete();
+
+  return deletedLeverancier;
+};
+
 
 module.exports = {
   findKlantByUsername,
@@ -100,4 +115,6 @@ module.exports = {
   findLeverancierById,
   updateKlant,
   updateLeverancier,
+  deleteKlantById,
+  deleteLeverancierById,
 };

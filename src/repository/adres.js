@@ -6,6 +6,20 @@ const getAllAdressen = async() => {
         .orderBy('laatstGebruikt', 'desc');
 };
 
+const getAdresByKlantId = async (id) => {
+    const adres = await getKnex().raw(
+        `select straat,nummer,stad,postcode from klant k join bedrijf b on b.idBedrijf = k.idBedrijf join adres a on a.idAdres = b.idAdres where idKlant = ${id}`
+    );
+    return adres[0];
+}
+
+const getAdresByLeverancierId = async (id) => {
+    const adres = await getKnex().raw(
+        `select straat,nummer,stad,postcode from leverancier k join bedrijf b on b.idBedrijf = k.idBedrijf join adres a on a.idAdres = b.idAdres where idKlant = ${id}`
+    );
+    return adres[0];
+}
+
 
 const getAdresById = async (id) => {
     const adres = await getKnex()(tables.adres)
@@ -50,4 +64,6 @@ module.exports = {
     createAdres,
     updateAdresById,
     deleteAdresById,
+    getAdresByKlantId,
+    getAdresByLeverancierId,
 }

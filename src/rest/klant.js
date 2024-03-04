@@ -21,7 +21,6 @@ const getKlant = async (ctx) => {
   try {
     const { idKlant } = ctx.state.session;
     const klant = await userService.getKlantById(idKlant);
-    console.log(klant);
     if (klant) {
       ctx.status = 200;
       ctx.body = klant;

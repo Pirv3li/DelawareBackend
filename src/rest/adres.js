@@ -1,14 +1,35 @@
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
-const { requireAuthentication } = require('../core/auth'); 
+const { requireAuthentication, makeRequireRole } = require('../core/auth'); 
 const adresService = require('../service/adres');
 const validate = require('../core/validation')
+const Role = require('../core/roles')
 
+const getAdresByUser = async (ctx) => {
+  try{
+  let adres;
+  const { idKlant, idLeverancier } = ctx.state.session;
+  if(idKlant!=undefined){
+   adres = await adresService.getAdresByKlantId(idKlant);
+   ctx.body = adres;
+   ctx.status = 200;
+  }
+  else{
+    adres = await adresService.getAdresByLeverancierId(idLeverancier);
+    ctx.body = adres;
+    ctx.status = 200;
+  }
+}catch(error){
+  ctx.status = 500;
+}
+};
+getAdresByUser.validationSheme = null
 
 const getAllAdressen = async (ctx) => {
   ctx.body = await adresService.getAllAdressen();
 };
-getAllAdressen.validationSheme = null
+
+getAllAdressen.validationSheme = null;
 
 const getAdresById = async (ctx) => {
   ctx.body = await adresService.getAdresById(Number(ctx.params.id));
@@ -76,7 +97,9 @@ deleteAdresById.validationSheme={
   params: {
     id: Joi.number().integer().positive(),
   },
-}
+};
+
+const requireAdmin = makeRequireRole(Role.ADMIN);
 
 /**
  * Install adres routes in the given router.
@@ -89,32 +112,44 @@ module.exports = (router) => {
   });
 
   adresRouter.get(
+    '/user',
+    requireAuthentication,
+    validate(getAdresByUser.validationSheme),
+    getAdresByUser
+  );
+
+  adresRouter.get(
     '/',
     requireAuthentication,
+    requireAdmin,
     validate(getAllAdressen.validationSheme),
     getAllAdressen
   );
   adresRouter.post(
     '/',
     requireAuthentication,
+    requireAdmin,
     validate(createAdres.validationSheme),
     createAdres
   );
   adresRouter.get(
     '/:id',
     requireAuthentication,
+    requireAdmin,
     validate(getAdresById.validationSheme),
     getAdresById
   );
   adresRouter.put(
     '/:id',
     requireAuthentication,
+    requireAdmin,
     validate(updateAdresById.validationSheme),
     updateAdresById
   );
   adresRouter.delete(
     '/:id',
     requireAuthentication,
+    requireAdmin,
     validate(deleteAdresById.validationSheme),
     deleteAdresById
   );

@@ -9,6 +9,16 @@ const getAllAdressen = async() => {
   }
 };
 
+const getAdresByKlantId = async (id) => {
+  const adres = await adresRepo.getAdresByKlantId(id);
+  return adres;
+}
+
+const getAdresByLeverancierId = async (id) => {
+  const adres = await adresRepo.getAdresByLeverancierId(id);
+  return adres;
+}
+
 
 const getAdresById = async(id) => {
   const adres = await adresRepo.getAdresById(id)
@@ -38,4 +48,6 @@ module.exports = {
   createAdres,
   updateAdresById,
   deleteAdresById,
+  getAdresByKlantId,
+  getAdresByLeverancierId,
 };
