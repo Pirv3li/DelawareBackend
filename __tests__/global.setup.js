@@ -137,35 +137,58 @@ module.exports = async () => {
     {
       idProduct: 1,
       idLeverancier: 2,
-      naam: 'kaas',
+      naam: "kaas",
       eenheidsprijs: 4,
       btwtarief: 6,
-      foto: 'https://media.nu.nl/m/un2xpm3ag029_wd854/zwitserse-kaas.jpg',
+      foto: "https://media.nu.nl/m/un2xpm3ag029_wd854/zwitserse-kaas.jpg",
       aantal: 10,
-      gewicht: 0.50,
-      beschrijving: 'Heerlijke Georgeaanse kaas'
+      gewicht: 0.5,
+      beschrijving: "Heerlijke Georgeaanse kaas",
     },
     {
       idProduct: 2,
       idLeverancier: 2,
-      naam: 'water',
+      naam: "water",
       eenheidsprijs: 1,
       btwtarief: 6,
-      foto: 'https://assets-willemwever.kro-ncrv.nl/public/styles/hero_small/public/water.jpeg?h=a8e2b6ba&itok=ckfRmCSB',
+      foto: "https://assets-willemwever.kro-ncrv.nl/public/styles/hero_small/public/water.jpeg?h=a8e2b6ba&itok=ckfRmCSB",
       aantal: 20,
-      gewicht: 1.00,
-      beschrijving: 'Verfrissend flessenwater uit Georgië'
+      gewicht: 1.0,
+      beschrijving: "Verfrissend flessenwater uit Georgië",
     },
     {
       idProduct: 3,
       idLeverancier: 2,
-      naam: 'brood',
+      naam: "brood",
       eenheidsprijs: 3,
       btwtarief: 6,
-      foto: 'https://www.detrog.be/_userfiles/products/500x500/20220713091003ep0676-productfoto-hires-1.jpg',
+      foto: "https://www.detrog.be/_userfiles/products/500x500/20220713091003ep0676-productfoto-hires-1.jpg",
       aantal: 15,
       gewicht: 0.75,
-      beschrijving: 'Versgebakken Yamanese brood'
+      beschrijving: "Versgebakken Yamanese brood",
+    },
+  ]);
+
+  await knex(tables.order).insert([
+    {
+      idOrder: 1,
+      idKlant: 1,
+      idLeverancier: 2,
+      idAdres: 1,
+      datum: "2024-02-01",
+      orderStatus: "niet-verzonden",
+      betalingStatus: "niet betaald",
+      totaalPrijs: "15.55",
+    },
+    {
+      idOrder: 2,
+      idKlant: 2,
+      idLeverancier: 2,
+      idAdres: 2,
+      datum: "2024-02-14",
+      orderStatus: "in-transit",
+      betalingStatus: "niet betaald",
+      totaalPrijs: "20.55",
     },
   ]);
 };
