@@ -118,6 +118,7 @@ module.exports = (router) => {
     getAdresByUser
   );
 
+  // moet normaal alleen visible zijn voor admin 
   adresRouter.get(
     '/',
     requireAuthentication,
@@ -128,21 +129,21 @@ module.exports = (router) => {
   adresRouter.post(
     '/',
     requireAuthentication,
-    requireAdmin,
+    // requireAdmin,
     validate(createAdres.validationSheme),
     createAdres
   );
   adresRouter.get(
     '/:id',
     requireAuthentication,
-    requireAdmin,
+    // requireAdmin,
     validate(getAdresById.validationSheme),
     getAdresById
   );
   adresRouter.put(
     '/:id',
     requireAuthentication,
-    requireAdmin,
+    // requireAdmin,
     validate(updateAdresById.validationSheme),
     updateAdresById
   );
@@ -153,6 +154,14 @@ module.exports = (router) => {
     validate(deleteAdresById.validationSheme),
     deleteAdresById
   );
+
+  // als user geautoriseerd is kan je adress van die user halen met deze route.
+  adresRouter.get(
+    '/user',
+    requireAuthentication,
+    validate(getAdresByUser.validationSheme),
+    getAdresByUser
+  )
 
   router.use(adresRouter.routes()).use(adresRouter.allowedMethods());
 };

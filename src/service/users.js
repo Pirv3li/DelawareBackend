@@ -164,7 +164,17 @@ const getKlantById = async (id) => {
   return exposedKlant;
 };
 
+const deleteKlant = async (id) => {
+  const deleteKlant = await userRepository.deleteKlantById(id);
+  return deleteKlant;
+}
+
 // Leverancier
+const deleteLeverancier = async (id) => {
+  const deleteLeverancier = await userRepository.deleteLeverancierById(id);
+  return deleteLeverancier;
+}
+
 const loginLeverancier = async (userName, password) => {
   const user = await userRepository.findLeverancierByUsername(userName);
   if (!user) {
@@ -224,4 +234,6 @@ module.exports = {
   checkRole,
   updateKlant,
   updateLeverancier,
+  deleteKlant,
+  deleteLeverancier,
 };

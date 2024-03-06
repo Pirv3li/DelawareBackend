@@ -83,6 +83,21 @@ updateKlant.validationScheme = {
   }
 };
 
+const deleteKlant = async (ctx) => {
+  const { idKlant } = ctx.state.session;
+  const deletedUser = await userService.deleteKlant(idKlant);
+    if (deletedUser) {
+      ctx.status = 200;
+      ctx.body = { message: 'Klant deleted' };
+    }
+    else {
+    ctx.status = 403;
+    ctx.body = { message: 'Permission denied' };
+  }
+};
+
+deleteKlant.validationScheme = {};
+
 const adminRole = makeRequireRole(Role.ADMIN);
 
 /**
@@ -114,6 +129,12 @@ module.exports = (router) => {
     adminRole,
     validate(getKlantById.validationScheme),
     getKlantById
+  );
+  userRouter.delete(
+    "/",
+    requireAuthentication,
+    validate(deleteKlant.validationScheme),
+    deleteKlant
   );
 
   router.use(userRouter.routes()).use(router.allowedMethods());

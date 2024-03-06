@@ -85,6 +85,21 @@ updateLeverancier.validationScheme = {
   }
 };
 
+const deleteLeverancier = async (ctx) => {
+  const { idLeverancier } = ctx.state.session;
+  const deletedUser = await userService.deleteLeverancier(idLeverancier);
+    if (deletedUser) {
+      ctx.status = 200;
+      ctx.body = { message: 'Leverancier deleted' };
+    }
+    else {
+    ctx.status = 403;
+    ctx.body = { message: 'Permission denied' };
+  }
+};
+
+deleteLeverancier.validationScheme = {};
+
 
 const adminRole = makeRequireRole(Role.ADMIN);
 
@@ -118,5 +133,12 @@ module.exports = (router) => {
     validate(getLeverancierById.validationScheme),
     getLeverancierById
   );
+  userRouter.delete(
+    "/",
+    requireAuthentication,
+    validate(deleteLeverancier.validationScheme),
+    deleteLeverancier
+  );
+
   router.use(userRouter.routes()).use(router.allowedMethods());
 };
