@@ -1,11 +1,6 @@
-const orderRepository = require('../repository/order');
-const adresRepository = require('../repository/adres');
-const orderDetails = require('../repository/orderDetails');
-const orderDetails = require('../rest/orderDetails');
-
-// const getAllOrders = async () => {
-//   return orderRepository.getAllOrders();
-// };
+const orderRepository = require("../repository/order");
+const adresRepository = require("../repository/adres");
+const orderDetailsRepository = require("../repository/orderDetails");
 
 const getOrderById = async (idOrder) => {
   try {
@@ -13,64 +8,84 @@ const getOrderById = async (idOrder) => {
   } catch (error) {
     throw new Error(error);
   }
-  
 };
 
-const createOrder = async ({  idLeverancier, adres, datum, orderStatus, betalingStatus, totaalPrijs, products }) => {
-  const newAdresId = await adresRepository.createAdres({adres});
-  
-  const idNewOrder = await orderRepository.createOrder({
+const createOrder = async (
+  idKlant,
+  {
     idLeverancier,
+    adres,
     datum,
-    newAdresId,
     orderStatus,
     betalingStatus,
     totaalPrijs,
-  });
-  const orderDetails = await orderDetails.createOrderDetails(idNewOrder, {products});
+    products,
+  }
+) => {
+  try {
+    const newAdresId = await adresRepository.createAdres({ adres });
 
-  return idNewOrder;
+    const idNewOrder = await orderRepository.createOrder({
+      idKlant,
+      idLeverancier,
+      datum,
+      idAdres: newAdresId,
+      orderStatus,
+      betalingStatus,
+      totaalPrijs,
+    });
+
+    await orderDetailsRepository.createOrderDetails(idNewOrder, {
+      products,
+    });
+
+    return idNewOrder;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 const getOrderByKlantId = async (idKlant) => {
-  const items = await orderRepository.getOrderByKlantId(idKlant);
-  return{
-    items,
-  };
-
+  try {
+    const items = await orderRepository.getOrderByKlantId(idKlant);
+    return items;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 const getOrderByLeverancierId = async (idLeverancier) => {
-  const items = await orderRepository.getOrderByLeverancierId(idLeverancier);
-  return{
-    items,
-  };
-  
+  try {
+    const items = await orderRepository.getOrderByLeverancierId(idLeverancier);
+    return {
+      items,
+    };
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
+const updateOrderById = async (idOrder, { orderStatus, betalingStatus }) => {
+  let updateFields = {};
 
-const updateOrderById = async (idOrder, { idKlant, idLeverancier, idAdres, datum, orderStatus, betalingStatus, totaalPrijs }) => {
-  await orderRepository.updateOrderById(idOrder, {
-    idKlant,
-    idLeverancier,
-    idAdres,
-    datum,
-    orderStatus,
-    betalingStatus,
-    totaalPrijs,
-  });
-};
+  // slaat alleen waarde op die meegegeven is
+  if (orderStatus !== undefined) {
+    updateFields.orderStatus = orderStatus;
+  } else if (betalingStatus !== undefined) {
+    updateFields.betalingStatus = betalingStatus;
+  }
 
-const deleteOrderById = async (idOrder) => {
-  await orderRepository.deleteOrderById(idOrder);
+  const updatedOrder = await orderRepository.updateOrderById(
+    idOrder,
+    updateFields
+  );
+  return updatedOrder;
 };
 
 module.exports = {
-  getAllOrders,
   getOrderById,
   createOrder,
   updateOrderById,
-  deleteOrderById,
   getOrderByKlantId,
   getOrderByLeverancierId,
 };

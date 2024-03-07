@@ -5,11 +5,6 @@ const orderService = require("../service/order");
 const validate = require("../core/validation");
 const Role = require("../core/roles");
 
-// const getAllOrders = async (ctx) => {
-//   ctx.body = await orderService.getAllOrders();
-// };
-// getAllOrders.validationSheme = null
-
 const getOrderById = async (ctx) => {
   // is de request van klant of leverancier
   const isKlant = ctx.state.role === "klant";
@@ -38,7 +33,7 @@ const getOrderById = async (ctx) => {
   }
 };
 
-getOrderById.validationSheme = {
+getOrderById.validationScheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
@@ -115,21 +110,25 @@ const updateOrderById = async (ctx) => {
   // request van klant of leverancier
   const isKlant = ctx.state.role === "klant";
   const isLeverancier = ctx.state.role === "leverancier";
-
+  const order = await orderService.getOrderById(ctx.params.id);
   // welke veld mag geupdate worden gebaseerd op rol
   let updateFields = {};
-  if (isKlant) {
+
+  if (isKlant && order.idKlant === idKlant) {
     idUser = idKlant;
     updateFields = { betalingStatus: betalingStatus };
-  } else if (isLeverancier) {
+  } else if (isLeverancier && order.idLeverancier === idLeverancier) {
     idUser = idLeverancier;
     updateFields = { orderStatus: orderStatus };
+  } else {
+    ctx.status = 403;
+    ctx.body = { message: "Permission denied" };
+    return;
   }
 
   try {
     // update order met juiste gegevens
     ctx.body = await orderService.updateOrderById(
-      idUser,
       Number(ctx.params.id),
       updateFields
     );
@@ -153,61 +152,34 @@ updateOrderById.validationScheme = {
   },
 };
 
-// const deleteOrderById = async (ctx) => {
-//   orderService.deleteOrderById(Number(ctx.params.id));
-//   ctx.status = 204;
-// };
-// deleteOrderById.validationSheme={
-//   params: {
-//     id: Joi.number().integer().positive(),
-//   },
-// }
-
-const getOrderByKlantId = async (ctx) => {
+const getOrderByKlant = async (ctx) => {
   const { idKlant } = ctx.state.session;
-
   try {
-    if (Number(ctx.params.id) === idKlant) {
-      ctx.body = await orderService.getOrderByKlantId(Number(ctx.params.id));
-    } else {
-      ctx.status = 403;
-      ctx.body = { message: "You are not authorized to view this data" };
-    }
+    const ordersKlant = await orderService.getOrderByKlantId(idKlant);
+    ctx.body = ordersKlant;
   } catch (error) {
     ctx.status = error.status;
     ctx.body = { message: error.message };
   }
 };
 
-getOrderByKlantId.validationSheme = {
-  params: {
-    id: Joi.number().integer().positive(),
-  },
-};
+getOrderByKlant.validationScheme = null;
 
-const getOrderByLeverancierId = async (ctx) => {
+const getOrderByLeverancier = async (ctx) => {
   const { idLeverancier } = ctx.state.session;
 
   try {
-    if (Number(ctx.params.id) == idLeverancier) {
-      ctx.body = await orderService.getOrderByLeverancierId(
-        Number(ctx.params.id)
-      );
-    } else {
-      ctx.status = 403;
-      ctx.body = { message: "You are not authorized to view this data" };
-    }
+    const ordersLeverancier = await orderService.getOrderByLeverancierId(
+      idLeverancier
+    );
+    ctx.body = ordersLeverancier;
   } catch (error) {
     ctx.status = error.status;
     ctx.body = { message: error.message };
   }
 };
 
-getOrderByLeverancierId.validationSheme = {
-  params: {
-    id: Joi.number().integer().positive(),
-  },
-};
+getOrderByLeverancier.validationScheme = null;
 
 requireLeverancier = makeRequireRole(Role.LEVER);
 requireKlant = makeRequireRole(Role.KLANT);
@@ -226,43 +198,36 @@ module.exports = (router) => {
     "/",
     requireAuthentication,
     requireKlant,
-    validate(createOrder.validationSheme),
+    validate(createOrder.validationScheme),
     createOrder
   );
 
-  // orderRouter.get(
-  //   '/:id',
-  //   requireAuthentication,
-  //   validate(getOrderById.validationSheme),
-  //   getOrderById
-  // );
+  orderRouter.get(
+    "/:id",
+    requireAuthentication,
+    validate(getOrderById.validationScheme),
+    getOrderById
+  );
 
   orderRouter.put(
     "/:id",
     requireAuthentication,
-    validate(updateOrderById.validationSheme),
+    validate(updateOrderById.validationScheme),
     updateOrderById
   );
 
-  // orderRouter.delete(
-  //   '/:id',
-  //   requireAuthentication,
-  //   validate(deleteOrderById.validationSheme),
-  //   deleteOrderById
-  // );
-
   orderRouter.get(
-    "/klant/:id",
+    "/klant",
     requireAuthentication,
     requireKlant,
-    getOrderByKlantId
+    getOrderByKlant
   );
 
   orderRouter.get(
-    "/leverancier/:id",
+    "/leverancier",
     requireAuthentication,
     requireLeverancier,
-    getOrderByLeverancierId
+    getOrderByLeverancier
   );
 
   router.use(orderRouter.routes()).use(orderRouter.allowedMethods());
