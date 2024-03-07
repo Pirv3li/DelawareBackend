@@ -44,30 +44,11 @@ const createOrderDetails = async (idOrder, products) => {
   return insertedIds; // Return alle Id's van orderdetails
 };
 
-const updateOrderDetailsById = async (
-  id,
-  { eenheidsprijs, aantal, idOrder, idProduct }
-) => {
-  await getKnex()(tables.orderDetails).where("idOrderDetails", id).update({
-    eenheidsprijs,
-    aantal,
-    idOrder,
-    idProduct,
-  });
-  return id;
-};
 
-const deleteOrderDetailsById = async (idOrderDetails) => {
-  await getKnex()(tables.orderDetails)
-    .where("idOrderDetails", idOrderDetails)
-    .del();
-};
 
 module.exports = {
   getAllOrderDetails,
   getOrderDetailsById,
   createOrderDetails,
-  updateOrderDetailsById,
-  deleteOrderDetailsById,
   getOrderDetailsByOrderId,
 };

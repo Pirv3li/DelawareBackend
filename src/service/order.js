@@ -23,10 +23,9 @@ const createOrder = async (
   }
 ) => {
   try {
-    const newAdresId = await adresRepository.createAdres({ adres });
+    const newAdresId = await adresRepository.createAdres(adres);
 
-    const idNewOrder = await orderRepository.createOrder({
-      idKlant,
+    const idNewOrder = await orderRepository.createOrder(idKlant,{
       idLeverancier,
       datum,
       idAdres: newAdresId,
@@ -35,9 +34,8 @@ const createOrder = async (
       totaalPrijs,
     });
 
-    await orderDetailsRepository.createOrderDetails(idNewOrder, {
-      products,
-    });
+    await orderDetailsRepository.createOrderDetails(idNewOrder, 
+      products);
 
     return idNewOrder;
   } catch (error) {
@@ -47,8 +45,8 @@ const createOrder = async (
 
 const getOrderByKlantId = async (idKlant) => {
   try {
-    const items = await orderRepository.getOrderByKlantId(idKlant);
-    return items;
+    const orders = await orderRepository.getOrderByKlantId(idKlant);
+    return orders;
   } catch (error) {
     throw new Error(error);
   }
@@ -56,10 +54,9 @@ const getOrderByKlantId = async (idKlant) => {
 
 const getOrderByLeverancierId = async (idLeverancier) => {
   try {
-    const items = await orderRepository.getOrderByLeverancierId(idLeverancier);
-    return {
-      items,
-    };
+    const orders = await orderRepository.getOrderByLeverancierId(idLeverancier);
+    console.log(orders);
+    return orders;
   } catch (error) {
     throw new Error(error);
   }

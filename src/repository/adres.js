@@ -30,11 +30,13 @@ const getAdresById = async (id) => {
 }
 
 const createAdres = async ({straat, nummer, stad, postcode}) => {
+    const createdAt = new Date();
     const [id] = await getKnex()(tables.adres).insert({
         straat,
         nummer,
         stad,
         postcode,
+        laatstGebruikt: createdAt,
     });
      
     return id;

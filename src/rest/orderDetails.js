@@ -75,15 +75,15 @@ getOrderDetailsByOrderId.validationSheme = {
 //   }
 // }
 
-const deleteOrderDetailsById = async (ctx) => {
-  orderDetailsService.deleteOrderDetailsById(Number(ctx.params.id));
-  ctx.status = 204;
-};
-deleteOrderDetailsById.validationSheme = {
-  params: {
-    id: Joi.number().integer().positive(),
-  },
-}
+// const deleteOrderDetailsById = async (ctx) => {
+//   orderDetailsService.deleteOrderDetailsById(Number(ctx.params.id));
+//   ctx.status = 204;
+// };
+// deleteOrderDetailsById.validationSheme = {
+//   params: {
+//     id: Joi.number().integer().positive(),
+//   },
+// }
 
 /**
  * Install orderDetails routes in the given router.
@@ -133,12 +133,12 @@ module.exports = (router) => {
   //   updateOrderDetailsById
   // );
 
-  orderDetailsRouter.delete(
-    '/:id',
-    requireAuthentication,
-    validate(deleteOrderDetailsById.validationSheme),
-    deleteOrderDetailsById
-  );
+  // orderDetailsRouter.delete(
+  //   '/:id',
+  //   requireAuthentication,
+  //   validate(deleteOrderDetailsById.validationSheme),
+  //   deleteOrderDetailsById
+  // );
 
   router.use(orderDetailsRouter.routes()).use(orderDetailsRouter.allowedMethods());
 };

@@ -11,21 +11,19 @@ const getOrderById = async (ctx) => {
   const isLeverancier = ctx.state.role === "leverancier";
 
   try {
-    // Get order by ID
     const orderId = ctx.params.id;
     const order = await orderService.getOrderById(orderId);
 
-    // Check if the user is authorized to view this order
+    // Check als user authorized is
     if (
-      (isKlant && order.idKlant !== ctx.state.session) ||
-      (isLeverancier && order.idLeverancier !== ctx.state.session)
+      (isKlant && order.idKlant !== ctx.state.session.idKlant) ||
+      (isLeverancier && order.idLeverancier !== ctx.state.session.idLeverancier)
     ) {
       ctx.status = 403;
       ctx.body = { message: "Permission denied" };
       return;
     }
 
-    // Return the order if everything is okay
     ctx.body = order;
   } catch (error) {
     ctx.status = error.status;
@@ -40,7 +38,7 @@ getOrderById.validationScheme = {
 };
 
 const createOrder = async (ctx) => {
-  const idKlant = ctx.state.session;
+  const idKlant = ctx.state.session.idKlant;
   const {
     idLeverancier,
     datum,
@@ -50,7 +48,6 @@ const createOrder = async (ctx) => {
     adres,
     products,
   } = ctx.request.body;
-
   try {
     // request creer order
     const newOrder = await orderService.createOrder(idKlant, {
@@ -85,7 +82,7 @@ createOrder.validationScheme = {
     adres: Joi.object().keys({
       straat: Joi.string().required(),
       stad: Joi.string().required(),
-      nummer: Joi.number().required(),
+      nummer: Joi.string().required(),
       postcode: Joi.string().required(),
     }),
     products: Joi.array()
@@ -103,23 +100,20 @@ createOrder.validationScheme = {
 const updateOrderById = async (ctx) => {
   const { orderStatus, betalingStatus } = ctx.request.body;
 
-  const idKlant = ctx.state.session;
-  const idLeverancier = ctx.state.session;
-  const idUser = null;
+  const idKlant = ctx.state.session.idKlant;
+  const idLeverancier = ctx.state.session.idLeverancier;
+  let idUser = null;
 
-  // request van klant of leverancier
-  const isKlant = ctx.state.role === "klant";
-  const isLeverancier = ctx.state.role === "leverancier";
   const order = await orderService.getOrderById(ctx.params.id);
   // welke veld mag geupdate worden gebaseerd op rol
   let updateFields = {};
 
-  if (isKlant && order.idKlant === idKlant) {
+  if (order.idKlant === idKlant) {
     idUser = idKlant;
     updateFields = { betalingStatus: betalingStatus };
-  } else if (isLeverancier && order.idLeverancier === idLeverancier) {
+  } else if (order.idLeverancier === idLeverancier) {
     idUser = idLeverancier;
-    updateFields = { orderStatus: orderStatus };
+    updateFields = { orderStatus: orderStatus, betalingStatus: betalingStatus };
   } else {
     ctx.status = 403;
     ctx.body = { message: "Permission denied" };
@@ -153,9 +147,10 @@ updateOrderById.validationScheme = {
 };
 
 const getOrderByKlant = async (ctx) => {
-  const { idKlant } = ctx.state.session;
+  const idKlant = ctx.state.session.idKlant;
   try {
     const ordersKlant = await orderService.getOrderByKlantId(idKlant);
+    ctx.status = 200;
     ctx.body = ordersKlant;
   } catch (error) {
     ctx.status = error.status;
@@ -163,26 +158,28 @@ const getOrderByKlant = async (ctx) => {
   }
 };
 
-getOrderByKlant.validationScheme = null;
+getOrderByKlant.validationScheme = {};
 
 const getOrderByLeverancier = async (ctx) => {
-  const { idLeverancier } = ctx.state.session;
+  const idLeverancier = ctx.state.session.idLeverancier;
+  console.log(idLeverancier);
 
   try {
     const ordersLeverancier = await orderService.getOrderByLeverancierId(
       idLeverancier
     );
+    ctx.status = 200;
     ctx.body = ordersLeverancier;
   } catch (error) {
-    ctx.status = error.status;
+    ctx.status = 500;
     ctx.body = { message: error.message };
   }
 };
 
-getOrderByLeverancier.validationScheme = null;
+getOrderByLeverancier.validationScheme = {};
 
-requireLeverancier = makeRequireRole(Role.LEVER);
-requireKlant = makeRequireRole(Role.KLANT);
+const requireLeverancier = makeRequireRole(Role.LEVER);
+const requireKlant = makeRequireRole(Role.KLANT);
 
 /**
  * Install order routes in the given router.
@@ -200,13 +197,6 @@ module.exports = (router) => {
     requireKlant,
     validate(createOrder.validationScheme),
     createOrder
-  );
-
-  orderRouter.get(
-    "/:id",
-    requireAuthentication,
-    validate(getOrderById.validationScheme),
-    getOrderById
   );
 
   orderRouter.put(
@@ -230,5 +220,11 @@ module.exports = (router) => {
     getOrderByLeverancier
   );
 
+  orderRouter.get(
+    "/:id",
+    requireAuthentication,
+    validate(getOrderById.validationScheme),
+    getOrderById
+  );
   router.use(orderRouter.routes()).use(orderRouter.allowedMethods());
 };
