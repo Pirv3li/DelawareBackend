@@ -85,7 +85,8 @@ const tables = Object.freeze({
   notificatie: 'notificatie',
   product: 'product',
   orderDetails: 'orderdetails',
-  goedkeuringWijzigingen: 'goedkeuringwijzigingen',
+  goedkeuringleverancier: 'goedkeuringleverancier',
+  goedkeuringklant: 'goedkeuringklant',
 
 });
 
