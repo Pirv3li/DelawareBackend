@@ -1,25 +1,35 @@
 const orderRepository = require('../repository/order');
+const adresRepository = require('../repository/adres');
+const orderDetails = require('../repository/orderDetails');
+const orderDetails = require('../rest/orderDetails');
 
-const getAllOrders = async () => {
-  return orderRepository.getAllOrders();
-};
+// const getAllOrders = async () => {
+//   return orderRepository.getAllOrders();
+// };
 
 const getOrderById = async (idOrder) => {
-  return orderRepository.getOrderById(idOrder);
+  try {
+    return orderRepository.getOrderById(idOrder);
+  } catch (error) {
+    throw new Error(error);
+  }
+  
 };
 
-const createOrder = async ({ idKlant, idLeverancier, idAdres, datum, orderStatus, betalingStatus, totaalPrijs }) => {
+const createOrder = async ({  idLeverancier, adres, datum, orderStatus, betalingStatus, totaalPrijs, products }) => {
+  const newAdresId = await adresRepository.createAdres({adres});
+  
   const idNewOrder = await orderRepository.createOrder({
-    idKlant,
     idLeverancier,
-    idAdres,
     datum,
+    newAdresId,
     orderStatus,
     betalingStatus,
     totaalPrijs,
   });
+  const orderDetails = await orderDetails.createOrderDetails(idNewOrder, {products});
 
-  return getOrderById(idNewOrder);
+  return idNewOrder;
 };
 
 const getOrderByKlantId = async (idKlant) => {

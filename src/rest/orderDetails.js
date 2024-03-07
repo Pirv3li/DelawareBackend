@@ -4,10 +4,10 @@ const { requireAuthentication } = require('../core/auth');
 const orderDetailsService = require('../service/orderDetails');
 const validate = require('../core/validation')
 
-const getAllOrderDetails = async (ctx) => {
-  ctx.body = await orderDetailsService.getAllOrderDetails();
-};
-getAllOrderDetails.validationSheme = null
+// const getAllOrderDetails = async (ctx) => {
+//   ctx.body = await orderDetailsService.getAllOrderDetails();
+// };
+// getAllOrderDetails.validationSheme = null
 
 const getOrderDetailsById = async (ctx) => {
   ctx.body = await orderDetailsService.getOrderDetailsById(Number(ctx.params.id));
@@ -33,47 +33,47 @@ getOrderDetailsByOrderId.validationSheme = {
 
 
 
-const createOrderDetails = async (ctx) => {
-  const { eenheidsprijs, aantal, idOrder, idProduct } = ctx.request.body;
-  const newOrderDetails = await orderDetailsService.createOrderDetails({
-    eenheidsprijs: Number(eenheidsprijs),
-    aantal: Number(aantal),
-    idOrder: Number(idOrder),
-    idProduct: Number(idProduct)
-  });
-  ctx.body = newOrderDetails;
-  ctx.status = 201;
-};
-createOrderDetails.validationSheme = {
-  body: {
-    eenheidsprijs: Joi.number().positive().required(),
-    aantal: Joi.number().integer().positive().required(),
-    idOrder: Joi.number().integer().positive().required(),
-    idProduct: Joi.number().integer().positive().required()
-  }
-}
+// const createOrderDetails = async (ctx) => {
+//   const { eenheidsprijs, aantal, idOrder, idProduct } = ctx.request.body;
+//   const newOrderDetails = await orderDetailsService.createOrderDetails({
+//     eenheidsprijs: Number(eenheidsprijs),
+//     aantal: Number(aantal),
+//     idOrder: Number(idOrder),
+//     idProduct: Number(idProduct)
+//   });
+//   ctx.body = newOrderDetails;
+//   ctx.status = 201;
+// };
+// createOrderDetails.validationSheme = {
+//   body: {
+//     eenheidsprijs: Joi.number().positive().required(),
+//     aantal: Joi.number().integer().positive().required(),
+//     idOrder: Joi.number().integer().positive().required(),
+//     idProduct: Joi.number().integer().positive().required()
+//   }
+// }
 
-const updateOrderDetailsById = async (ctx) => {
-  const { eenheidsprijs, aantal, idOrder, idProduct } = ctx.request.body;
-  ctx.body = await orderDetailsService.updateOrderDetailsById(Number(ctx.params.id), {
-    eenheidsprijs: Number(eenheidsprijs),
-    aantal: Number(aantal),
-    idOrder: Number(idOrder),
-    idProduct: Number(idProduct)
-  });
-  ctx.status = 200;
-};
-updateOrderDetailsById.validationSheme = {
-  params: {
-    id: Joi.number().integer().positive(),
-  },
-  body: {
-    eenheidsprijs: Joi.number().positive().required(),
-    aantal: Joi.number().integer().positive().required(),
-    idOrder: Joi.number().integer().positive().required(),
-    idProduct: Joi.number().integer().positive().required()
-  }
-}
+// const updateOrderDetailsById = async (ctx) => {
+//   const { eenheidsprijs, aantal, idOrder, idProduct } = ctx.request.body;
+//   ctx.body = await orderDetailsService.updateOrderDetailsById(Number(ctx.params.id), {
+//     eenheidsprijs: Number(eenheidsprijs),
+//     aantal: Number(aantal),
+//     idOrder: Number(idOrder),
+//     idProduct: Number(idProduct)
+//   });
+//   ctx.status = 200;
+// };
+// updateOrderDetailsById.validationSheme = {
+//   params: {
+//     id: Joi.number().integer().positive(),
+//   },
+//   body: {
+//     eenheidsprijs: Joi.number().positive().required(),
+//     aantal: Joi.number().integer().positive().required(),
+//     idOrder: Joi.number().integer().positive().required(),
+//     idProduct: Joi.number().integer().positive().required()
+//   }
+// }
 
 const deleteOrderDetailsById = async (ctx) => {
   orderDetailsService.deleteOrderDetailsById(Number(ctx.params.id));
@@ -95,12 +95,12 @@ module.exports = (router) => {
     prefix: '/orderDetails',
   });
 
-  orderDetailsRouter.get(
-    '/',
-    requireAuthentication,
-    validate(getAllOrderDetails.validationSheme),
-    getAllOrderDetails
-  );
+  // orderDetailsRouter.get(
+  //   '/',
+  //   requireAuthentication,
+  //   validate(getAllOrderDetails.validationSheme),
+  //   getAllOrderDetails
+  // );
 
   orderDetailsRouter.get(
     '/order/:id',
@@ -110,24 +110,29 @@ module.exports = (router) => {
   );
 
 
-  orderDetailsRouter.post(
-    '/',
-    requireAuthentication,
-    validate(createOrderDetails.validationSheme),
-    createOrderDetails
-  );
+  // orderDetailsRouter.post(
+  //   '/',
+  //   requireAuthentication,
+  //   validate(createOrderDetails.validationSheme),
+  //   createOrderDetails
+  // );
+
+
   orderDetailsRouter.get(
     '/:id',
     requireAuthentication,
     validate(getOrderDetailsById.validationSheme),
     getOrderDetailsById
   );
-  orderDetailsRouter.put(
-    '/:id',
-    requireAuthentication,
-    validate(updateOrderDetailsById.validationSheme),
-    updateOrderDetailsById
-  );
+
+
+  // orderDetailsRouter.put(
+  //   '/:id',
+  //   requireAuthentication,
+  //   validate(updateOrderDetailsById.validationSheme),
+  //   updateOrderDetailsById
+  // );
+
   orderDetailsRouter.delete(
     '/:id',
     requireAuthentication,

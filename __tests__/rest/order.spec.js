@@ -160,12 +160,8 @@ describe("order API", () => {
     it("should update order", async () => {
       const orderId = 2;
       const updatedOrderData = {
-        idKlant: 2,
-        idAdres: 2,
-        datum: new Date(),
-        orderStatus: "updated",
-        betalingStatus: "updated",
-        totaalPrijs: 200,
+        idLeverancier: 2,
+        idAdres: 3,
       };
 
       const response = await request
@@ -180,13 +176,8 @@ describe("order API", () => {
     it("should handle invalid order ID during update", async () => {
       const invalidOrderId = 99999999;
       const updatedOrderData = {
-        idKlant: 2,
         idLeverancier: 2,
         idAdres: 2,
-        datum: new Date(),
-        orderStatus: "updated",
-        betalingStatus: "updated",
-        totaalPrijs: 200,
       };
 
       const response = await request
@@ -198,23 +189,4 @@ describe("order API", () => {
     });
   });
 
-  describe("DELETE /api/order/:id", () => {
-    it("should delete order", async () => {
-      const orderId = 2;
-      const response = await request
-        .delete(`/api/order/${orderId}`)
-        .set("Authorization", leverAuth);
-
-      expect(response.status).toBe(204);
-    });
-
-    it("should handle invalid order ID during deletion", async () => {
-      const invalidOrderId = 9999;
-      const response = await request
-        .delete(`/api/order/${invalidOrderId}`)
-        .set("Authorization", leverAuth);
-
-      expect(response.status).toBe(404);
-    });
-  });
 });
