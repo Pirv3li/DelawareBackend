@@ -159,11 +159,7 @@ const getOrderByKlantId = async (ctx) => {
   ctx.body = await orderService.getOrderByKlantId(idKlant,begin);
 };
 
-getOrderByKlant.validationScheme = {};
-
-const getOrderByLeverancier = async (ctx) => {
-  const idLeverancier = ctx.state.session.idLeverancier;
-
+getOrderByKlantId.validationScheme = {};
 
 const getOrderByLeverancierId = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
@@ -172,7 +168,7 @@ const getOrderByLeverancierId = async (ctx) => {
  
 };
 
-getOrderByLeverancier.validationScheme = {};
+getOrderByLeverancierId.validationSheme=null
 
 const requireLeverancier = makeRequireRole(Role.LEVER);
 const requireKlant = makeRequireRole(Role.KLANT);
@@ -184,44 +180,42 @@ const requireKlant = makeRequireRole(Role.KLANT);
  */
 module.exports = (router) => {
   const orderRouter = new KoaRouter({
-    prefix: "/order",
+    prefix: '/order',
   });
 
+ 
   orderRouter.post(
-    "/",
+    '/',
     requireAuthentication,
-    requireKlant,
-    validate(createOrder.validationScheme),
+    validate(createOrder.validationSheme),
     createOrder
   );
-
-  orderRouter.put(
-    "/:id",
-    requireAuthentication,
-    validate(updateOrderById.validationScheme),
-    updateOrderById
-  );
-
   orderRouter.get(
-    "/klant",
+    '/:id',
     requireAuthentication,
-    requireKlant,
-    getOrderByKlant
-  );
-
-  orderRouter.get(
-    "/leverancier",
-    requireAuthentication,
-    requireLeverancier,
-    getOrderByLeverancier
-  );
-
-  orderRouter.get(
-    "/:id",
-    requireAuthentication,
-    validate(getOrderById.validationScheme),
+    validate(getOrderById.validationSheme),
     getOrderById
   );
+  orderRouter.put(
+    '/:id',
+    requireAuthentication,
+    validate(updateOrderById.validationSheme),
+    updateOrderById
+  );
+ 
+  orderRouter.get(
+    '/klant/:id',
+    requireAuthentication,
+    requireKlant,
+    getOrderByKlantId
+  );
+
+  orderRouter.get(
+    '/leverancier/:id',
+    requireAuthentication,
+    requireLeverancier,
+    getOrderByLeverancierId
+  );
+
   router.use(orderRouter.routes()).use(orderRouter.allowedMethods());
 };
-}
