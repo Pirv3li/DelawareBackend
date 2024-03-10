@@ -156,7 +156,12 @@ updateOrderById.validationScheme = {
 const getOrderByKlantId = async (ctx) => {
   const idKlant = ctx.state.session.idLeverancier;
   const  begin = parseInt(ctx.params.id);
+  try {
   ctx.body = await orderService.getOrderByKlantId(idKlant,begin);
+  } catch (error) {
+    ctx.status = error.status;
+    ctx.body = { message: error.message };
+  }
 };
 
 getOrderByKlantId.validationScheme = {};
@@ -164,8 +169,12 @@ getOrderByKlantId.validationScheme = {};
 const getOrderByLeverancierId = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
   const  begin = parseInt(ctx.params.id);
+  try {
   ctx.body = await orderService.getOrderByLeverancierId(idLeverancier,begin);
- 
+} catch (error) {
+  ctx.status = error.status;
+  ctx.body = { message: error.message };
+}
 };
 
 getOrderByLeverancierId.validationSheme=null
