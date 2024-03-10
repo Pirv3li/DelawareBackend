@@ -1,10 +1,19 @@
 const orderRepository = require("../repository/order");
 const adresRepository = require("../repository/adres");
 const orderDetailsRepository = require("../repository/orderDetails");
+const ServiceError = require('../core/serviceError');
+const { error } = require("winston");
 
 const getOrderById = async (idOrder) => {
   try {
-    return orderRepository.getOrderById(idOrder);
+    const order = await orderRepository.getOrderById(idOrder);
+    if (!order) {
+      throw ServiceError.notFound(
+        `There is no order with id ${order}.`,
+        { order }
+      );
+    }
+    return order;
   } catch (error) {
     throw new Error(error);
   }
@@ -55,7 +64,6 @@ const getOrderByKlantId = async (idKlant) => {
 const getOrderByLeverancierId = async (idLeverancier) => {
   try {
     const orders = await orderRepository.getOrderByLeverancierId(idLeverancier);
-    console.log(orders);
     return orders;
   } catch (error) {
     throw new Error(error);
@@ -65,7 +73,7 @@ const getOrderByLeverancierId = async (idLeverancier) => {
 const updateOrderById = async (idOrder, { orderStatus, betalingStatus }) => {
   let updateFields = {};
 
-  // slaat alleen waarde op die meegegeven is
+  // Only store values that are provided
   if (orderStatus !== undefined) {
     updateFields.orderStatus = orderStatus;
   } else if (betalingStatus !== undefined) {
@@ -76,8 +84,16 @@ const updateOrderById = async (idOrder, { orderStatus, betalingStatus }) => {
     idOrder,
     updateFields
   );
+    
+  if (!updatedOrder) {
+    throw ServiceError.notFound(
+      `There is no order with id ${idOrder}.`,
+      { idOrder }
+    );
+  }
   return updatedOrder;
 };
+
 
 module.exports = {
   getOrderById,

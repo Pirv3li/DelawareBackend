@@ -106,6 +106,17 @@ module.exports = async () => {
       idBedrijf: 2,
       email: "testleverancier2@example.com",
     },
+    {
+      idLeverancier: 3,
+      leverancierNummer: "256865",
+      gebruikersnaam: "Test Leverancier User3",
+      password_hash:
+        "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
+      isActief: true,
+      roles: JSON.stringify([roles.LEVER]),
+      idBedrijf: 2,
+      email: "testleverancier2@example.com",
+    },
   ]);
 
   await knex(tables.klant).insert([
@@ -124,6 +135,17 @@ module.exports = async () => {
       idKlant: 2,
       klantNummer: "87654321",
       gebruikersnaam: "Test Klant User2",
+      password_hash:
+        "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
+      isActief: true,
+      roles: JSON.stringify([roles.KLANT]),
+      idBedrijf: 2,
+      email: "testklant2@example.com",
+    },
+    {
+      idKlant: 3,
+      klantNummer: "87654321",
+      gebruikersnaam: "Test Klant User3",
       password_hash:
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
       isActief: true,
@@ -173,7 +195,7 @@ module.exports = async () => {
     {
       idOrder: 1,
       idKlant: 1,
-      idLeverancier: 2,
+      idLeverancier: 1,
       idAdres: 1,
       datum: "2024-02-01",
       orderStatus: "niet-verzonden",
@@ -189,6 +211,40 @@ module.exports = async () => {
       orderStatus: "in-transit",
       betalingStatus: "niet betaald",
       totaalPrijs: "20.55",
+    },
+    {
+      idOrder: 3,
+      idKlant: 3,
+      idLeverancier: 3,
+      idAdres: 2,
+      datum: "2024-02-14",
+      orderStatus: "in-transit",
+      betalingStatus: "niet betaald",
+      totaalPrijs: "20.55",
+    },
+  ]);
+
+  await knex(tables.orderDetails).insert([
+    {
+      idOrderDetails: 1,
+      eenheidsprijs: 10.5,
+      aantal: 2,
+      idOrder: 1,
+      idProduct: 1,
+    },
+    {
+      idOrderDetails: 2,
+      eenheidsprijs: 15.0,
+      aantal: 1,
+      idOrder: 1,
+      idProduct: 2,
+    },
+    {
+      idOrderDetails: 3,
+      eenheidsprijs: 7.5,
+      aantal: 3,
+      idOrder: 2,
+      idProduct: 3,
     },
   ]);
 };

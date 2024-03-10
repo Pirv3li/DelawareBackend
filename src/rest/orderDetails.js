@@ -3,6 +3,7 @@ const Joi = require("joi");
 const { requireAuthentication } = require("../core/auth");
 const orderDetailsService = require("../service/orderDetails");
 const validate = require("../core/validation");
+const ServiceError = require('../core/serviceError');
 const orderService = require("../service/order");
 
 // const getAllOrderDetails = async (ctx) => {
@@ -11,27 +12,27 @@ const orderService = require("../service/order");
 // getAllOrderDetails.validationSheme = null
 
 const getOrderDetailsById = async (ctx) => {
-
   try {
-    const orderDetailsId = ctx.params.id;
-    const orderDetail = await orderDetailsService.getOrderDetailsById(
-      orderDetailsId
-    );
-    const order = await orderService.getOrderById(orderDetail.idOrder);
+    const orderDetail = await orderDetailsService.getOrderDetailsById(ctx.params.id);
+    const order = await orderService.getOrderById(orderDetail.idOrder); // Fetch order
 
-    if (
-      (order.idKlant !== ctx.state.session.idKlant) &&
-      (order.idLeverancier !== ctx.state.session.idLeverancier)
-    ) {
+    // Check if user has permission
+    if (order.idKlant !== ctx.state.session.idKlant &&
+        order.idLeverancier !== ctx.state.session.idLeverancier) {
       ctx.status = 403;
       ctx.body = { message: "Permission denied" };
       return;
-    } else {
-      ctx.body = orderDetail;
     }
+
+    ctx.body = orderDetail;
   } catch (error) {
-    ctx.status = 500;
-    ctx.body = { message: error.message };
+    if (error instanceof ServiceError && error.isNotFound) {
+      ctx.status = 404;
+      ctx.body = { message: error.message };
+    } else {
+      ctx.status = 500;
+      ctx.body = { message: "Internal Server Error" };
+    }
   }
 };
 
@@ -42,25 +43,33 @@ getOrderDetailsById.validationScheme = {
 };
 
 const getOrderDetailsByOrderId = async (ctx) => {
+  let order;
+
+  const orderID = ctx.params.id;
 
   try {
-    const orderID = ctx.params.id;
-    const order = await orderService.getOrderById(orderID);
+    order = await orderService.getOrderById(ctx.params.id); // Fetch order inside try block
+  } catch (error) {
+    ctx.status = 404;
+    ctx.body = { message: "Order not found" };
+    return;
+  }
 
-    if (
-      (order.idKlant !== ctx.state.session.idKlant) &&
-      (order.idLeverancier !== ctx.state.session.idLeverancier)
-    ) {
-      ctx.status = 403;
-      ctx.body = { message: "Permission denied" };
-      return;
-    } else {
-      const orderDetailsId = await orderDetailsService.getOrderDetailsByOrderId(
-        orderID
-      );
+  if (
+    order.idKlant !== ctx.state.session.idKlant &&
+    order.idLeverancier !== ctx.state.session.idLeverancier
+  ) {
+    ctx.status = 403;
+    ctx.body = { message: "Permission denied" };
+    return;
+  }
 
-      ctx.body = orderDetailsId;
-    }
+  try {
+    const orderDetailsId = await orderDetailsService.getOrderDetailsByOrderId(
+      orderID
+    );
+
+    ctx.body = orderDetailsId;
   } catch (error) {
     ctx.body = { message: error.message };
   }

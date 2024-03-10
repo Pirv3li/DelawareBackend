@@ -25,29 +25,30 @@ const getOrderDetailsByOrderId = async (idOrder) => {
     .select(`${tables.orderDetails}.*`, `${tables.product}.*`);
 };
 
-// const createOrderDetails = async (idOrder, products) => {
-//   // doorloop elke product en insert in databank
-//   const insertedIds = await Promise.all(
-//     products.map(async (product) => {
-//       const { eenheidsprijs, aantal, idProduct } = product;
+const createOrderDetails = async (idOrder, products) => {
+  // doorloop elke product en insert in databank
+  const insertedIds = await Promise.all(
+    products.map(async (product) => {
+      const { eenheidsprijs, aantal, idProduct } = product;
 
-//       const [id] = await getKnex()(tables.orderDetails).insert({
-//         eenheidsprijs,
-//         aantal,
-//         idOrder,
-//         idProduct,
-//       });
+      const [id] = await getKnex()(tables.orderDetails).insert({
+        eenheidsprijs,
+        aantal,
+        idOrder,
+        idProduct,
+      });
 
-//       return id;
-//     })
-//   );
+      return id;
+    })
+  );
 
-//   return insertedIds; // Return alle Id's van orderdetails
-// };
+  return insertedIds; // Return alle Id's van orderdetails
+};
 
 
 
 module.exports = {
+  createOrderDetails,
   getOrderDetailsById,
   getOrderDetailsByOrderId,
 };

@@ -19,10 +19,10 @@ describe("order API", () => {
     klantAuth = await KlantLogin(request);
   });
 
-  describe("GET /api/order", () => {
+  describe("GET /api/order/klant", () => {
     it("should retrieve klant orders", async () => {
       const response = await request
-        .get("/api/order")
+        .get("/api/order/klant")
         .set("Authorization", klantAuth);
 
       expect(response.status).toBe(200);
@@ -31,7 +31,7 @@ describe("order API", () => {
 
     it("should retrieve leverancier orders", async () => {
       const response = await request
-        .get("/api/order/")
+        .get("/api/order/leverancier")
         .set("Authorization", leverAuth);
 
       expect(response.status).toBe(200);
@@ -41,7 +41,7 @@ describe("order API", () => {
     it("should retrieve klant order by ID", async () => {
       const orderId = 2;
       const response = await request
-        .get(`/api/order/klant/${orderId}`)
+        .get(`/api/order/${orderId}`)
         .set("Authorization", klantAuth);
 
       expect(response.status).toBe(200);
@@ -49,18 +49,18 @@ describe("order API", () => {
     });
 
     it("should deny invalid order ID for klant", async () => {
-      const noAccesOrderId = 1;
+      const noAccesOrderId = 3;
       const response = await request
-        .get(`/api/order/klant/${noAccesOrderId}`)
+        .get(`/api/order/${noAccesOrderId}`)
         .set("Authorization", klantAuth);
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(403);
     });
 
     it("should retrieve leverancier order by ID", async () => {
       const orderId = 2;
       const response = await request
-        .get(`/api/order/leverancier/${orderId}`)
+        .get(`/api/order/${orderId}`)
         .set("Authorization", leverAuth);
 
       expect(response.status).toBe(200);
@@ -68,24 +68,41 @@ describe("order API", () => {
     });
 
     it("should deny invalid order ID for leverancier", async () => {
-      const noAccesOrderId = 1;
+      const noAccesOrderId = 3;
       const response = await request
-        .get(`/api/order/leverancier/${noAccesOrderId}`)
+        .get(`/api/order/${noAccesOrderId}`)
         .set("Authorization", leverAuth);
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(403);
     });
   });
 
   describe("POST /api/order", () => {
     it("should create order", async () => {
       const orderData = {
-        idKlant: 2,
-        idAdres: 2,
-        datum: new Date(),
-        orderStatus: "pending",
-        betalingStatus: "pending",
-        totaalPrijs: 100,
+        idLeverancier: 2,
+        datum: "2024-03-07",
+        orderStatus: "Pending",
+        betalingStatus: "Paid",
+        totaalPrijs: 100.00,
+        adres: {
+          straat: "Main Street",
+          stad: "Cityville",
+          nummer: "123",
+          postcode: "12345"
+        },
+        products: [
+          {
+            eenheidsprijs: 10.00,
+            aantal: 2,
+            idProduct: 1
+          },
+          {
+            eenheidsprijs: 15.00,
+            aantal: 4,
+            idProduct: 2
+          }
+        ]
       };
 
       const response = await request
@@ -99,12 +116,25 @@ describe("order API", () => {
 
     it("should handle validation errors during creation", async () => {
       const orderData = {
-        idKlant: 2,
-        idAdres: 2,
-        datum: new Date(),
-        betalingStatus: "pending",
-        totaalPrijs: 100,
+        idLeverancier: 2,
+        datum: "2024-03-07",
+        orderStatus: "Pending",
+        betalingStatus: "Paid",
+        totaalPrijs: 100.00,
+        products: [
+          {
+            eenheidsprijs: 10.00,
+            aantal: 2,
+            idProduct: 1
+          },
+          {
+            eenheidsprijs: 15.00,
+            aantal: 4,
+            idProduct: 2
+          }
+        ]
       };
+
 
       const response = await request
         .post("/api/order")
@@ -114,54 +144,53 @@ describe("order API", () => {
       expect(response.status).toBe(400);
     });
 
-    it("should handle denied permission", async () => {
-      const orderData = {
-        idKlant: 1,
-        idAdres: 2,
-        datum: new Date(),
-        orderStatus: "pending",
-        betalingStatus: "pending",
-        totaalPrijs: 100,
-      };
-
-      const response = await request
-        .post("/api/order")
-        .send(orderData)
-        .set("Authorization", klantAuth);
-
-      expect(response.status).toBe(404);
-    });
+    
 
     
     it("should handle denied permission for leverancier", async () => {
       const orderData = {
-        idKlant: 2,
-        idAdres: 2,
-        datum: new Date(),
-        orderStatus: "pending",
-        betalingStatus: "pending",
-        totaalPrijs: 100,
+        idLeverancier: 2,
+        datum: "2024-03-07",
+        orderStatus: "Pending",
+        betalingStatus: "Paid",
+        totaalPrijs: 100.00,
+        adres: {
+          straat: "Main Street",
+          stad: "Cityville",
+          nummer: "123",
+          postcode: "12345"
+        },
+        products: [
+          {
+            eenheidsprijs: 10.00,
+            aantal: 2,
+            idProduct: 1
+          },
+          {
+            eenheidsprijs: 15.00,
+            aantal: 4,
+            idProduct: 2
+          }
+        ]
       };
+
 
       const response = await request
         .post("/api/order")
         .send(orderData)
         .set("Authorization", leverAuth);
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(403);
     });
     
   });
 
-  ////////vanaf hier: functionaliteit bespreken met groep.
-
-
   describe("PUT /api/order/:id", () => {
-    it("should update order", async () => {
+    it("should update order for leverancier", async () => {
       const orderId = 2;
       const updatedOrderData = {
-        idLeverancier: 2,
-        idAdres: 3,
+        orderStatus:"completed",
+        betalingStatus: "paid"
       };
 
       const response = await request
@@ -173,11 +202,40 @@ describe("order API", () => {
       expect(response.body).toBeDefined();
     });
 
-    it("should handle invalid order ID during update", async () => {
-      const invalidOrderId = 99999999;
+    it("should update order for klant", async () => {
+      const orderId = 2;
       const updatedOrderData = {
-        idLeverancier: 2,
-        idAdres: 2,
+        betalingStatus: "paid",
+      };
+
+      const response = await request
+        .put(`/api/order/${orderId}`)
+        .send(updatedOrderData)
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should not update order for klant", async () => {
+      const orderId = 2;
+      const updatedOrderData = {
+        orderStatus: "complete",
+      };
+
+      const response = await request
+        .put(`/api/order/${orderId}`)
+        .send(updatedOrderData)
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(403);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should handle invalid order ID during update", async () => {
+      const invalidOrderId = 9999;
+      const updatedOrderData = {
+        orderStatus:"completed",
       };
 
       const response = await request

@@ -6,7 +6,9 @@ module.exports = async () => {
   await getKnex()(tables.leverancier).delete();
   await getKnex()(tables.bedrijf).delete();
   await getKnex()(tables.adres).delete();
-  await getKnex()(tables.product).delete()
+  await getKnex()(tables.product).delete();
+  await getKnex()(tables.order).delete();
+  await getKnex()(tables.orderDetails).delete();
 
   // Close database connection
   await shutdownData();

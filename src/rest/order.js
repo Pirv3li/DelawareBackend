@@ -4,17 +4,16 @@ const { requireAuthentication, makeRequireRole } = require("../core/auth");
 const orderService = require("../service/order");
 const validate = require("../core/validation");
 const Role = require("../core/roles");
+const ServiceError = require("../core/serviceError");
 
 const getOrderById = async (ctx) => {
-
   try {
     const orderId = ctx.params.id;
     const order = await orderService.getOrderById(orderId);
-
     // Check als user authorized is
     if (
-      (order.idKlant !== ctx.state.session.idKlant) &&
-      (order.idLeverancier !== ctx.state.session.idLeverancier)
+      order.idKlant !== ctx.state.session.idKlant &&
+      order.idLeverancier !== ctx.state.session.idLeverancier
     ) {
       ctx.status = 403;
       ctx.body = { message: "Permission denied" };
@@ -99,15 +98,29 @@ const updateOrderById = async (ctx) => {
 
   const idKlant = ctx.state.session.idKlant;
   const idLeverancier = ctx.state.session.idLeverancier;
-  let idUser = null;
+  let idUser;
 
-  const order = await orderService.getOrderById(ctx.params.id);
-  // welke veld mag geupdate worden gebaseerd op rol
+  let order;
+
+  try {
+    order = await orderService.getOrderById(ctx.params.id); // Fetch order inside try block
+  } catch (error) {
+    ctx.status = 404;
+    ctx.body = { message: "Order not found" };
+    return;
+  }
+
+  // Rest of your code for processing the order and updating fields
   let updateFields = {};
 
   if (order.idKlant === idKlant) {
     idUser = idKlant;
     updateFields = { betalingStatus: betalingStatus };
+    if (orderStatus !== undefined) {
+      ctx.status = 403;
+      ctx.body = { message: "Klant cannot update orderStatus" };
+      return;
+    }
   } else if (order.idLeverancier === idLeverancier) {
     idUser = idLeverancier;
     updateFields = { orderStatus: orderStatus, betalingStatus: betalingStatus };
@@ -125,14 +138,10 @@ const updateOrderById = async (ctx) => {
     );
     ctx.status = 200;
   } catch (error) {
-    if (error.status === 403) {
-      ctx.body = { message: "Permission denied" };
-    }
     ctx.status = 500;
-    ctx.body = { message: error.message };
+    ctx.body = { message: "Internal Server Error" };
   }
 };
-
 updateOrderById.validationScheme = {
   params: {
     id: Joi.number().integer().positive(),
@@ -159,7 +168,6 @@ getOrderByKlant.validationScheme = {};
 
 const getOrderByLeverancier = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
-  console.log(idLeverancier);
 
   try {
     const ordersLeverancier = await orderService.getOrderByLeverancierId(

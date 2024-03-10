@@ -1,4 +1,5 @@
 const orderDetailsRepository = require("../repository/orderDetails");
+const ServiceError = require('../core/serviceError');
 
 // const getAllOrderDetails = async () => {
 //   const items = await orderDetailsRepository.getAllOrderDetails();
@@ -13,15 +14,17 @@ const getOrderDetailsById = async (idOrderDetails) => {
     const orderDetails = await orderDetailsRepository.getOrderDetailsById(
       idOrderDetails
     );
+
     if (!orderDetails) {
       throw ServiceError.notFound(
-        `There is no orderDetails with id ${idOrderDetails}.`,
+        `There are no order details with id ${idOrderDetails}.`,
         { idOrderDetails }
       );
     }
+
     return orderDetails;
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 };
 
@@ -38,7 +41,7 @@ const getOrderDetailsByOrderId = async (idOrder) => {
     }
     return orderdetails;
   } catch (error) {
-    throw new Error(error);
+    throw error;
   }
 };
 
