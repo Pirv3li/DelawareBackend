@@ -39,19 +39,27 @@ const getOrderById = async (idOrder) => {
   return formatOrder(order);
 };
 
-const getOrderByKlantId = async (idKlant) => {
+const getOrderByKlantId = async (idKlant, begin) => {
   const order = await getKnex()(tables.order)
     .where('idKlant', idKlant)
-    
+    .select(`${tables.order}.*`)
+    .orderBy('betalingStatus', 'asc')
+    .orderBy('datum', 'asc')
+    .limit(10)
+    .offset(begin);
 
     return order;
   
 };
 
-const getOrderByLeverancierId = async (idLeverancier) => {
+const getOrderByLeverancierId = async (idLeverancier, begin) => {
   const order = await getKnex()(tables.order)
     .where('idLeverancier', idLeverancier)
-
+    .select(`${tables.order}.*`)
+    .orderBy('betalingStatus', 'asc')
+    .orderBy('datum', 'asc')
+    .limit(10)
+    .offset(begin);
     return order;
   
 };

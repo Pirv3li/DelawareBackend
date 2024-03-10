@@ -6,11 +6,15 @@ const validate = require('../core/validation')
 const Role = require('../core/roles');
 
 const getAllNotifications = async (ctx) => {
-  ctx.body = await notificationService.getAllNotifications();
+  const begin = parseInt(ctx.query.begin) || 0;
+  const einde = parseInt(ctx.query.einde) || 20;
+  ctx.body = await notificationService.getAllNotifications(begin, einde);
 };
 getAllNotifications.validationSheme = null
 
+
 const getNotificationById = async (ctx) => {
+  
   ctx.body = await notificationService.getNotificationById(Number(ctx.params.id));
 };
 getNotificationById.validationSheme={
@@ -94,24 +98,28 @@ deleteNotificationById.validationSheme={
 
 
 const getAllNotificationsByKlantId = async (ctx) => {
-  ctx.body = await notificationService.getAllNotificationsByKlantId(Number(ctx.params.id));
+  const idKlant = ctx.state.session.idKlant;
+  const begin = parseInt(ctx.params.id);
+  ctx.body = await notificationService.getAllNotificationsByKlantId(idKlant, begin);
 };
+
 getAllNotificationsByKlantId.validationSheme = {
   params: {
     id: Joi.number()
       .integer()
-      .positive()
   }
 }
 
 const getAllNotificationsByLeverancierId = async (ctx) => {
-  ctx.body = await notificationService.getAllNotificationsByLeverancierId(Number(ctx.params.id));
+  const idLeverancier = ctx.state.session.idLeverancier;
+  const  begin = parseInt(ctx.params.id);
+  ctx.body = await notificationService.getAllNotificationsByLeverancierId(idLeverancier, begin);
 };
+
 getAllNotificationsByLeverancierId.validationSheme = {
   params: {
     id: Joi.number()
       .integer()
-      .positive()
   }
 }
 
@@ -138,37 +146,45 @@ countUnopenedNotificationsByLeverancierId.validationSheme = {
   }
 }
 
-const checkKlantId = (ctx, next) => {
-  const { idKlant, roles } = ctx.state.session;
-  const { id } = ctx.params;
+// const checkKlantId = (ctx, next) => {
+//   const { idKlant, roles } = ctx.state.session;
+//   const { id } = ctx.params;
 
-  if (Number(id) !== idKlant && !roles.includes(Role.ADMIN)) {
-    return ctx.throw(
-      403,
-      'U hebt geen toestemming om deze gebruiker te bekijken',
-      {
-        code: 'FORBIDDEN',
-      }
-    );
-  }
-  return next();
-};
+//   const notifications =  notificationRepository.getAllNotificationsByKlantId(idKlant);
+//   if (notifications.length > 0) {
+//     idKlantNot =  notifications[0].idKlant;
+//   } else {
+//     throw new Error('No notifications found for this klant id');
+//   }
 
-const checkLeverancierId = (ctx, next) => {
-  const { idLeverancier, roles } = ctx.state.session;
-  const { id } = ctx.params;
+//   console.log(idKlantNot);
+//   if (Number(id) !== idKlant && !roles.includes(Role.ADMIN)) {
+//     return ctx.throw(
+//       403,
+//       'U hebt geen toestemming om deze gebruiker te bekijken',
+//       {
+//         code: 'FORBIDDEN',
+//       }
+//     );
+//   }
+//   return next();
+// };
 
-  if (Number(id) !== idLeverancier && !roles.includes(Role.ADMIN)) {
-    return ctx.throw(
-      403,
-      'U hebt geen toestemming om deze gebruiker te bekijken',
-      {
-        code: 'FORBIDDEN',
-      }
-    );
-  }
-  return next();
-};
+// const checkLeverancierId = (ctx, next) => {
+//   const { idLeverancier, roles } = ctx.state.session;
+//   const { id } = ctx.params;
+
+//   if (Number(id) !== idLeverancier && !roles.includes(Role.ADMIN)) {
+//     return ctx.throw(
+//       403,
+//       'U hebt geen toestemming om deze gebruiker te bekijken',
+//       {
+//         code: 'FORBIDDEN',
+//       }
+//     );
+//   }
+//   return next();
+// };
 
 
 const checkId = async (ctx, next) => {
@@ -239,7 +255,7 @@ module.exports = (router) => {
     '/klant/:id',
     requireAuthentication,
     validate(getAllNotificationsByKlantId.validationSheme),
-    checkKlantId,
+    // checkKlantId,
     getAllNotificationsByKlantId
   );
 
@@ -247,7 +263,7 @@ module.exports = (router) => {
     '/leverancier/:id',
     requireAuthentication,
     validate(getAllNotificationsByLeverancierId.validationSheme),
-    checkLeverancierId,
+    // checkLeverancierId,
     getAllNotificationsByLeverancierId,
   );
 
@@ -255,7 +271,7 @@ module.exports = (router) => {
     '/ongeopend/klant/:id',
     requireAuthentication,
     validate(countUnopenedNotificationsByKlantId.validationSheme),
-    checkKlantId,
+    // checkKlantId,
     countUnopenedNotificationsByKlantId,
   );
 
@@ -263,7 +279,7 @@ module.exports = (router) => {
     '/ongeopend/leverancier/:id',
     requireAuthentication,
     validate(countUnopenedNotificationsByLeverancierId.validationSheme),
-    checkLeverancierId,
+    // checkLeverancierId,
     countUnopenedNotificationsByLeverancierId,
   );
 

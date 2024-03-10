@@ -115,6 +115,7 @@ const makeLoginData = async (user) => {
 };
 
 const checkAndParseSession = async (authHeader) => {
+
   if (!authHeader) {
     throw ServiceError.unauthorized("You need to be signed in");
   }
@@ -124,6 +125,7 @@ const checkAndParseSession = async (authHeader) => {
   }
 
   const authToken = authHeader.substring(7);
+
   try {
     const { roles, idKlant, idLeverancier } = await verifyJWT(authToken);
 

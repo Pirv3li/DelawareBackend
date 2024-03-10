@@ -11,7 +11,7 @@ module.exports = {
       idAdres: 1,
       datum: '2024-02-01',
       orderStatus: 'niet-verzonden',
-      betalingStatus: 'niet betaald',
+      betalingStatus: '1',
       totaalPrijs: '15.55',
     },
 
@@ -22,7 +22,7 @@ module.exports = {
       idAdres: 2,
       datum: '2024-02-14',
       orderStatus: 'in-transit',
-      betalingStatus: 'niet betaald',
+      betalingStatus: '0',
       totaalPrijs: '20.55',
     },
     {
@@ -32,7 +32,7 @@ module.exports = {
       idAdres: 3,
       datum: '2024-02-24',
       orderStatus: 'geleverd',
-      betalingStatus: 'betaald',
+      betalingStatus: '1',
       totaalPrijs: '25.55',
     },
     ]);

@@ -1,23 +1,25 @@
 const notificationRepository = require('../repository/notificatie');
 
-const getAllNotifications = async () => {
-  const items = await notificationRepository.getAllNotifications();
-  return {
+const getAllNotifications = async (ctx) => {
+  const begin = parseInt(ctx.query.begin) || 0;
+  const einde = parseInt(ctx.query.einde) || 20;
+  const items = await notificationService.getAllNotifications(begin, einde);
+  ctx.body = {
     items,
     count: items.length,
   };
 };
 
 
-const getAllNotificationsByKlantId = async (idKlant) => {
+const getAllNotificationsByKlantId = async (idKlant, begin) => {
 
-  return notificationRepository.getAllNotificationsByKlantId(idKlant);
+  return notificationRepository.getAllNotificationsByKlantId(idKlant, begin);
 
 };
 
-const getAllNotificationsByLeverancierId = async (idLeverancier) => {
+const getAllNotificationsByLeverancierId = async (idLeverancier,begin) => {
 
-  return notificationRepository.getAllNotificationsByLeverancierId(idLeverancier);
+  return notificationRepository.getAllNotificationsByLeverancierId(idLeverancier, begin);
 
 };
 

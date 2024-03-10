@@ -22,16 +22,16 @@ const createOrder = async ({ idKlant, idLeverancier, idAdres, datum, orderStatus
   return getOrderById(idNewOrder);
 };
 
-const getOrderByKlantId = async (idKlant) => {
-  const items = await orderRepository.getOrderByKlantId(idKlant);
+const getOrderByKlantId = async (idKlant, begin) => {
+  const items = await orderRepository.getOrderByKlantId(idKlant, begin);
   return{
     items,
   };
 
 };
 
-const getOrderByLeverancierId = async (idLeverancier) => {
-  const items = await orderRepository.getOrderByLeverancierId(idLeverancier);
+const getOrderByLeverancierId = async (idLeverancier, begin) => {
+  const items = await orderRepository.getOrderByLeverancierId(idLeverancier, begin);
   return{
     items,
   };

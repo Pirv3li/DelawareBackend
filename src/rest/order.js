@@ -89,14 +89,9 @@ deleteOrderById.validationSheme={
 
 
 const getOrderByKlantId = async (ctx) => {
-  const {idKlant} = ctx.state.session;
-  if(Number(ctx.params.id) == idKlant){
-  ctx.body = await orderService.getOrderByKlantId(Number(ctx.params.id));
-  }
-  else{
-    ctx.status = 403;
-    ctx.body = {message: "You are not authorized to view this data"}
-  }
+  const idKlant = ctx.state.session.idLeverancier;
+  const  begin = parseInt(ctx.params.id);
+  ctx.body = await orderService.getOrderByKlantId(idKlant,begin);
 };
 
 getOrderByKlantId.validationSheme=null
@@ -105,14 +100,10 @@ requireKlant = makeRequireRole(Role.KLANT)
 
 
 const getOrderByLeverancierId = async (ctx) => {
-  const {idLeverancier} = ctx.state.session;
-  if(Number(ctx.params.id) == idLeverancier){
-  ctx.body = await orderService.getOrderByLeverancierId(Number(ctx.params.id));
-  }
-  else{
-    ctx.status = 403;
-    ctx.body = {message: "You are not authorized to view this data"}
-  }
+  const idLeverancier = ctx.state.session.idLeverancier;
+  const  begin = parseInt(ctx.params.id);
+  ctx.body = await orderService.getOrderByLeverancierId(idLeverancier,begin);
+ 
 };
 
 getOrderByLeverancierId.validationSheme=null

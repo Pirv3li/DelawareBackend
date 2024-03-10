@@ -2,7 +2,9 @@ const { getKnex, tables } = require('../data');
 
 const getAllNotifications = async () => {
   return getKnex()(tables.notificatie)
-    .select('*');
+    .select('*')
+    .orderBy('geopend', 'asc')
+    .orderBy('datum')
 };
 
 const getNotificationById = async (idNotificatie) => {
@@ -18,7 +20,7 @@ const getNotificationById = async (idNotificatie) => {
 };
 
 
-const getAllNotificationsByKlantId = async (idKlant) => {
+const getAllNotificationsByKlantId = async (idKlant, begin) => {
   return getKnex()(tables.notificatie)
   .leftJoin(
     `${tables.order}`,
@@ -26,10 +28,14 @@ const getAllNotificationsByKlantId = async (idKlant) => {
     `${tables.order}.idOrder`
   )
   .where(`${tables.order}.idKlant`, idKlant)
-  .select(`${tables.notificatie}.*`);
+  .select(`${tables.notificatie}.*`)
+  .orderBy('geopend', 'asc')
+  .orderBy('datum', 'asc')
+  .limit(10)
+  .offset(begin);
 };
 
-const getAllNotificationsByLeverancierId = async (idLeverancier) => {
+const getAllNotificationsByLeverancierId = async (idLeverancier, begin) => {
   return getKnex()(tables.notificatie)
   .leftJoin(
     `${tables.order}`,
@@ -37,7 +43,11 @@ const getAllNotificationsByLeverancierId = async (idLeverancier) => {
     `${tables.order}.idOrder`
   )
   .where(`${tables.order}.idLeverancier`, idLeverancier)
-  .select(`${tables.notificatie}.*`);
+  .select(`${tables.notificatie}.*`)
+  .orderBy('geopend', 'asc')
+  .orderBy('datum')
+  .limit(10)
+  .offset(begin);
 };
 
 const countUnopenedNotificationsByKlantId = async (idKlant) => {
