@@ -51,6 +51,7 @@ describe("product API", () => {
         btwtarief: 2,
         aantal: 1,
         gewicht: 1,
+        categorie: "test",
         beschrijving: "beschrijving",
       };
 
