@@ -236,14 +236,14 @@ module.exports = async () => {
       idOrderDetails: 2,
       eenheidsprijs: 15.0,
       aantal: 1,
-      idOrder: 1,
+      idOrder: 2,
       idProduct: 2,
     },
     {
       idOrderDetails: 3,
       eenheidsprijs: 7.5,
       aantal: 3,
-      idOrder: 2,
+      idOrder: 3,
       idProduct: 3,
     },
   ]);
