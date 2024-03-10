@@ -10,6 +10,7 @@ const SELECT_COLUMNS = [
   "aantal",
   "gewicht",
   "beschrijving",
+  "categorie",
 ];
 
 const getProducten = async () => {
@@ -27,6 +28,15 @@ const getProductById = async (id) => {
 
   return product;
 };
+
+const getDistinctCategories = async () => {
+  const categories = await getKnex()("sdp2backend.product").distinct(
+    "categorie"
+  );
+
+  return categories.map((categoryObj) => categoryObj.categorie);
+};
+
 const createProducten = async (
   idLeverancier,
   foto,
@@ -109,4 +119,5 @@ module.exports = {
   getProductById,
   updateProduct,
   deleteProduct,
+  getDistinctCategories,
 };
