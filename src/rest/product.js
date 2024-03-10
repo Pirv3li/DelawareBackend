@@ -75,6 +75,7 @@ createProducten.validationScheme = {
     btwtarief: Joi.number().positive().required(),
     aantal: Joi.number().integer().required(),
     gewicht: Joi.number().precision(2).positive().required(),
+    categorie: Joi.string().required(),
     beschrijving: Joi.string().max(255),
   },
 };
@@ -114,6 +115,7 @@ updateProduct.validationScheme = {
     btwtarief: Joi.number().positive().optional(),
     aantal: Joi.number().integer().optional(),
     gewicht: Joi.number().precision(2).positive().optional(),
+    categorie: Joi.string().optional(),
     beschrijving: Joi.string().max(255).optional(),
   },
 };

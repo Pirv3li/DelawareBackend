@@ -45,6 +45,7 @@ const createProducten = async (
   btwtarief,
   aantal,
   gewicht,
+  categorie,
   beschrijving
 ) => {
   const product = {
@@ -55,6 +56,7 @@ const createProducten = async (
     btwtarief,
     aantal,
     gewicht,
+    categorie,
     beschrijving,
   };
 
