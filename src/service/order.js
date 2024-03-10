@@ -1,25 +1,55 @@
-const orderRepository = require('../repository/order');
-
-const getAllOrders = async () => {
-  return orderRepository.getAllOrders();
-};
+const orderRepository = require("../repository/order");
+const adresRepository = require("../repository/adres");
+const orderDetailsRepository = require("../repository/orderDetails");
+const ServiceError = require('../core/serviceError');
+const { error } = require("winston");
 
 const getOrderById = async (idOrder) => {
-  return orderRepository.getOrderById(idOrder);
+  try {
+    const order = await orderRepository.getOrderById(idOrder);
+    if (!order) {
+      throw ServiceError.notFound(
+        `There is no order with id ${order}.`,
+        { order }
+      );
+    }
+    return order;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
-const createOrder = async ({ idKlant, idLeverancier, idAdres, datum, orderStatus, betalingStatus, totaalPrijs }) => {
-  const idNewOrder = await orderRepository.createOrder({
-    idKlant,
+const createOrder = async (
+  idKlant,
+  {
     idLeverancier,
-    idAdres,
+    adres,
     datum,
     orderStatus,
     betalingStatus,
     totaalPrijs,
-  });
+    products,
+  }
+) => {
+  try {
+    const newAdresId = await adresRepository.createAdres(adres);
 
-  return getOrderById(idNewOrder);
+    const idNewOrder = await orderRepository.createOrder(idKlant,{
+      idLeverancier,
+      datum,
+      idAdres: newAdresId,
+      orderStatus,
+      betalingStatus,
+      totaalPrijs,
+    });
+
+    await orderDetailsRepository.createOrderDetails(idNewOrder, 
+      products);
+
+    return idNewOrder;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 const getOrderByKlantId = async (idKlant, begin) => {
@@ -38,29 +68,35 @@ const getOrderByLeverancierId = async (idLeverancier, begin) => {
   
 };
 
+const updateOrderById = async (idOrder, { orderStatus, betalingStatus }) => {
+  let updateFields = {};
 
-const updateOrderById = async (idOrder, { idKlant, idLeverancier, idAdres, datum, orderStatus, betalingStatus, totaalPrijs }) => {
-  await orderRepository.updateOrderById(idOrder, {
-    idKlant,
-    idLeverancier,
-    idAdres,
-    datum,
-    orderStatus,
-    betalingStatus,
-    totaalPrijs,
-  });
+  // Only store values that are provided
+  if (orderStatus !== undefined) {
+    updateFields.orderStatus = orderStatus;
+  } else if (betalingStatus !== undefined) {
+    updateFields.betalingStatus = betalingStatus;
+  }
+
+  const updatedOrder = await orderRepository.updateOrderById(
+    idOrder,
+    updateFields
+  );
+    
+  if (!updatedOrder) {
+    throw ServiceError.notFound(
+      `There is no order with id ${idOrder}.`,
+      { idOrder }
+    );
+  }
+  return updatedOrder;
 };
 
-const deleteOrderById = async (idOrder) => {
-  await orderRepository.deleteOrderById(idOrder);
-};
 
 module.exports = {
-  getAllOrders,
   getOrderById,
   createOrder,
   updateOrderById,
-  deleteOrderById,
   getOrderByKlantId,
   getOrderByLeverancierId,
 };

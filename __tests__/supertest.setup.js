@@ -15,9 +15,35 @@ const KlantLogin = async (supertest) => {
   return `Bearer ${response.body.token}`;
 };
 
+const deleteKlantLogin = async (supertest) => {
+  const response = await supertest.post("/api/klant/login").send({
+    username: "Test Klant User3",
+    password: "12345678",
+  });
+
+  if (response.statusCode !== 200) {
+    throw new Error(response.body.message || "Unknown error occured");
+  }
+
+  return `Bearer ${response.body.token}`;
+};
+
 const LeverancierLogin = async (supertest) => {
   const response = await supertest.post("/api/leverancier/login").send({
     username: "Test Leverancier User2",
+    password: "12345678",
+  });
+
+  if (response.statusCode !== 200) {
+    throw new Error(response.body.message || "Unknown error occured");
+  }
+
+  return `Bearer ${response.body.token}`;
+};
+
+const DeleteLeverancierLogin = async (supertest) => {
+  const response = await supertest.post("/api/leverancier/login").send({
+    username: "Test Leverancier User3",
     password: "12345678",
   });
 
@@ -63,4 +89,6 @@ module.exports = {
   withServer,
   //adminLogin,
   LeverancierLogin,
+  deleteKlantLogin,
+  DeleteLeverancierLogin,
 };

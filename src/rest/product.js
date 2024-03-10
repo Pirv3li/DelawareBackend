@@ -2,10 +2,7 @@ const KoaRouter = require("@koa/router");
 const Joi = require("joi");
 const validate = require("../core/validation");
 const ServiceProducten = require("../service/product");
-const {
-  requireAuthentication,
-  makeRequireRole
-} = require("../core/auth");
+const { requireAuthentication, makeRequireRole } = require("../core/auth");
 const Role = require("../core/roles");
 
 const getProducten = async (ctx) => {
@@ -16,7 +13,7 @@ const getProducten = async (ctx) => {
     ctx.status = 200;
   } catch (error) {
     ctx.body = {
-      message: "Error while fetching producten"
+      message: "Error while fetching producten",
     };
     //ctx.status = 500;
   }
@@ -30,9 +27,7 @@ getProducten.validationScheme = {};
 
 const createProducten = async (ctx) => {
   try {
-    const {
-      idLeverancier
-    } = ctx.state.session;
+    const { idLeverancier } = ctx.state.session;
 
     const {
       foto,
@@ -41,6 +36,7 @@ const createProducten = async (ctx) => {
       btwtarief,
       aantal,
       gewicht,
+      categorie,
       beschrijving,
     } = ctx.request.body;
 
@@ -52,6 +48,7 @@ const createProducten = async (ctx) => {
       btwtarief,
       aantal,
       gewicht,
+      categorie,
       beschrijving
     );
 
@@ -60,12 +57,12 @@ const createProducten = async (ctx) => {
   } catch (error) {
     if (ctx.status === 403) {
       ctx.body = {
-        message: "Permission denied"
+        message: "Permission denied",
       };
     } else {
       ctx.status = 500;
       ctx.body = {
-        message: error
+        message: error,
       };
     }
   }
@@ -83,26 +80,27 @@ createProducten.validationScheme = {
 };
 
 const updateProduct = async (ctx) => {
-  const {
-    idLeverancier
-  } = ctx.state.session;
+  const { idLeverancier } = ctx.state.session;
   const idProduct = ctx.params.id;
   const productUpdates = ctx.request.body;
 
   try {
-    const updatedProd = await ServiceProducten.updateProduct(idProduct, idLeverancier, productUpdates);
+    const updatedProd = await ServiceProducten.updateProduct(
+      idProduct,
+      idLeverancier,
+      productUpdates
+    );
     ctx.status = 200;
     ctx.body = updatedProd;
   } catch (error) {
-    if (error.code = 'NOT_FOUND'){
+    if ((error.code = "NOT_FOUND")) {
       ctx.status = 404;
     }
     ctx.body = {
-      message: error.message
+      message: error.message,
     };
   }
 };
-
 
 updateProduct.validationScheme = {
   params: {
@@ -120,26 +118,27 @@ updateProduct.validationScheme = {
   },
 };
 
-
 const deleteProduct = async (ctx) => {
   try {
     const { idLeverancier } = ctx.state.session;
     const idProduct = ctx.params.id;
 
-    const deletedProduct = await ServiceProducten.deleteProduct(idLeverancier, idProduct);
+    const deletedProduct = await ServiceProducten.deleteProduct(
+      idLeverancier,
+      idProduct
+    );
     if (deletedProduct) {
       ctx.status = 200;
       ctx.body = { message: "Product deleted" };
-    } 
-  } catch (error) {
-    if (error.code = 'NOT_FOUND'){
-      ctx.status = 404;
     }
-    else {
-    ctx.status = 500;
-  }
+  } catch (error) {
+    if ((error.code = "NOT_FOUND")) {
+      ctx.status = 404;
+    } else {
+      ctx.status = 500;
+    }
     ctx.body = {
-      message: "Error deleting product"
+      message: "Error deleting product",
     };
   }
 };
@@ -149,7 +148,18 @@ deleteProduct.validationScheme = {
     id: Joi.number().integer().required(),
   },
 };
-
+const getDistinctCategories = async (ctx) => {
+  try {
+    const categories = await ServiceProducten.getDistinctCategories();
+    ctx.body = categories;
+    ctx.status = 200;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = {
+      message: "Error fetching categories",
+    };
+  }
+};
 
 const requireLeverancier = makeRequireRole(Role.LEVER);
 
@@ -164,7 +174,9 @@ module.exports = (router) => {
   });
   // public
   ProductRouter.get("/", validate(getProducten.validationScheme), getProducten);
+  ProductRouter.get("/categories", getDistinctCategories);
   ProductRouter.get("/:id", getProductByID);
+
   //private
   ProductRouter.post(
     "/",

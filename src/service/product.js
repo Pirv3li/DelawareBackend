@@ -28,6 +28,7 @@ const createProducten = async (
   btwtarief,
   aantal,
   gewicht,
+  categorie,
   beschrijving
 ) => {
   try {
@@ -39,6 +40,7 @@ const createProducten = async (
       btwtarief,
       aantal,
       gewicht,
+      categorie,
       beschrijving
     );
 
@@ -120,10 +122,20 @@ const deleteProduct = async (idLeverancier, idProduct) => {
   }
 };
 
+const getDistinctCategories = async () => {
+  try {
+    const categories = await repoProducten.getDistinctCategories();
+    return categories;
+  } catch (error) {
+    throw new Error("Error while fetching distinct categories");
+  }
+};
+
 module.exports = {
   getProducten,
   createProducten,
   getProductByID,
   updateProduct,
   deleteProduct,
+  getDistinctCategories,
 };
