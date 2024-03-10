@@ -5,6 +5,7 @@ const orderService = require("../service/order");
 const validate = require("../core/validation");
 const Role = require("../core/roles");
 const ServiceError = require("../core/serviceError");
+const { Console } = require("winston/lib/winston/transports");
 
 const getOrderById = async (ctx) => {
   try {
@@ -154,8 +155,9 @@ updateOrderById.validationScheme = {
 
 const getOrderByKlant = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
+  const {begin} = ctx.request.body;
   try {
-    const ordersKlant = await orderService.getOrderByKlantId(idKlant);
+    const ordersKlant = await orderService.getOrderByKlantId(idKlant, begin);
     ctx.status = 200;
     ctx.body = ordersKlant;
   } catch (error) {
@@ -164,14 +166,19 @@ const getOrderByKlant = async (ctx) => {
   }
 };
 
-getOrderByKlant.validationScheme = {};
+getOrderByKlant.validationScheme = {
+  body: {
+    begin: Joi.number().optional(),
+  }
+};
 
 const getOrderByLeverancier = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
-
+  const {begin} = ctx.request.body;
   try {
     const ordersLeverancier = await orderService.getOrderByLeverancierId(
-      idLeverancier
+      idLeverancier,
+      begin
     );
     ctx.status = 200;
     ctx.body = ordersLeverancier;
@@ -181,7 +188,11 @@ const getOrderByLeverancier = async (ctx) => {
   }
 };
 
-getOrderByLeverancier.validationScheme = {};
+getOrderByLeverancier.validationScheme = {
+  body: {
+    begin: Joi.number().optional(),
+  }
+};
 
 const requireLeverancier = makeRequireRole(Role.LEVER);
 const requireKlant = makeRequireRole(Role.KLANT);
@@ -211,17 +222,19 @@ module.exports = (router) => {
     updateOrderById
   );
 
-  orderRouter.get(
+  orderRouter.post(
     "/klant",
     requireAuthentication,
     requireKlant,
+    validate(getOrderByKlant.validationScheme),
     getOrderByKlant
   );
 
-  orderRouter.get(
+  orderRouter.post(
     "/leverancier",
     requireAuthentication,
     requireLeverancier,
+    validate(getOrderByLeverancier.validationScheme),
     getOrderByLeverancier
   );
 

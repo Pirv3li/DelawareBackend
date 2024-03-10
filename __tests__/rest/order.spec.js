@@ -22,7 +22,7 @@ describe("order API", () => {
   describe("GET /api/order/klant", () => {
     it("should retrieve klant orders", async () => {
       const response = await request
-        .get("/api/order/klant")
+        .post("/api/order/klant")
         .set("Authorization", klantAuth);
 
       expect(response.status).toBe(200);
@@ -31,7 +31,7 @@ describe("order API", () => {
 
     it("should retrieve leverancier orders", async () => {
       const response = await request
-        .get("/api/order/leverancier")
+        .post("/api/order/leverancier")
         .set("Authorization", leverAuth);
 
       expect(response.status).toBe(200);

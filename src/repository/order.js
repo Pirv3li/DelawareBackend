@@ -34,19 +34,31 @@ const getOrderById = async (idOrder) => {
   return formatOrder(order);
 };
 
-const getOrderByKlantId = async (idKlant) => {
-  const order = await getKnex()(tables.order)
-  .where("idKlant", idKlant);
+const getOrderByKlantId = async (idKlant, begin) => {
+  const pageSize = 10; 
+  const offset = begin - 1;
+  const orders = await getKnex()(tables.order)
+    .where("idKlant", idKlant)
+    .orderBy("datum", "asc")
+    .limit(pageSize)
+    .offset(offset);
 
-  return order;
+  return orders;
 };
 
-const getOrderByLeverancierId = async (idLeverancier) => {
-  const order = await getKnex()(tables.order)
-  .where("idLeverancier",idLeverancier);
 
-  return order;
+const getOrderByLeverancierId = async (idLeverancier, begin) => {
+  const pageSize = 10;
+  const offset = begin - 1;
+  const orders = await getKnex()(tables.order)
+    .where("idLeverancier", idLeverancier)
+    .orderBy("datum", "asc")
+    .limit(pageSize)
+    .offset(offset);
+
+  return orders;
 };
+
 
 const createOrder = async (idKlant, {
   idLeverancier,
