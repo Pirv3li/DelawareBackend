@@ -6,9 +6,6 @@ const validate = require("../core/validation");
 const Role = require("../core/roles");
 
 const getOrderById = async (ctx) => {
-  // is de request van klant of leverancier
-  const isKlant = ctx.state.role === "klant";
-  const isLeverancier = ctx.state.role === "leverancier";
 
   try {
     const orderId = ctx.params.id;
@@ -16,8 +13,8 @@ const getOrderById = async (ctx) => {
 
     // Check als user authorized is
     if (
-      (isKlant && order.idKlant !== ctx.state.session.idKlant) ||
-      (isLeverancier && order.idLeverancier !== ctx.state.session.idLeverancier)
+      (order.idKlant !== ctx.state.session.idKlant) &&
+      (order.idLeverancier !== ctx.state.session.idLeverancier)
     ) {
       ctx.status = 403;
       ctx.body = { message: "Permission denied" };

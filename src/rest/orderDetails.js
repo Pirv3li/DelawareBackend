@@ -1,8 +1,9 @@
 const KoaRouter = require("@koa/router");
-const Joi = require('joi');
-const { requireAuthentication } = require('../core/auth');
-const orderDetailsService = require('../service/orderDetails');
-const validate = require('../core/validation')
+const Joi = require("joi");
+const { requireAuthentication } = require("../core/auth");
+const orderDetailsService = require("../service/orderDetails");
+const validate = require("../core/validation");
+const orderService = require("../service/order");
 
 // const getAllOrderDetails = async (ctx) => {
 //   ctx.body = await orderDetailsService.getAllOrderDetails();
@@ -10,28 +11,65 @@ const validate = require('../core/validation')
 // getAllOrderDetails.validationSheme = null
 
 const getOrderDetailsById = async (ctx) => {
-  ctx.body = await orderDetailsService.getOrderDetailsById(Number(ctx.params.id));
-};
-getOrderDetailsById.validationSheme = {
-  params: {
-    id: Joi.number()
-      .integer()
-      .positive()
+
+  try {
+    const orderDetailsId = ctx.params.id;
+    const orderDetail = await orderDetailsService.getOrderDetailsById(
+      orderDetailsId
+    );
+    const order = await orderService.getOrderById(orderDetail.idOrder);
+
+    if (
+      (order.idKlant !== ctx.state.session.idKlant) &&
+      (order.idLeverancier !== ctx.state.session.idLeverancier)
+    ) {
+      ctx.status = 403;
+      ctx.body = { message: "Permission denied" };
+      return;
+    } else {
+      ctx.body = orderDetail;
+    }
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { message: error.message };
   }
-}
+};
+
+getOrderDetailsById.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
+};
 
 const getOrderDetailsByOrderId = async (ctx) => {
-  ctx.body = await orderDetailsService.getOrderDetailsByOrderId(Number(ctx.params.id));
-};
-getOrderDetailsByOrderId.validationSheme = {
-  params: {
-    id: Joi.number()
-      .integer()
-      .positive()
+
+  try {
+    const orderID = ctx.params.id;
+    const order = await orderService.getOrderById(orderID);
+
+    if (
+      (order.idKlant !== ctx.state.session.idKlant) &&
+      (order.idLeverancier !== ctx.state.session.idLeverancier)
+    ) {
+      ctx.status = 403;
+      ctx.body = { message: "Permission denied" };
+      return;
+    } else {
+      const orderDetailsId = await orderDetailsService.getOrderDetailsByOrderId(
+        orderID
+      );
+
+      ctx.body = orderDetailsId;
+    }
+  } catch (error) {
+    ctx.body = { message: error.message };
   }
-}
-
-
+};
+getOrderDetailsByOrderId.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
+};
 
 // const createOrderDetails = async (ctx) => {
 //   const { eenheidsprijs, aantal, idOrder, idProduct } = ctx.request.body;
@@ -92,7 +130,7 @@ getOrderDetailsByOrderId.validationSheme = {
  */
 module.exports = (router) => {
   const orderDetailsRouter = new KoaRouter({
-    prefix: '/orderDetails',
+    prefix: "/orderDetails",
   });
 
   // orderDetailsRouter.get(
@@ -103,12 +141,11 @@ module.exports = (router) => {
   // );
 
   orderDetailsRouter.get(
-    '/order/:id',
+    "/order/:id",
     requireAuthentication,
-    validate(getOrderDetailsByOrderId.validationSheme),
+    validate(getOrderDetailsByOrderId.validationScheme),
     getOrderDetailsByOrderId
   );
-
 
   // orderDetailsRouter.post(
   //   '/',
@@ -117,14 +154,12 @@ module.exports = (router) => {
   //   createOrderDetails
   // );
 
-
   orderDetailsRouter.get(
-    '/:id',
+    "/:id",
     requireAuthentication,
-    validate(getOrderDetailsById.validationSheme),
+    validate(getOrderDetailsById.validationScheme),
     getOrderDetailsById
   );
-
 
   // orderDetailsRouter.put(
   //   '/:id',
@@ -140,5 +175,7 @@ module.exports = (router) => {
   //   deleteOrderDetailsById
   // );
 
-  router.use(orderDetailsRouter.routes()).use(orderDetailsRouter.allowedMethods());
+  router
+    .use(orderDetailsRouter.routes())
+    .use(orderDetailsRouter.allowedMethods());
 };
