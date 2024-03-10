@@ -52,20 +52,22 @@ const createOrder = async (
   }
 };
 
-const getOrderByKlantId = async (idKlant, begin) => {
-  const items = await orderRepository.getOrderByKlantId(idKlant, begin);
-  return{
-    items,
-  };
-
+const getOrderByKlantId = async (idKlant) => {
+  try {
+    const orders = await orderRepository.getOrderByKlantId(idKlant);
+    return orders;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
-const getOrderByLeverancierId = async (idLeverancier, begin) => {
-  const items = await orderRepository.getOrderByLeverancierId(idLeverancier, begin);
-  return{
-    items,
-  };
-  
+const getOrderByLeverancierId = async (idLeverancier) => {
+  try {
+    const orders = await orderRepository.getOrderByLeverancierId(idLeverancier);
+    return orders;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 const updateOrderById = async (idOrder, { orderStatus, betalingStatus }) => {

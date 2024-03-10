@@ -152,32 +152,36 @@ updateOrderById.validationScheme = {
   },
 };
 
-
-const getOrderByKlantId = async (ctx) => {
-  const idKlant = ctx.state.session.idLeverancier;
-  const  begin = parseInt(ctx.params.id);
+const getOrderByKlant = async (ctx) => {
+  const idKlant = ctx.state.session.idKlant;
   try {
-  ctx.body = await orderService.getOrderByKlantId(idKlant,begin);
+    const ordersKlant = await orderService.getOrderByKlantId(idKlant);
+    ctx.status = 200;
+    ctx.body = ordersKlant;
   } catch (error) {
     ctx.status = error.status;
     ctx.body = { message: error.message };
   }
 };
 
-getOrderByKlantId.validationScheme = {};
+getOrderByKlant.validationScheme = {};
 
-const getOrderByLeverancierId = async (ctx) => {
+const getOrderByLeverancier = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
-  const  begin = parseInt(ctx.params.id);
+
   try {
-  ctx.body = await orderService.getOrderByLeverancierId(idLeverancier,begin);
-} catch (error) {
-  ctx.status = error.status;
-  ctx.body = { message: error.message };
-}
+    const ordersLeverancier = await orderService.getOrderByLeverancierId(
+      idLeverancier
+    );
+    ctx.status = 200;
+    ctx.body = ordersLeverancier;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { message: error.message };
+  }
 };
 
-getOrderByLeverancierId.validationSheme=null
+getOrderByLeverancier.validationScheme = {};
 
 const requireLeverancier = makeRequireRole(Role.LEVER);
 const requireKlant = makeRequireRole(Role.KLANT);
@@ -189,42 +193,43 @@ const requireKlant = makeRequireRole(Role.KLANT);
  */
 module.exports = (router) => {
   const orderRouter = new KoaRouter({
-    prefix: '/order',
+    prefix: "/order",
   });
 
- 
   orderRouter.post(
-    '/',
-    requireAuthentication,
-    validate(createOrder.validationSheme),
-    createOrder
-  );
-  orderRouter.get(
-    '/:id',
-    requireAuthentication,
-    validate(getOrderById.validationSheme),
-    getOrderById
-  );
-  orderRouter.put(
-    '/:id',
-    requireAuthentication,
-    validate(updateOrderById.validationSheme),
-    updateOrderById
-  );
- 
-  orderRouter.get(
-    '/klant/:id',
+    "/",
     requireAuthentication,
     requireKlant,
-    getOrderByKlantId
+    validate(createOrder.validationScheme),
+    createOrder
+  );
+
+  orderRouter.put(
+    "/:id",
+    requireAuthentication,
+    validate(updateOrderById.validationScheme),
+    updateOrderById
   );
 
   orderRouter.get(
-    '/leverancier/:id',
+    "/klant",
     requireAuthentication,
-    requireLeverancier,
-    getOrderByLeverancierId
+    requireKlant,
+    getOrderByKlant
   );
 
+  orderRouter.get(
+    "/leverancier",
+    requireAuthentication,
+    requireLeverancier,
+    getOrderByLeverancier
+  );
+
+  orderRouter.get(
+    "/:id",
+    requireAuthentication,
+    validate(getOrderById.validationScheme),
+    getOrderById
+  );
   router.use(orderRouter.routes()).use(orderRouter.allowedMethods());
 };
