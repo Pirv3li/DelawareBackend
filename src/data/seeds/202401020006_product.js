@@ -266,7 +266,7 @@ module.exports = {
       },{
         idProduct: 21,
         idLeverancier: 2,
-        naam: "Samsung WW10T834AEN/S2",
+        naam: "Samsung WW10T834AENS2",
         eenheidsprijs: 1400,
         btwtarief: 21,
         foto: "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_106342851?x=600&y=450&format=jpg&quality=80&sp=yes&strip=yes&trim&ex=600&ey=450&align=center&resizesource&unsharp=1.5x1+0.7+0.02&cox=0&coy=0&cdx=600&cdy=450",

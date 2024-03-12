@@ -4,6 +4,15 @@ const orderDetailsRepository = require("../repository/orderDetails");
 const ServiceError = require('../core/serviceError');
 const { error } = require("winston");
 
+const getAllOrders = async (ctx) => {
+  ctx.body = {
+    items,
+    count: items.length,
+  };
+};
+
+
+
 const getOrderById = async (idOrder) => {
   try {
     const order = await orderRepository.getOrderById(idOrder);
