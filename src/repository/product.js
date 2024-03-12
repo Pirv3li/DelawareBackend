@@ -30,9 +30,7 @@ const getProductById = async (id) => {
 };
 
 const getDistinctCategories = async () => {
-  const categories = await getKnex()("sdp2backend.product").distinct(
-    "categorie"
-  );
+  const categories = await getKnex()("product").distinct("categorie");
 
   return categories.map((categoryObj) => categoryObj.categorie);
 };
