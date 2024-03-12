@@ -19,6 +19,28 @@ const getProducten = async (ctx) => {
   }
 };
 
+const getProductenLimit = async (ctx) => {
+
+  const {begin} = ctx.request.body;
+  try {
+    const producten = await ServiceProducten.getProductenLimit(begin);
+
+    ctx.body = producten;
+    ctx.status = 200;
+  } catch (error) {
+    ctx.body = {
+      message: "Error while fetching producten limit",
+    };
+    //ctx.status = 500;
+  }
+};
+
+getProductenLimit.validationScheme = {
+  body: {
+    begin: Joi.number().positive(),
+  }
+};
+
 const getProductByID = async (ctx) => {
   ctx.body = await ServiceProducten.getProductByID(Number(ctx.params.id));
 };
@@ -178,6 +200,7 @@ module.exports = (router) => {
   ProductRouter.get("/", validate(getProducten.validationScheme), getProducten);
   ProductRouter.get("/categories", getDistinctCategories);
   ProductRouter.get("/:id", getProductByID);
+  ProductRouter.post("/begin",validate(getProductenLimit.validationScheme), getProductenLimit);
 
   //private
   ProductRouter.post(
