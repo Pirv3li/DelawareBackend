@@ -11,16 +11,23 @@ const getAllNotifications = async (ctx) => {
 };
 
 
-const getAllNotificationsByKlantId = async (idKlant, begin) => {
-
-  return notificationRepository.getAllNotificationsByKlantId(idKlant, begin);
-
+const getAllNotificationsByKlantId = async (idKlant, begin=1) => {
+  try{
+  notificaties = await notificationRepository.getAllNotificationsByKlantId(idKlant, begin);
+  return notificaties;
+} catch (notificaties) {
+  throw new Error(notificaties);
+}
 };
 
-const getAllNotificationsByLeverancierId = async (idLeverancier,begin) => {
+const getAllNotificationsByLeverancierId = async (idLeverancier,begin=1) => {
 
-  return notificationRepository.getAllNotificationsByLeverancierId(idLeverancier, begin);
-
+  try{
+    notificaties = await notificationRepository.getAllNotificationsByLeverancierId(idLeverancier, begin);
+    return notificaties;
+  } catch (notificaties) {
+    throw new Error(notificaties);
+  }
 };
 
 const getNotificationById = async (idNotificatie) => {

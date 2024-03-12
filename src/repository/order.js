@@ -39,6 +39,7 @@ const getOrderByKlantId = async (idKlant, begin) => {
   const offset = begin - 1;
   const orders = await getKnex()(tables.order)
     .where("idKlant", idKlant)
+    .orderBy("betalingStatus", "asc")
     .orderBy("datum", "asc")
     .limit(pageSize)
     .offset(offset);
@@ -52,6 +53,7 @@ const getOrderByLeverancierId = async (idLeverancier, begin) => {
   const offset = begin - 1;
   const orders = await getKnex()(tables.order)
     .where("idLeverancier", idLeverancier)
+    .orderBy("betalingStatus", "asc")
     .orderBy("datum", "asc")
     .limit(pageSize)
     .offset(offset);

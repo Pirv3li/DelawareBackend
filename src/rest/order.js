@@ -176,7 +176,8 @@ const getOrderByLeverancier = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
   const {begin} = ctx.request.body;
   try {
-    const ordersLeverancier = await orderService.getOrderByLeverancierId(
+    const ordersLeverancier = await 
+    orderService.getOrderByLeverancierId(
       idLeverancier,
       begin
     );

@@ -21,6 +21,9 @@ const getNotificationById = async (idNotificatie) => {
 
 
 const getAllNotificationsByKlantId = async (idKlant, begin) => {
+  const pageSize = 10;
+  const offset = begin - 1;
+
   return getKnex()(tables.notificatie)
   .leftJoin(
     `${tables.order}`,
@@ -31,11 +34,14 @@ const getAllNotificationsByKlantId = async (idKlant, begin) => {
   .select(`${tables.notificatie}.*`)
   .orderBy('geopend', 'asc')
   .orderBy('datum', 'asc')
-  .limit(10)
-  .offset(begin);
+  .limit(pageSize)
+  .offset(offset);
 };
 
 const getAllNotificationsByLeverancierId = async (idLeverancier, begin) => {
+  const pageSize = 10;
+  const offset = begin - 1;
+
   return getKnex()(tables.notificatie)
   .leftJoin(
     `${tables.order}`,
@@ -46,8 +52,8 @@ const getAllNotificationsByLeverancierId = async (idLeverancier, begin) => {
   .select(`${tables.notificatie}.*`)
   .orderBy('geopend', 'asc')
   .orderBy('datum')
-  .limit(10)
-  .offset(begin);
+  .limit(pageSize)
+  .offset(offset);
 };
 
 const countUnopenedNotificationsByKlantId = async (idKlant) => {

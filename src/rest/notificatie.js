@@ -1,6 +1,6 @@
 const KoaRouter = require("@koa/router");
 const Joi = require('joi');
-const { requireAuthentication, makeRequireRole } = require('../core/auth'); 
+const { requireAuthentication, makeRequireRole } = require('../core/auth');
 const notificationService = require('../service/notificatie');
 const validate = require('../core/validation')
 const Role = require('../core/roles');
@@ -14,10 +14,10 @@ getAllNotifications.validationSheme = null
 
 
 const getNotificationById = async (ctx) => {
-  
+
   ctx.body = await notificationService.getNotificationById(Number(ctx.params.id));
 };
-getNotificationById.validationSheme={
+getNotificationById.validationSheme = {
   params: {
     id: Joi.number()
       .integer()
@@ -28,7 +28,7 @@ getNotificationById.validationSheme={
 const getNotificationByOrderId = async (ctx) => {
   ctx.body = await notificationService.getNotificationByOrderId(Number(ctx.params.id));
 };
-getNotificationByOrderId.validationSheme={
+getNotificationByOrderId.validationSheme = {
   params: {
     id: Joi.number()
       .integer()
@@ -37,7 +37,7 @@ getNotificationByOrderId.validationSheme={
 }
 
 const createNotification = async (ctx) => {
-  const {idOrder, text, onderwerp, geopend, afgehandeld} = ctx.request.body;
+  const { idOrder, text, onderwerp, geopend, afgehandeld } = ctx.request.body;
   const newNotification = await notificationService.createNotification({
     idOrder: Number(idOrder),
     text: String(text),
@@ -50,18 +50,18 @@ const createNotification = async (ctx) => {
 };
 
 
-createNotification.validationSheme={
-    body: {
-        idOrder: Joi.number().integer().positive().required(),
-        text: Joi.string().required(),
-        onderwerp: Joi.string().required(),
-        geopend: Joi.boolean().required(),
-        afgehandeld: Joi.boolean().required()
-    }
+createNotification.validationSheme = {
+  body: {
+    idOrder: Joi.number().integer().positive().required(),
+    text: Joi.string().required(),
+    onderwerp: Joi.string().required(),
+    geopend: Joi.boolean().required(),
+    afgehandeld: Joi.boolean().required()
+  }
 }
 
 const updateNotificationById = async (ctx) => {
-  const {idOrder, text, onderwerp, geopend, afgehandeld, datum} = ctx.request.body;
+  const { idOrder, text, onderwerp, geopend, afgehandeld, datum } = ctx.request.body;
   ctx.body = await notificationService.updateNotificationById(Number(ctx.params.id), {
     idOrder: Number(idOrder),
     text: String(text),
@@ -90,7 +90,7 @@ const deleteNotificationById = async (ctx) => {
   notificationService.deleteNotificationById(Number(ctx.params.id));
   ctx.status = 204;
 };
-deleteNotificationById.validationSheme={
+deleteNotificationById.validationSheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
@@ -99,27 +99,44 @@ deleteNotificationById.validationSheme={
 
 const getAllNotificationsByKlantId = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
-  const begin = parseInt(ctx.params.id);
-  ctx.body = await notificationService.getAllNotificationsByKlantId(idKlant, begin);
+  const { begin } = ctx.request.body;
+  try {
+    const notificatieKlant= await notificationService.getAllNotificationsByKlantId(idKlant, begin);
+    ctx.status = 200;
+    ctx.body = notificatieKlant;
+  } catch (error) {
+    ctx.status = error.status;
+    ctx.body = { message: error.message };
+  }
+
 };
 
 getAllNotificationsByKlantId.validationSheme = {
-  params: {
-    id: Joi.number()
-      .integer()
+  body: {
+    begin: Joi.number().optional(),
   }
 }
 
 const getAllNotificationsByLeverancierId = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
-  const  begin = parseInt(ctx.params.id);
-  ctx.body = await notificationService.getAllNotificationsByLeverancierId(idLeverancier, begin);
+  const { begin } = ctx.request.body;
+  try {
+
+    const NotificatiesLverancier = 
+    await notificationService.
+    getAllNotificationsByLeverancierId(idLeverancier, begin);
+    ctx.status = 200;
+    ctx.body = NotificatiesLverancier;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { message: error.message };
+  }
+
 };
 
 getAllNotificationsByLeverancierId.validationSheme = {
-  params: {
-    id: Joi.number()
-      .integer()
+  body: {
+    begin: Joi.number().optional(),
   }
 }
 
@@ -146,45 +163,45 @@ countUnopenedNotificationsByLeverancierId.validationSheme = {
   }
 }
 
-// const checkKlantId = (ctx, next) => {
-//   const { idKlant, roles } = ctx.state.session;
-//   const { id } = ctx.params;
+const checkKlantId = (ctx, next) => {
+  const { idKlant, roles } = ctx.state.session;
+  const { id } = ctx.params;
 
-//   const notifications =  notificationRepository.getAllNotificationsByKlantId(idKlant);
-//   if (notifications.length > 0) {
-//     idKlantNot =  notifications[0].idKlant;
-//   } else {
-//     throw new Error('No notifications found for this klant id');
-//   }
+  const notifications = notificationRepository.getAllNotificationsByKlantId(idKlant);
+  if (notifications.length > 0) {
+    idKlantNot = notifications[0].idKlant;
+  } else {
+    throw new Error('No notifications found for this klant id');
+  }
 
-//   console.log(idKlantNot);
-//   if (Number(id) !== idKlant && !roles.includes(Role.ADMIN)) {
-//     return ctx.throw(
-//       403,
-//       'U hebt geen toestemming om deze gebruiker te bekijken',
-//       {
-//         code: 'FORBIDDEN',
-//       }
-//     );
-//   }
-//   return next();
-// };
+  console.log(idKlantNot);
+  if (Number(id) !== idKlant && !roles.includes(Role.ADMIN)) {
+    return ctx.throw(
+      403,
+      'U hebt geen toestemming om deze gebruiker te bekijken',
+      {
+        code: 'FORBIDDEN',
+      }
+    );
+  }
+  return next();
+};
 
-// const checkLeverancierId = (ctx, next) => {
-//   const { idLeverancier, roles } = ctx.state.session;
-//   const { id } = ctx.params;
+const checkLeverancierId = (ctx, next) => {
+  const { idLeverancier, roles } = ctx.state.session;
+  const { id } = ctx.params;
 
-//   if (Number(id) !== idLeverancier && !roles.includes(Role.ADMIN)) {
-//     return ctx.throw(
-//       403,
-//       'U hebt geen toestemming om deze gebruiker te bekijken',
-//       {
-//         code: 'FORBIDDEN',
-//       }
-//     );
-//   }
-//   return next();
-// };
+  if (Number(id) !== idLeverancier && !roles.includes(Role.ADMIN)) {
+    return ctx.throw(
+      403,
+      'U hebt geen toestemming om deze gebruiker te bekijken',
+      {
+        code: 'FORBIDDEN',
+      }
+    );
+  }
+  return next();
+};
 
 
 const checkId = async (ctx, next) => {
@@ -193,7 +210,7 @@ const checkId = async (ctx, next) => {
 
   const notification = await notificationService.getNotificationById(Number(id));
 
-  if ((notification.idLeverancier !== idLeverancier && notification.idKlant !== idKlant ) && !roles.includes(Role.ADMIN)) {
+  if ((notification.idLeverancier !== idLeverancier && notification.idKlant !== idKlant) && !roles.includes(Role.ADMIN)) {
     return ctx.throw(
       403,
       `U hebt geen toestemming om deze notificatie te bekijken`,
@@ -207,8 +224,8 @@ const checkId = async (ctx, next) => {
 
 
 
-requireKlant = makeRequireRole(Role.KLANT)
-
+const requireKlant = makeRequireRole(Role.KLANT);
+const requireLeverancier = makeRequireRole(Role.LEVER);
 /**
  * Install notification routes in the given router.
  *
@@ -231,6 +248,20 @@ module.exports = (router) => {
     validate(createNotification.validationSheme),
     createNotification
   );
+  notificationRouter.post(
+    "/klant",
+    requireAuthentication,
+    requireKlant,
+    validate(getAllNotificationsByKlantId.validationSheme),
+    getAllNotificationsByKlantId
+  );
+  notificationRouter.post(
+    "/leverancier",
+    requireAuthentication,
+    requireLeverancier,
+    validate(getAllNotificationsByLeverancierId.validationSheme),
+    getAllNotificationsByLeverancierId
+  );
   notificationRouter.get(
     '/:id',
     requireAuthentication,
@@ -251,27 +282,14 @@ module.exports = (router) => {
     deleteNotificationById
   );
 
-  notificationRouter.get(
-    '/klant/:id',
-    requireAuthentication,
-    validate(getAllNotificationsByKlantId.validationSheme),
-    // checkKlantId,
-    getAllNotificationsByKlantId
-  );
 
-  notificationRouter.get(
-    '/leverancier/:id',
-    requireAuthentication,
-    validate(getAllNotificationsByLeverancierId.validationSheme),
-    // checkLeverancierId,
-    getAllNotificationsByLeverancierId,
-  );
+
 
   notificationRouter.get(
     '/ongeopend/klant/:id',
     requireAuthentication,
     validate(countUnopenedNotificationsByKlantId.validationSheme),
-    // checkKlantId,
+    checkKlantId,
     countUnopenedNotificationsByKlantId,
   );
 
@@ -279,11 +297,11 @@ module.exports = (router) => {
     '/ongeopend/leverancier/:id',
     requireAuthentication,
     validate(countUnopenedNotificationsByLeverancierId.validationSheme),
-    // checkLeverancierId,
+    checkLeverancierId,
     countUnopenedNotificationsByLeverancierId,
   );
 
- 
+
 
   router.use(notificationRouter.routes()).use(notificationRouter.allowedMethods());
 };
