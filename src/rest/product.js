@@ -41,6 +41,29 @@ getProductenLimit.validationScheme = {
   }
 };
 
+const getProductenByLeverancierId = async (ctx) => {
+
+  const {begin} = ctx.request.body;
+  const { idLeverancier } = ctx.state.session;
+  try {
+    const producten = await ServiceProducten.getProductenByLeverancierId(begin, idLeverancier);
+
+    ctx.body = producten;
+    ctx.status = 200;
+  } catch (error) {
+    ctx.body = {
+      message: "Error while fetching producten limit",
+    };
+    //ctx.status = 500;
+  }
+};
+
+getProductenByLeverancierId.validationScheme = {
+  body: {
+    begin: Joi.number().positive(),
+  }
+};
+
 const getProductByID = async (ctx) => {
   ctx.body = await ServiceProducten.getProductByID(Number(ctx.params.id));
 };
@@ -209,6 +232,15 @@ module.exports = (router) => {
     requireLeverancier,
     validate(createProducten.validationScheme),
     createProducten
+  );
+
+  //hier
+  ProductRouter.post(
+    "/leverancier",
+    requireAuthentication,
+    requireLeverancier,
+    validate(getProductenByLeverancierId.validationScheme),
+    getProductenByLeverancierId
   );
 
   ProductRouter.put(

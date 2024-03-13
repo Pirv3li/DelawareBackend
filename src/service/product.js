@@ -22,6 +22,16 @@ const getProductenLimit = async (begin) => {
   }
 };
 
+const getProductenByLeverancierId = async (begin, idLeverancier) => {
+
+  try {
+    const producten = repoProducten.getProductenByLeverancierId(begin, idLeverancier);
+    return producten;
+  } catch (error) {
+    throw new Error("Error while fetching producten");
+  }
+};
+
 const getProductByID = async (id) => {
   const product = await repoProducten.getProductById(id);
 
@@ -150,5 +160,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   getDistinctCategories,
-  getProductenLimit
+  getProductenLimit,
+  getProductenByLeverancierId,
 };

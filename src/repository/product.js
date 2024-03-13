@@ -31,6 +31,20 @@ const getProductenLimit = async (begin) => {
   return producten;
 };
 
+
+const getProductenByLeverancierId = async (begin, idLeverancier) => {
+  const pageSize = 10; 
+  const offset = begin - 1;
+  
+  const producten = getKnex()(tables.product)
+  .select(...SELECT_COLUMNS)
+  .where("idLeverancier", idLeverancier)
+  .limit(pageSize)
+  .offset(offset);
+
+  return producten;
+};
+
 const getProductById = async (id) => {
   id = Number(id);
 
@@ -132,5 +146,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   getDistinctCategories,
-  getProductenLimit
+  getProductenLimit,
+  getProductenByLeverancierId,
 };
