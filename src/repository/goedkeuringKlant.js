@@ -1,7 +1,7 @@
 const { getKnex, tables } = require('../data');
 
-const getAllGoedkeuringenKlant = async () => {
-    const goedkeuringKlant = await getKnex()(tables.goedkeuringklant);
+const getAllGoedkeuringenKlant = async (idKlant) => {
+    const goedkeuringKlant = await getKnex()(tables.goedkeuringklant).where('idKlant', idKlant);
     return goedkeuringKlant;
 }
 

@@ -16,32 +16,48 @@ const checkOnlyKlantRole = (role) => {
   }
 };
 
-const getAllGoedkeuringenKlant = async(user) => {
-  checkAdminOrKlantRole(user);
-  const items = await goedkeuringKlantRepo.getAllGoedkeuringenKlant();
+const checkKlantId = (idKlant, id) => {
+  if (idKlant !== id) {
+    throw ServiceError.forbidden(`User does not have permission to access or modify this data.`);
+  }
+}
+
+const getAllGoedkeuringenKlant = async(session) => {
+  checkAdminOrKlantRole(session.roles);
+  const items = await goedkeuringKlantRepo.getAllGoedkeuringenKlant(session.idKlant);
+  items.forEach(item => {
+    checkKlantId(item.idKlant, session.idKlant);
+  });
   return {
     items,
     count: items.length
   }
 };
 
-const getGoedkeuringKlantById = async(id, user) => {
-  checkAdminOrKlantRole(user);
+const getGoedkeuringKlantById = async(id, session) => {
+  checkAdminOrKlantRole(session.roles);
   const goedkeuringKlant = await goedkeuringKlantRepo.getGoedkeuringKlantById(id)
   if(!goedkeuringKlant){
     throw ServiceError.notFound(`There is no goedkeuringKlant with id ${id}.`, {id})
   }
+  checkKlantId(goedkeuringKlant.idKlant, session.idKlant);
   return goedkeuringKlant  
 };
 
-const createGoedkeuringKlant = async ({ klantNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf, idKlant }, user) => {
-  checkOnlyKlantRole(user);
+const createGoedkeuringKlant = async ({ klantNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf, idKlant }, session) => {
+  checkOnlyKlantRole(session.roles);
   const idNewGoedkeuringWijziging = await goedkeuringKlantRepo.createGoedkeuringKlant({ klantNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf, idKlant });
+  checkKlantId(idKlant, session.idKlant)
   return await goedkeuringKlantRepo.getGoedkeuringKlantById(idNewGoedkeuringWijziging);
 };
 
-const deleteGoedkeuringKlantById = async (id, user) => {
-  checkAdminOrKlantRole(user);
+const deleteGoedkeuringKlantById = async (id, session) => {
+  checkAdminOrKlantRole(session.roles);
+  const goedkeuringKlant = await goedkeuringKlantRepo.getGoedkeuringKlantById(id);
+  if (!goedkeuringKlant) {
+    throw ServiceError.notFound(`There is no goedkeuringKlant with id ${id}.`, {id});
+  }
+  checkKlantId(goedkeuringKlant.idKlant, session.idKlant);
   await goedkeuringKlantRepo.deleteGoedkeuringKlantById(id)
 };
 
