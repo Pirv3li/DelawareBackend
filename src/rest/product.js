@@ -58,11 +58,64 @@ const getProductenByLeverancierId = async (ctx) => {
   }
 };
 
+const getProductenByZoekterm = async (ctx) => {
+
+  const {begin} = ctx.request.body;
+  const {zoekterm} = ctx.request.body;
+  try {
+    const producten = await ServiceProducten.getProductenByZoekterm(begin, zoekterm);
+
+    ctx.body = producten;
+    ctx.status = 200;
+  } catch (error) {
+    ctx.body = {
+      message: "Error while fetching producten limit",
+    };
+    //ctx.status = 500;
+  }
+};
+
+getProductenByZoekterm.validationScheme = {
+  body: {
+    begin: Joi.number().positive(),
+    zoekterm: Joi.string().allow('') 
+  }
+};
+
+
+
+const getProductenByCategories= async (ctx) => {
+
+  const {begin} = ctx.request.body;
+  const {categories} = ctx.request.body;
+  try {
+    const producten = await ServiceProducten.getProductenByCategories(begin, categories);
+
+    ctx.body = producten;
+    ctx.status = 200;
+  } catch (error) {
+    ctx.body = {
+      message: "Error while fetching producten limit",
+    };
+    //ctx.status = 500;
+  }
+};
+
+getProductenByCategories.validationScheme = {
+  body: {
+    begin: Joi.number().positive(),
+    categories: Joi.array().items(Joi.string()) 
+  }
+};
+
+
 getProductenByLeverancierId.validationScheme = {
   body: {
     begin: Joi.number().positive(),
   }
 };
+
+
 
 const getProductByID = async (ctx) => {
   ctx.body = await ServiceProducten.getProductByID(Number(ctx.params.id));
@@ -224,7 +277,11 @@ module.exports = (router) => {
   ProductRouter.get("/categories", getDistinctCategories);
   ProductRouter.get("/:id", getProductByID);
   ProductRouter.post("/begin",validate(getProductenLimit.validationScheme), getProductenLimit);
+  ProductRouter.post("/zoekterm",validate(getProductenByZoekterm.validationScheme), getProductenByZoekterm);
+  ProductRouter.post("/zoekcategorie",validate(getProductenByCategories.validationScheme), getProductenByCategories);
 
+
+  
   //private
   ProductRouter.post(
     "/",

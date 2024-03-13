@@ -45,6 +45,39 @@ const getProductenByLeverancierId = async (begin, idLeverancier) => {
   return producten;
 };
 
+
+
+const getProductenByZoekterm = async (begin, zoekterm) => {
+  const pageSize = 20; 
+  const offset = begin - 1;
+  
+  const producten = getKnex()(tables.product)
+    .select(...SELECT_COLUMNS)
+    .where('naam', 'like', `%${zoekterm}%`)
+    .limit(pageSize)
+    .offset(offset);
+
+  return producten;
+};
+
+const getProductenByCategories = async (begin, categories) => {
+  const pageSize = 20; 
+  const offset = begin - 1;
+  
+  
+
+  const query = getKnex()(tables.product)
+    .select(...SELECT_COLUMNS)
+    .whereIn('categorie', categories)
+    .limit(pageSize)
+    .offset(offset);
+    
+
+  const producten = await query;
+
+  return producten;
+};
+
 const getProductById = async (id) => {
   id = Number(id);
 
@@ -148,4 +181,6 @@ module.exports = {
   getDistinctCategories,
   getProductenLimit,
   getProductenByLeverancierId,
+  getProductenByZoekterm,
+  getProductenByCategories,
 };

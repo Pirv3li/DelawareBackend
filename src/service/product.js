@@ -32,6 +32,27 @@ const getProductenByLeverancierId = async (begin, idLeverancier) => {
   }
 };
 
+const getProductenByZoekterm = async (begin, zoekterm) => {
+
+  try {
+    const producten = repoProducten.getProductenByZoekterm(begin, zoekterm);
+    return producten;
+  } catch (error) {
+    throw new Error("Error while fetching producten");
+  }
+};
+
+
+const getProductenByCategories = async (begin, categories) => {
+
+  try {
+    const producten = repoProducten.getProductenByCategories(begin, categories);
+    return producten;
+  } catch (error) {
+    throw new Error("Error while fetching producten");
+  }
+};
+
 const getProductByID = async (id) => {
   const product = await repoProducten.getProductById(id);
 
@@ -162,4 +183,6 @@ module.exports = {
   getDistinctCategories,
   getProductenLimit,
   getProductenByLeverancierId,
+  getProductenByZoekterm,
+  getProductenByCategories,
 };
