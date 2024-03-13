@@ -3,36 +3,58 @@ const Joi = require('joi');
 const { requireAuthentication, makeRequireRole } = require('../core/auth'); 
 const adresService = require('../service/adres');
 const validate = require('../core/validation')
-const Role = require('../core/roles')
+const Role = require('../core/roles');
+const { getLogger } = require('../core/logging'); 
 
 const getAdresByUser = async (ctx) => {
-  try{
-  let adres;
-  const { idKlant, idLeverancier } = ctx.state.session;
-  if(idKlant!=undefined){
-   adres = await adresService.getAdresByKlantId(idKlant);
-   ctx.body = adres;
-   ctx.status = 200;
-  }
-  else{
-    adres = await adresService.getAdresByLeverancierId(idLeverancier);
+  try {
+    let adres;
+    const { idKlant, idLeverancier } = ctx.state.session;
+    if (idKlant !== undefined) {
+      adres = await adresService.getAdresByKlantId(idKlant);
+    } else {
+      adres = await adresService.getAdresByLeverancierId(idLeverancier);
+    }
+
     ctx.body = adres;
     ctx.status = 200;
+
+    getLogger().info('Addresses fetched successfully', { adres });
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+
+    getLogger().error('Error occurred while fetching addresses', { error });
   }
-}catch(error){
-  ctx.status = 500;
-}
 };
 getAdresByUser.validationSheme = null
 
 const getAllAdressen = async (ctx) => {
-  ctx.body = await adresService.getAllAdressen();
+  try {
+    const adressen = await adresService.getAllAdressen();
+    ctx.body = adressen;
+    ctx.status = 200;
+    getLogger().info('All addresses fetched successfully');
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+    getLogger().error('Error occurred while fetching addresses', { error });
+  }
 };
-
 getAllAdressen.validationSheme = null;
 
 const getAdresById = async (ctx) => {
-  ctx.body = await adresService.getAdresById(Number(ctx.params.id));
+  try {
+    const id = ctx.params.id;
+    const adres = await adresService.getAdresById(id);
+    ctx.body = adres;
+    ctx.status = 200;
+    getLogger().info(`Address with ID ${id} fetched successfully`);
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+    getLogger().error('Error occurred while fetching address by ID', { error });
+  }
 };
 getAdresById.validationSheme={
   params: {
@@ -43,16 +65,26 @@ getAdresById.validationSheme={
 }
 
 const createAdres = async (ctx) => {
-  const {straat, nummer, stad, postcode, laatstGebruikt} = ctx.request.body;
-  const newAdres = await adresService.createAdres({
-    straat: String(straat),
-    nummer: String(nummer),
-    stad: String(stad),
-    postcode: String(postcode),
-    laatstGebruikt: new Date(laatstGebruikt)
-  });
-  ctx.body = newAdres;
-  ctx.status = 201;
+  try {
+    const { straat, nummer, stad, postcode, laatstGebruikt } = ctx.request.body;
+    const laatstGebruiktDate = new Date(laatstGebruikt);
+
+    const newAdres = await adresService.createAdres({
+      straat: String(straat),
+      nummer: String(nummer),
+      stad: String(stad),
+      postcode: String(postcode),
+      laatstGebruikt: laatstGebruiktDate
+    });
+
+    ctx.body = newAdres;
+    ctx.status = 201;
+    getLogger().info('New address created successfully', { newAdres });
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+    getLogger().error('Error occurred while creating address', { error });
+  }
 };
 createAdres.validationSheme={
     body: {
@@ -65,16 +97,26 @@ createAdres.validationSheme={
 }
 
 const updateAdresById = async (ctx) => {
-  const {straat, nummer, stad, postcode, laatstGebruikt} = ctx.request.body;
-  const updatedAdres = await adresService.updateAdresById(Number(ctx.params.id), {
-    straat: String(straat),
-    nummer: String(nummer),
-    stad: String(stad),
-    postcode: String(postcode),
-    laatstGebruikt: new Date(laatstGebruikt)
-  });
-  ctx.body = updatedAdres;
-  ctx.status = 200;
+  try {
+    const { straat, nummer, stad, postcode, laatstGebruikt } = ctx.request.body;
+    const laatstGebruiktDate = new Date(laatstGebruikt);
+
+    const updatedAdres = await adresService.updateAdresById(Number(ctx.params.id), {
+      straat: String(straat),
+      nummer: String(nummer),
+      stad: String(stad),
+      postcode: String(postcode),
+      laatstGebruikt: laatstGebruiktDate
+    });
+
+    ctx.body = updatedAdres;
+    ctx.status = 200;
+    getLogger().info(`Address with ID ${ctx.params.id} updated successfully`, { updatedAdres });
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+    getLogger().error(`Error occurred while updating address with ID ${ctx.params.id}`, { error });
+  }
 };
 updateAdresById.validationSheme = {
   params: {
@@ -90,8 +132,15 @@ updateAdresById.validationSheme = {
 }
 
 const deleteAdresById = async (ctx) => {
-  adresService.deleteAdresById(Number(ctx.params.id));
-  ctx.status = 204;
+  try {
+    await adresService.deleteAdresById(ctx.params.id);
+    ctx.status = 204;
+    getLogger().info(`Address with ID ${ctx.params.id} deleted successfully`);
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+    getLogger().error(`Error occurred while deleting address with ID ${ctx.params.id}`, { error });
+  }
 };
 deleteAdresById.validationSheme={
   params: {
@@ -154,14 +203,6 @@ module.exports = (router) => {
     validate(deleteAdresById.validationSheme),
     deleteAdresById
   );
-
-  // als user geautoriseerd is kan je adress van die user halen met deze route.
-  adresRouter.get(
-    '/user',
-    requireAuthentication,
-    validate(getAdresByUser.validationSheme),
-    getAdresByUser
-  )
 
   router.use(adresRouter.routes()).use(adresRouter.allowedMethods());
 };

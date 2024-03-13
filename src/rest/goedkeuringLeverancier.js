@@ -2,19 +2,34 @@ const KoaRouter = require("@koa/router");
 const Joi = require('joi');
 const { requireAuthentication } = require('../core/auth'); 
 const goedkeuringLeverancierService = require('../service/goedkeuringLeverancier');
-const validate = require('../core/validation')
+const validate = require('../core/validation');
+const { getLogger } = require("../core/logging");
 
 // De user wordt doorgegeven naar de service laag omdat er daar gecheckt wordt of deze een admin is via het doorgegeven token
 // zodat er in de service-laag gecontroleerd kan worden of de ingelogde gebruiker deze requests wel mag uitvoeren
 // nu staat het nog even in commentaar
 
 const getAllGoedkeuringenLeverancier = async (ctx) => {
-  ctx.body = await goedkeuringLeverancierService.getAllGoedkeuringenLeverancier(ctx.state.session.roles);
+  try {
+    ctx.body = await goedkeuringLeverancierService.getAllGoedkeuringenLeverancier(ctx.state.session.roles);
+    ctx.status = 200;
+  } catch (error) {
+    getLogger().error('Error occurred while fetching all goedkeuringen for leverancier', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getAllGoedkeuringenLeverancier.validationSheme = null
 
 const getGoedkeuringLeverancierById = async (ctx) => {
-  ctx.body = await goedkeuringLeverancierService.getGoedkeuringLeverancierById(Number(ctx.params.id), ctx.state.session.roles);
+  try {
+    ctx.body = await goedkeuringLeverancierService.getGoedkeuringLeverancierById(ctx.params.id, ctx.state.session.roles);
+    ctx.status = 200;
+  } catch (error) {
+    getLogger().error('Error occurred while fetching goedkeuring for leverancier by ID', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getGoedkeuringLeverancierById.validationSheme={
   params: {
@@ -25,11 +40,17 @@ getGoedkeuringLeverancierById.validationSheme={
 }
 
 const createGoedkeuringLeverancier = async (ctx) => {
-  const { leverancierNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf } = ctx.request.body;
-  const { idLeverancier } = ctx.state.session;
-  const newGoedkeuringWijziging = await goedkeuringLeverancierService.createGoedkeuringLeverancier({ leverancierNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf, idLeverancier }, ctx.state.session.roles);
-  ctx.body = newGoedkeuringWijziging;
-  ctx.status = 201;
+  try {
+    const { leverancierNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf } = ctx.request.body;
+    const { idLeverancier } = ctx.state.session;
+    const newGoedkeuringWijziging = await goedkeuringLeverancierService.createGoedkeuringLeverancier({ leverancierNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf, idLeverancier }, ctx.state.session.roles);
+    ctx.body = newGoedkeuringWijziging;
+    ctx.status = 201;
+  } catch (error) {
+    getLogger().error('Error occurred while creating goedkeuring for leverancier', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 createGoedkeuringLeverancier.validationSheme = {
   body: {
@@ -44,8 +65,14 @@ createGoedkeuringLeverancier.validationSheme = {
 }
 
 const deleteGoedkeuringLeverancierById = async (ctx) => {
-  await goedkeuringLeverancierService.deleteGoedkeuringLeverancierById(Number(ctx.params.id), ctx.state.session.roles);
-  ctx.status = 204;
+  try {
+    await goedkeuringLeverancierService.deleteGoedkeuringLeverancierById(Number(ctx.params.id), ctx.state.session.roles);
+    ctx.status = 204;
+  } catch (error) {
+    getLogger().error('Error occurred while deleting goedkeuring for leverancier by ID', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 deleteGoedkeuringLeverancierById.validationSheme={
   params: {

@@ -3,14 +3,35 @@ const Joi = require("joi");
 const { requireAuthentication } = require("../core/auth");
 const bedrijfServer = require("../service/bedrijf");
 const validate = require("../core/validation");
+const { getLogger } = require('../core/logging')
 
 const getAllBedrijven = async (ctx) => {
-  ctx.body = await bedrijfServer.getAllBedrijven();
+  try {
+    const bedrijven = await bedrijfServer.getAllBedrijven();
+    
+    ctx.body = bedrijven;
+    ctx.status = 200;
+    getLogger().info('All bedrijven fetched successfully');
+  } catch (error) {
+    console.log(error);
+    getLogger().error('Error occurred while fetching bedrijven', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getAllBedrijven.validationSheme = null;
 
 const getBedrijfById = async (ctx) => {
-  ctx.body = await bedrijfServer.getBedrijfById(Number(ctx.params.id));
+  try {
+    const bedrijf = await bedrijfServer.getBedrijfById(ctx.params.id);
+    ctx.body = bedrijf;
+    ctx.status = 200;
+    getLogger().info(`Bedrijf with ID ${ctx.params.id} fetched successfully`);
+  } catch (error) {
+    getLogger().error(`Error occurred while fetching bedrijf with ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getBedrijfById.validationSheme = {
   params: {
@@ -19,8 +40,17 @@ getBedrijfById.validationSheme = {
 };
 
 const findBedrijfByName = async (ctx) => {
-  const { naam } = ctx.request.body;
-  ctx.body = await bedrijfServer.findBedrijfByName(naam);
+  try {
+    const { naam } = ctx.request.body;
+    const bedrijf = await bedrijfServer.findBedrijfByName(naam);
+    ctx.body = bedrijf;
+    ctx.status = 200;
+    getLogger().info(`Bedrijf with name "${naam}" found successfully`);
+  } catch (error) {
+    getLogger().error('Error occurred while finding bedrijf by name', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 findBedrijfByName.validationSheme = {
   body: {
@@ -28,30 +58,38 @@ findBedrijfByName.validationSheme = {
   },
 };
 const createBedrijf = async (ctx) => {
-  const {
-    naam,
-    logo,
-    sector,
-    iban,
-    btwNummer,
-    email,
-    telefoonnummer,
-    gebruikerSinds,
-    idAdres,
-  } = ctx.request.body;
-  const newBedrijf = await bedrijfServer.createBedrijf({
-    naam: String(naam),
-    logo: String(logo),
-    sector: String(sector),
-    iban: String(iban),
-    btwNummer: String(btwNummer),
-    email: String(email),
-    telefoonnummer: String(telefoonnummer),
-    gebruikerSinds: String(gebruikerSinds),
-    idAdres: Number(idAdres),
-  });
-  ctx.body = newBedrijf;
-  ctx.status = 201;
+  try {
+    const {
+      naam,
+      logo,
+      sector,
+      iban,
+      btwNummer,
+      email,
+      telefoonnummer,
+      gebruikerSinds,
+      idAdres,
+    } = ctx.request.body;
+
+    const newBedrijf = await bedrijfServer.createBedrijf({
+      naam,
+      logo,
+      sector,
+      iban,
+      btwNummer,
+      email,
+      telefoonnummer,
+      gebruikerSinds,
+      idAdres,
+    });
+    ctx.body = newBedrijf;
+    ctx.status = 201;
+    getLogger().info('New bedrijf created successfully', { newBedrijf });
+  } catch (error) {
+    getLogger().error('Error occurred while creating bedrijf', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 createBedrijf.validationSheme = {
   body: {
@@ -68,18 +106,25 @@ createBedrijf.validationSheme = {
 };
 
 const updateBedrijfById = async (ctx) => {
-  const bedrijfUpdates = ctx.request.body;
-  const { idLeverancier, idKlant } = ctx.state.session;
-  const idBedrijf = ctx.params.id;
-  const bedrijf = await bedrijfServer.updateBedrijfById(
-    idLeverancier,
-    idKlant,
-    idBedrijf,
-    bedrijfUpdates
-  );
+  try {
+    const bedrijfUpdates = ctx.request.body;
+    const { idLeverancier, idKlant } = ctx.state.session;
+    const idBedrijf = ctx.params.id;
 
-  ctx.body = bedrijf;
-  ctx.status = 200;
+    const bedrijf = await bedrijfServer.updateBedrijfById(
+      idLeverancier,
+      idKlant,
+      idBedrijf,
+      bedrijfUpdates
+    );
+    ctx.body = bedrijf;
+    ctx.status = 200;
+    getLogger().info(`Bedrijf with ID ${idBedrijf} updated successfully`, { bedrijf });
+  } catch (error) {
+    getLogger().error(`Error occurred while updating bedrijf with ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 updateBedrijfById.validationSheme = {
   params: {
@@ -127,8 +172,15 @@ updateBedrijfById.validationSheme = {
 };
 
 const deleteBedrijfById = async (ctx) => {
-  bedrijfServer.deleteBedrijfById(Number(ctx.params.id));
-  ctx.status = 204;
+  try {
+    await bedrijfServer.deleteBedrijfById(Number(ctx.params.id));
+    ctx.status = 204;
+    getLogger().info(`Bedrijf with ID ${ctx.params.id} deleted successfully`);
+  } catch (error) {
+    getLogger().error(`Error occurred while deleting bedrijf with ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 deleteBedrijfById.validationSheme = {
   params: {
@@ -137,7 +189,15 @@ deleteBedrijfById.validationSheme = {
 };
 
 const getBedrijfByKlantId = async (ctx) => {
-  ctx.body = await bedrijfServer.getBedrijfByKlantId(Number(ctx.params.id));
+  try {
+    const bedrijf = await bedrijfServer.getBedrijfByKlantId(Number(ctx.params.id));
+    ctx.body = bedrijf;
+    ctx.status = 200;
+  } catch (error) {
+    getLogger().error(`Error occurred while fetching bedrijf by klant ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getBedrijfByKlantId.validationSheme = {
   params: {
@@ -146,9 +206,15 @@ getBedrijfByKlantId.validationSheme = {
 };
 
 const getBedrijfByLeverancierId = async (ctx) => {
-  ctx.body = await bedrijfServer.getBedrijfByLeverancierId(
-    Number(ctx.params.id)
-  );
+  try {
+    const bedrijf = await bedrijfServer.getBedrijfByLeverancierId(ctx.params.id);
+    ctx.body = bedrijf;
+    ctx.status = 200;
+  } catch (error) {
+    getLogger().error(`Error occurred while fetching bedrijf by leverancier ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getBedrijfByLeverancierId.validationSheme = {
   params: {

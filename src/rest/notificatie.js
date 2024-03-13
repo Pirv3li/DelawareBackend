@@ -4,18 +4,34 @@ const { requireAuthentication, makeRequireRole } = require('../core/auth');
 const notificationService = require('../service/notificatie');
 const validate = require('../core/validation')
 const Role = require('../core/roles');
+const { getLogger } = require('../core/logging');
 
 const getAllNotifications = async (ctx) => {
-  const begin = parseInt(ctx.query.begin) || 0;
-  const einde = parseInt(ctx.query.einde) || 20;
-  ctx.body = await notificationService.getAllNotifications(begin, einde);
+  try {
+    const begin = parseInt(ctx.query.begin) || 0;
+    const einde = parseInt(ctx.query.einde) || 20;
+    const notifications = await notificationService.getAllNotifications(begin, einde);
+    getLogger().info('Notifications retrieved successfully', { count: notifications.length });
+    ctx.body = notifications;
+  } catch (error) {
+    getLogger().error('Error occurred while retrieving notifications', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getAllNotifications.validationSheme = null
 
 
 const getNotificationById = async (ctx) => {
-
-  ctx.body = await notificationService.getNotificationById(Number(ctx.params.id));
+  try {
+    const notification = await notificationService.getNotificationById(Number(ctx.params.id));
+    getLogger().info(`Notification with ID ${ctx.params.id} retrieved successfully`);
+    ctx.body = notification;
+  } catch (error) {
+    getLogger().error(`Error occurred while retrieving notification with ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getNotificationById.validationSheme = {
   params: {
@@ -26,7 +42,15 @@ getNotificationById.validationSheme = {
 }
 
 const getNotificationByOrderId = async (ctx) => {
-  ctx.body = await notificationService.getNotificationByOrderId(Number(ctx.params.id));
+  try {
+    const notification = await notificationService.getNotificationByOrderId(Number(ctx.params.id));
+    getLogger().info(`Notification with Order ID ${ctx.params.id} retrieved successfully`);
+    ctx.body = notification;
+  } catch (error) {
+    getLogger().error(`Error occurred while retrieving notification with Order ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 getNotificationByOrderId.validationSheme = {
   params: {
@@ -37,19 +61,18 @@ getNotificationByOrderId.validationSheme = {
 }
 
 const createNotification = async (ctx) => {
-  const { idOrder, text, onderwerp, geopend, afgehandeld } = ctx.request.body;
-  const newNotification = await notificationService.createNotification({
-    idOrder: Number(idOrder),
-    text: String(text),
-    onderwerp: String(onderwerp),
-    geopend: Boolean(geopend),
-    afgehandeld: Boolean(afgehandeld)
-  });
-  ctx.body = newNotification;
-  ctx.status = 201;
+  try {
+    const { idOrder, text, onderwerp, geopend, afgehandeld } = ctx.request.body;
+    const newNotification = await notificationService.createNotification({ idOrder, text, onderwerp, geopend, afgehandeld });
+    getLogger().info('New notification created successfully', { newNotification });
+    ctx.body = newNotification;
+    ctx.status = 201;
+  } catch (error) {
+    getLogger().error('Error occurred while creating new notification', { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
-
-
 createNotification.validationSheme = {
   body: {
     idOrder: Joi.number().integer().positive().required(),
@@ -61,16 +84,19 @@ createNotification.validationSheme = {
 }
 
 const updateNotificationById = async (ctx) => {
-  const { idOrder, text, onderwerp, geopend, afgehandeld, datum } = ctx.request.body;
-  ctx.body = await notificationService.updateNotificationById(Number(ctx.params.id), {
-    idOrder: Number(idOrder),
-    text: String(text),
-    onderwerp: String(onderwerp),
-    geopend: Boolean(geopend),
-    afgehandeld: Boolean(afgehandeld),
-    datum: new Date(datum),
-  });
-  ctx.status = 200;
+  try {
+    const { idOrder, text, onderwerp, geopend, afgehandeld, datum } = ctx.request.body;
+    const updatedNotification = await notificationService.updateNotificationById(ctx.params.id, {
+      idOrder, text, onderwerp, geopend, afgehandeld, datum
+    });
+    getLogger().info(`Notification with ID ${ctx.params.id} updated successfully`, { updatedNotification });
+    ctx.body = updatedNotification;
+    ctx.status = 200;
+  } catch (error) {
+    getLogger().error(`Error occurred while updating notification with ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 updateNotificationById.validationSheme = {
   params: {
@@ -87,8 +113,15 @@ updateNotificationById.validationSheme = {
 };
 
 const deleteNotificationById = async (ctx) => {
-  notificationService.deleteNotificationById(Number(ctx.params.id));
-  ctx.status = 204;
+  try {
+    await notificationService.deleteNotificationById(ctx.params.id);
+    getLogger().info(`Notification with ID ${ctx.params.id} deleted successfully`);
+    ctx.status = 204;
+  } catch (error) {
+    getLogger().error(`Error occurred while deleting notification with ID ${ctx.params.id}`, { error });
+    ctx.status = 500;
+    ctx.body = { error: 'Internal Server Error' };
+  }
 };
 deleteNotificationById.validationSheme = {
   params: {
@@ -101,16 +134,16 @@ const getAllNotificationsByKlantId = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
   const { begin } = ctx.request.body;
   try {
-    const notificatieKlant= await notificationService.getAllNotificationsByKlantId(idKlant, begin);
+    const notificatieKlant = await notificationService.getAllNotificationsByKlantId(idKlant, begin);
+    getLogger().info(`Notifications for Klant with ID ${idKlant} retrieved successfully`);
     ctx.status = 200;
     ctx.body = notificatieKlant;
   } catch (error) {
-    ctx.status = error.status;
-    ctx.body = { message: error.message };
+    getLogger().error(`Error occurred while retrieving notifications for Klant with ID ${idKlant}`, { error });
+    ctx.status = error.status || 500;
+    ctx.body = { message: error.message || 'Internal Server Error' };
   }
-
 };
-
 getAllNotificationsByKlantId.validationSheme = {
   body: {
     begin: Joi.number().optional(),
@@ -121,17 +154,15 @@ const getAllNotificationsByLeverancierId = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
   const { begin } = ctx.request.body;
   try {
-
-    const NotificatiesLverancier = 
-    await notificationService.
-    getAllNotificationsByLeverancierId(idLeverancier, begin);
+    const notifications = await notificationService.getAllNotificationsByLeverancierId(idLeverancier, begin);
+    getLogger().info(`Notifications for Leverancier with ID ${idLeverancier} retrieved successfully`);
     ctx.status = 200;
-    ctx.body = NotificatiesLverancier;
+    ctx.body = notifications;
   } catch (error) {
-    ctx.status = 500;
-    ctx.body = { message: error.message };
+    getLogger().error(`Error occurred while retrieving notifications for Leverancier with ID ${idLeverancier}`, { error });
+    ctx.status = error.status || 500;
+    ctx.body = { message: error.message || 'Internal Server Error' };
   }
-
 };
 
 getAllNotificationsByLeverancierId.validationSheme = {
@@ -140,8 +171,17 @@ getAllNotificationsByLeverancierId.validationSheme = {
   }
 }
 
-countUnopenedNotificationsByKlantId = async (ctx) => {
-  ctx.body = await notificationService.countUnopenedNotificationsByKlantId(Number(ctx.params.id));
+const countUnopenedNotificationsByKlantId = async (ctx) => {
+  try {
+    const unopenedCount = await notificationService.countUnopenedNotificationsByKlantId(ctx.params.id);
+    getLogger().info(`Unopened notification count for Klant with ID ${ctx.params.id} retrieved successfully`);
+    ctx.status = 200;
+    ctx.body = unopenedCount;
+  } catch (error) {
+    getLogger().error(`Error occurred while retrieving unopened notification count for Klant with ID ${ctx.params.id}`, { error });
+    ctx.status = error.status || 500;
+    ctx.body = { message: error.message || 'Internal Server Error' };
+  }
 };
 countUnopenedNotificationsByKlantId.validationSheme = {
   params: {
@@ -152,8 +192,17 @@ countUnopenedNotificationsByKlantId.validationSheme = {
 }
 
 
-countUnopenedNotificationsByLeverancierId = async (ctx) => {
-  ctx.body = await notificationService.countUnopenedNotificationsByLeverancierId(Number(ctx.params.id));
+const countUnopenedNotificationsByLeverancierId = async (ctx) => {
+  try {
+    const unopenedCount = await notificationService.countUnopenedNotificationsByLeverancierId(ctx.params.id);
+    getLogger().info(`Unopened notification count for Leverancier with ID ${ctx.params.id} retrieved successfully`);
+    ctx.status = 200;
+    ctx.body = unopenedCount;
+  } catch (error) {
+    getLogger().error(`Error occurred while retrieving unopened notification count for Leverancier with ID ${ctx.params.id}`, { error });
+    ctx.status = error.status || 500;
+    ctx.body = { message: error.message || 'Internal Server Error' };
+  }
 };
 countUnopenedNotificationsByLeverancierId.validationSheme = {
   params: {
@@ -163,6 +212,8 @@ countUnopenedNotificationsByLeverancierId.validationSheme = {
   }
 }
 
+
+// BRAINROT HOLY SHIT WHO WROTE THIS GARBAGE ???
 const checkKlantId = (ctx, next) => {
   const { idKlant, roles } = ctx.state.session;
   const { id } = ctx.params;
