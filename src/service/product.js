@@ -10,8 +10,6 @@ const getProducten = async () => {
   }
 };
 
-
-
 const getProductenLimit = async (begin) => {
 
   try {
@@ -23,7 +21,6 @@ const getProductenLimit = async (begin) => {
 };
 
 const getProductenByLeverancierId = async (begin, idLeverancier) => {
-
   try {
     const producten = repoProducten.getProductenByLeverancierId(begin, idLeverancier);
     return producten;
@@ -32,10 +29,10 @@ const getProductenByLeverancierId = async (begin, idLeverancier) => {
   }
 };
 
-const getProductenByZoekterm = async (begin, zoekterm) => {
+const getProductenByZoekterm = async (begin, zoekterm, idLeverancier) => {
 
   try {
-    const producten = repoProducten.getProductenByZoekterm(begin, zoekterm);
+    const producten = repoProducten.getProductenByZoekterm(begin, zoekterm, idLeverancier);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
@@ -43,10 +40,32 @@ const getProductenByZoekterm = async (begin, zoekterm) => {
 };
 
 
+
+const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier) => {
+
+  try {
+    const producten = repoProducten.getLeverancierProductenByZoekterm(begin, zoekterm, idLeverancier);
+    return producten;
+  } catch (error) {
+    throw new Error("Error while fetching producten");
+  }
+
+};
+
 const getProductenByCategories = async (begin, categories) => {
 
   try {
     const producten = repoProducten.getProductenByCategories(begin, categories);
+    return producten;
+  } catch (error) {
+    throw new Error("Error while fetching producten");
+  }
+};
+
+const getLeverancierProductenByCategories = async (begin, categories) => {
+
+  try {
+    const producten = repoProducten.getLeverancierProductenByCategories(begin, categories);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
@@ -174,6 +193,18 @@ const getDistinctCategories = async () => {
   }
 };
 
+
+
+const getDistinctCategoriesLeverancier = async (idLeverancier) => {
+  try {
+    const categories = await repoProducten.getDistinctCategoriesLeverancier(idLeverancier);
+    return categories;
+  } catch (error) {
+    throw new Error("Error while fetching distinct categories");
+  }
+};
+
+
 module.exports = {
   getProducten,
   createProducten,
@@ -185,4 +216,7 @@ module.exports = {
   getProductenByLeverancierId,
   getProductenByZoekterm,
   getProductenByCategories,
+  getLeverancierProductenByZoekterm,
+  getLeverancierProductenByCategories,
+  getDistinctCategoriesLeverancier,
 };

@@ -84,6 +84,36 @@ getProductenByZoekterm.validationScheme = {
 
 
 
+const getLeverancierProductenByZoekterm = async (ctx) => {
+
+  const { idLeverancier } = ctx.state.session;
+  const {begin} = ctx.request.body;
+  const {zoekterm} = ctx.request.body;
+
+
+  try {
+    const producten = 
+    await ServiceProducten.getLeverancierProductenByZoekterm(begin, zoekterm, idLeverancier);
+
+    ctx.body = producten;
+    ctx.status = 200;
+  } catch (error) {
+    ctx.body = {
+      message: "Error while fetching producten limit",
+    };
+    //ctx.status = 500;
+  }
+};
+
+getLeverancierProductenByZoekterm.validationScheme = {
+  body: {
+    begin: Joi.number().positive(),
+    zoekterm: Joi.string().allow('') 
+  }
+};
+
+
+
 const getProductenByCategories= async (ctx) => {
 
   const {begin} = ctx.request.body;
@@ -248,6 +278,7 @@ deleteProduct.validationScheme = {
     id: Joi.number().integer().required(),
   },
 };
+
 const getDistinctCategories = async (ctx) => {
   try {
     const categories = await ServiceProducten.getDistinctCategories();
@@ -260,6 +291,24 @@ const getDistinctCategories = async (ctx) => {
     };
   }
 };
+
+const getLeverancierProductenByCategories = async (ctx) => {
+
+  const { idLeverancier } = ctx.state.session;
+
+  try {
+    const categories = await ServiceProducten.getDistinctCategoriesLeverancier(idLeverancier);
+    ctx.body = categories;
+    ctx.status = 200;
+  } catch (error) {
+    ctx.status = 500;
+    ctx.body = {
+      message: "Error fetching categories",
+    };
+  }
+};
+
+
 
 const requireLeverancier = makeRequireRole(Role.LEVER);
 
@@ -279,7 +328,11 @@ module.exports = (router) => {
   ProductRouter.post("/begin",validate(getProductenLimit.validationScheme), getProductenLimit);
   ProductRouter.post("/zoekterm",validate(getProductenByZoekterm.validationScheme), getProductenByZoekterm);
   ProductRouter.post("/zoekcategorie",validate(getProductenByCategories.validationScheme), getProductenByCategories);
+  ProductRouter.post("/leverancier/zoekterm",requireAuthentication, validate(getLeverancierProductenByZoekterm.validationScheme), getLeverancierProductenByZoekterm);
+  ProductRouter.get("/leverancier/categories",requireAuthentication, validate(getLeverancierProductenByCategories.validationScheme), getLeverancierProductenByCategories);
 
+
+  
 
   
   //private

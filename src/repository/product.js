@@ -60,6 +60,22 @@ const getProductenByZoekterm = async (begin, zoekterm) => {
   return producten;
 };
 
+const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier) => {
+  const pageSize = 20; 
+  const offset = begin - 1;
+  
+  const producten = getKnex()(tables.product)
+    .select(...SELECT_COLUMNS)
+    .where('naam', 'like', `%${zoekterm}%`)
+    .where('idLeverancier', idLeverancier)
+    .limit(pageSize)
+    .offset(offset);
+
+  return producten;
+};
+
+
+
 const getProductenByCategories = async (begin, categories) => {
   const pageSize = 20; 
   const offset = begin - 1;
@@ -90,6 +106,15 @@ const getProductById = async (id) => {
 
 const getDistinctCategories = async () => {
   const categories = await getKnex()("product").distinct("categorie");
+
+  return categories.map((categoryObj) => categoryObj.categorie);
+};
+
+const getDistinctCategoriesLeverancier = async (idLeverancier) => {
+  const categories = 
+  await getKnex()("product")
+  .distinct("categorie")
+  .where("idLeverancier", idLeverancier);
 
   return categories.map((categoryObj) => categoryObj.categorie);
 };
@@ -183,4 +208,6 @@ module.exports = {
   getProductenByLeverancierId,
   getProductenByZoekterm,
   getProductenByCategories,
+  getLeverancierProductenByZoekterm,
+  getDistinctCategoriesLeverancier
 };
