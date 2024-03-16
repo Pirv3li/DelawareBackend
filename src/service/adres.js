@@ -1,6 +1,7 @@
 const ServiceError = require('../core/serviceError');
 const adresRepo = require('../repository/adres');
 
+
 const getAllAdressen = async() => {
   const items = await adresRepo.getAllAdressen();
   return {
