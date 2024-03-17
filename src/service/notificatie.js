@@ -11,19 +11,19 @@ const getAllNotifications = async (ctx) => {
 };
 
 
-const getAllNotificationsByKlantId = async (idKlant, begin=1) => {
+const getAllNotificationsByKlantId = async (idKlant, begin=1, aantal) => {
   try{
-  notificaties = await notificationRepository.getAllNotificationsByKlantId(idKlant, begin);
+  notificaties = await notificationRepository.getAllNotificationsByKlantId(idKlant, begin, aantal);
   return notificaties;
 } catch (notificaties) {
   throw new Error(notificaties);
 }
 };
 
-const getAllNotificationsByLeverancierId = async (idLeverancier,begin=1) => {
+const getAllNotificationsByLeverancierId = async (idLeverancier,begin=1, aantal) => {
 
   try{
-    notificaties = await notificationRepository.getAllNotificationsByLeverancierId(idLeverancier, begin);
+    notificaties = await notificationRepository.getAllNotificationsByLeverancierId(idLeverancier, begin, aantal);
     return notificaties;
   } catch (notificaties) {
     throw new Error(notificaties);

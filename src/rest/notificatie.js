@@ -10,7 +10,8 @@ const getAllNotifications = async (ctx) => {
   try {
     const begin = parseInt(ctx.query.begin) || 0;
     const einde = parseInt(ctx.query.einde) || 20;
-    const notifications = await notificationService.getAllNotifications(begin, einde);
+    const {aantal} = ctx.request.body;
+    const notifications = await notificationService.getAllNotifications(begin, einde, aantal);
     getLogger().info('Notifications retrieved successfully', { count: notifications.length });
     ctx.body = notifications;
   } catch (error) {
@@ -19,7 +20,15 @@ const getAllNotifications = async (ctx) => {
     ctx.body = { error: 'Internal Server Error' };
   }
 };
-getAllNotifications.validationSheme = null
+getAllNotifications.validationSheme = {
+  query: {
+    begin: Joi.number().optional(),
+    einde: Joi.number().optional(),
+  },
+  body: {
+    aantal: Joi.number().positive(),
+  }
+}
 
 
 const getNotificationById = async (ctx) => {
@@ -133,8 +142,9 @@ deleteNotificationById.validationSheme = {
 const getAllNotificationsByKlantId = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
   const { begin } = ctx.request.body;
+  const {aantal} = ctx.request.body;
   try {
-    const notificatieKlant = await notificationService.getAllNotificationsByKlantId(idKlant, begin);
+    const notificatieKlant = await notificationService.getAllNotificationsByKlantId(idKlant, begin, aantal);
     getLogger().info(`Notifications for Klant with ID ${idKlant} retrieved successfully`);
     ctx.status = 200;
     ctx.body = notificatieKlant;
@@ -147,14 +157,16 @@ const getAllNotificationsByKlantId = async (ctx) => {
 getAllNotificationsByKlantId.validationSheme = {
   body: {
     begin: Joi.number().optional(),
+    aantal: Joi.number().positive(),
   }
 }
 
 const getAllNotificationsByLeverancierId = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
   const { begin } = ctx.request.body;
+  const {aantal} = ctx.request.body;
   try {
-    const notifications = await notificationService.getAllNotificationsByLeverancierId(idLeverancier, begin);
+    const notifications = await notificationService.getAllNotificationsByLeverancierId(idLeverancier, begin, aantal);
     getLogger().info(`Notifications for Leverancier with ID ${idLeverancier} retrieved successfully`);
     ctx.status = 200;
     ctx.body = notifications;
@@ -168,6 +180,7 @@ const getAllNotificationsByLeverancierId = async (ctx) => {
 getAllNotificationsByLeverancierId.validationSheme = {
   body: {
     begin: Joi.number().optional(),
+    aantal: Joi.number().positive(),
   }
 }
 

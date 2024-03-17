@@ -20,8 +20,8 @@ const getNotificationById = async (idNotificatie) => {
 };
 
 
-const getAllNotificationsByKlantId = async (idKlant, begin) => {
-  const pageSize = 10;
+const getAllNotificationsByKlantId = async (idKlant, begin, aantal) => {
+  const pageSize = aantal;
   const offset = begin - 1;
 
   return getKnex()(tables.notificatie)
@@ -38,8 +38,8 @@ const getAllNotificationsByKlantId = async (idKlant, begin) => {
   .offset(offset);
 };
 
-const getAllNotificationsByLeverancierId = async (idLeverancier, begin) => {
-  const pageSize = 10;
+const getAllNotificationsByLeverancierId = async (idLeverancier, begin, aantal) => {
+  const pageSize = aantal;
   const offset = begin - 1;
 
   return getKnex()(tables.notificatie)
