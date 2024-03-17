@@ -10,29 +10,29 @@ const getProducten = async () => {
   }
 };
 
-const getProductenLimit = async (begin) => {
+const getProductenLimit = async (begin, aantal) => {
 
   try {
-    const producten = repoProducten.getProductenLimit(begin);
+    const producten = repoProducten.getProductenLimit(begin,aantal);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
   }
 };
 
-const getProductenByLeverancierId = async (begin, idLeverancier) => {
+const getProductenByLeverancierId = async (begin, idLeverancier,aantal) => {
   try {
-    const producten = repoProducten.getProductenByLeverancierId(begin, idLeverancier);
+    const producten = repoProducten.getProductenByLeverancierId(begin, idLeverancier,aantal);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
   }
 };
 
-const getProductenByZoekterm = async (begin, zoekterm, idLeverancier) => {
+const getProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => {
 
   try {
-    const producten = repoProducten.getProductenByZoekterm(begin, zoekterm, idLeverancier);
+    const producten = repoProducten.getProductenByZoekterm(begin, zoekterm, idLeverancier,aantal);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
@@ -41,10 +41,10 @@ const getProductenByZoekterm = async (begin, zoekterm, idLeverancier) => {
 
 
 
-const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier) => {
+const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => {
 
   try {
-    const producten = repoProducten.getLeverancierProductenByZoekterm(begin, zoekterm, idLeverancier);
+    const producten = repoProducten.getLeverancierProductenByZoekterm(begin, zoekterm, idLeverancier,aantal);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
@@ -52,20 +52,20 @@ const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier)
 
 };
 
-const getProductenByCategories = async (begin, categories) => {
+const getProductenByCategories = async (begin, categories,aantal) => {
 
   try {
-    const producten = repoProducten.getProductenByCategories(begin, categories);
+    const producten = repoProducten.getProductenByCategories(begin, categories,aantal);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
   }
 };
 
-const getLeverancierProductenByCategories = async (begin, categories) => {
+const getLeverancierProductenByCategories = async (begin, categories,aantal) => {
 
   try {
-    const producten = repoProducten.getLeverancierProductenByCategories(begin, categories);
+    const producten = repoProducten.getLeverancierProductenByCategories(begin, categories,aantal);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");

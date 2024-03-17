@@ -19,8 +19,8 @@ const getProducten = async () => {
   return producten;
 };
 
-const getProductenLimit = async (begin) => {
-  const pageSize = 20; 
+const getProductenLimit = async (begin, aantal) => {
+  const pageSize = aantal; 
   const offset = begin - 1;
   
   const producten = getKnex()(tables.product)
@@ -32,8 +32,8 @@ const getProductenLimit = async (begin) => {
 };
 
 
-const getProductenByLeverancierId = async (begin, idLeverancier) => {
-  const pageSize = 10; 
+const getProductenByLeverancierId = async (begin, idLeverancier,aantal) => {
+  const pageSize = aantal; 
   const offset = begin - 1;
   
   const producten = getKnex()(tables.product)
@@ -47,8 +47,8 @@ const getProductenByLeverancierId = async (begin, idLeverancier) => {
 
 
 
-const getProductenByZoekterm = async (begin, zoekterm) => {
-  const pageSize = 20; 
+const getProductenByZoekterm = async (begin, zoekterm,aantal) => {
+  const pageSize = aantal; 
   const offset = begin - 1;
   
   const producten = getKnex()(tables.product)
@@ -60,8 +60,8 @@ const getProductenByZoekterm = async (begin, zoekterm) => {
   return producten;
 };
 
-const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier) => {
-  const pageSize = 20; 
+const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => {
+  const pageSize = aantal; 
   const offset = begin - 1;
   
   const producten = getKnex()(tables.product)
@@ -76,8 +76,8 @@ const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier)
 
 
 
-const getProductenByCategories = async (begin, categories) => {
-  const pageSize = 20; 
+const getProductenByCategories = async (begin, categories,aantal) => {
+  const pageSize = aantal; 
   const offset = begin - 1;
   
   
