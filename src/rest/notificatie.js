@@ -75,7 +75,7 @@ const createNotification = async (ctx) => {
 };
 createNotification.validationSheme = {
   body: {
-    idOrder: Joi.number().integer().positive().required(),
+    idOrder: Joi.string().required(),
     text: Joi.string().required(),
     onderwerp: Joi.string().required(),
     geopend: Joi.boolean().required(),
@@ -103,7 +103,7 @@ updateNotificationById.validationSheme = {
     id: Joi.number().integer().positive(),
   },
   body: {
-    idOrder: Joi.number().integer().positive(),
+    idOrder: Joi.string(),
     text: Joi.string(),
     onderwerp: Joi.string(),
     geopend: Joi.boolean(),

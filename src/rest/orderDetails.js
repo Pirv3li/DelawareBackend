@@ -76,7 +76,7 @@ const getOrderDetailsByOrderId = async (ctx) => {
 };
 getOrderDetailsByOrderId.validationScheme = {
   params: {
-    id: Joi.number().integer().positive(),
+    id: Joi.string(),
   },
 };
 
