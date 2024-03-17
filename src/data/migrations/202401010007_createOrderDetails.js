@@ -8,7 +8,7 @@ module.exports = {
       table.double("eenheidsprijs").notNullable();
       table.integer("aantal").notNullable();
 
-      table.integer("idOrder").unsigned().notNullable();
+      table.string("idOrder").notNullable();
       table.integer("idProduct").unsigned().notNullable();
 
       table

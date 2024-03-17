@@ -5,7 +5,7 @@ module.exports = {
     await knex(tables.order).delete();
 
     await knex(tables.order).insert([{
-      idOrder: 1,
+      idOrder: "2402011150a1b",
       idKlant: 1,
       idLeverancier: 2,
       idAdres: 1,
@@ -16,7 +16,7 @@ module.exports = {
     },
 
     {
-      idOrder: 2,
+      idOrder: "2402141205d4e",
       idKlant: 2,
       idLeverancier: 2,
       idAdres: 2,
@@ -26,7 +26,7 @@ module.exports = {
       totaalPrijs: '20.55',
     },
     {
-      idOrder: 3,
+      idOrder: "2402241211g7h",
       idKlant: 3,
       idLeverancier: 3,
       idAdres: 3,

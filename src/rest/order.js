@@ -30,7 +30,7 @@ const getOrderById = async (ctx) => {
 
 getOrderById.validationScheme = {
   params: {
-    id: Joi.number().integer().positive(),
+    id: Joi.string(),
   },
 };
 
@@ -145,7 +145,7 @@ const updateOrderById = async (ctx) => {
 };
 updateOrderById.validationScheme = {
   params: {
-    id: Joi.number().integer().positive(),
+    id: Joi.string(),
   },
   body: {
     orderStatus: Joi.string().optional(),
