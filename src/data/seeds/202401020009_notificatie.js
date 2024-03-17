@@ -7,7 +7,7 @@ module.exports = {
     await knex(tables.notificatie).insert([
       {
         idNotificatie: 1,
-        idOrder: 1,
+        idOrder: "2402011150a1b",
         text: "Order placed",
         onderwerp: "Order",
         geopend: false,
@@ -17,7 +17,7 @@ module.exports = {
       },
       {
         idNotificatie: 2,
-        idOrder: 2,
+        idOrder: "2402141205d4e",
         text: "Order shipped",
         onderwerp: "Shipping",
         geopend: false,
@@ -27,7 +27,7 @@ module.exports = {
       },
       {
         idNotificatie: 3,
-        idOrder: 3,
+        idOrder: "2402241211g7h",
         text: "Order delivered",
         onderwerp: "Delivery",
         geopend: false,

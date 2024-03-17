@@ -1,4 +1,5 @@
 const { getKnex, tables } = require("../data");
+const { v4: uuidv4 } = require('uuid');
 
 const formatOrder = (result) => ({
   idOrder: result.idOrder,
@@ -70,7 +71,19 @@ const createOrder = async (idKlant, {
   betalingStatus,
   totaalPrijs,
 }) => {
-  const [id] = await getKnex()(tables.order).insert({
+
+  const date = new Date();
+  const year = String(date.getFullYear()).slice(-2); 
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hour = String(date.getHours()).padStart(2, '0');
+  const minute = String(date.getMinutes()).padStart(2, '0');
+  const counter = uuidv4().replace(/-/g, '').substring(0, 3);
+
+  const idOrder = `${year}${month}${day}${hour}${minute}${counter}`;
+
+  await getKnex()(tables.order).insert({
+    idOrder: idOrder,
     idKlant,
     idLeverancier,
     idAdres,
@@ -79,7 +92,7 @@ const createOrder = async (idKlant, {
     betalingStatus,
     totaalPrijs,
   });
-  return id;
+  return idOrder;
 };
 
 const updateOrderById = async (idOrder, updateFields) => {
