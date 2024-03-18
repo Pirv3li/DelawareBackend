@@ -82,13 +82,14 @@ const countUnopenedNotificationsByLeverancierId = async (idLeverancier) => {
 
 
 
-const createNotification = async ({ idOrder, text, onderwerp, geopend, afgehandeld }) => {
+const createNotification = async ({ idOrder, text, onderwerp, geopend, afgehandeld, datum }) => {
   const [id] = await getKnex()(tables.notificatie).insert({
     idOrder,
     text,
     onderwerp,
     geopend,
     afgehandeld,
+    datum,
   });
   return id;
 };

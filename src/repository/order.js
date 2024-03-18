@@ -35,8 +35,8 @@ const getOrderById = async (idOrder) => {
   return formatOrder(order);
 };
 
-const getOrderByKlantId = async (idKlant, begin) => {
-  const pageSize = 10; 
+const getOrderByKlantId = async (idKlant, begin, aantal) => {
+  const pageSize = aantal; 
   const offset = begin - 1;
   const orders = await getKnex()(tables.order)
     .where("idKlant", idKlant)
@@ -49,8 +49,8 @@ const getOrderByKlantId = async (idKlant, begin) => {
 };
 
 
-const getOrderByLeverancierId = async (idLeverancier, begin) => {
-  const pageSize = 10;
+const getOrderByLeverancierId = async (idLeverancier, begin, aantal) => {
+  const pageSize = aantal;
   const offset = begin - 1;
   const orders = await getKnex()(tables.order)
     .where("idLeverancier", idLeverancier)

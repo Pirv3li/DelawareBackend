@@ -155,9 +155,9 @@ updateOrderById.validationScheme = {
 
 const getOrderByKlant = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
-  const {begin} = ctx.request.body;
+  const {begin, aantal} = ctx.request.body;
   try {
-    const ordersKlant = await orderService.getOrderByKlantId(idKlant, begin);
+    const ordersKlant = await orderService.getOrderByKlantId(idKlant, begin, aantal);
     ctx.status = 200;
     ctx.body = ordersKlant;
   } catch (error) {
@@ -169,17 +169,19 @@ const getOrderByKlant = async (ctx) => {
 getOrderByKlant.validationScheme = {
   body: {
     begin: Joi.number().optional(),
+    aantal: Joi.number().positive(),
   }
 };
 
 const getOrderByLeverancier = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
-  const {begin} = ctx.request.body;
+  const {begin, aantal} = ctx.request.body;
   try {
     const ordersLeverancier = await 
     orderService.getOrderByLeverancierId(
       idLeverancier,
-      begin
+      begin,
+      aantal
     );
     ctx.status = 200;
     ctx.body = ordersLeverancier;
@@ -192,6 +194,7 @@ const getOrderByLeverancier = async (ctx) => {
 getOrderByLeverancier.validationScheme = {
   body: {
     begin: Joi.number().optional(),
+    aantal: Joi.number().positive(),
   }
 };
 

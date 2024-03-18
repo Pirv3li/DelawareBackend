@@ -71,8 +71,8 @@ getNotificationByOrderId.validationSheme = {
 
 const createNotification = async (ctx) => {
   try {
-    const { idOrder, text, onderwerp, geopend, afgehandeld } = ctx.request.body;
-    const newNotification = await notificationService.createNotification({ idOrder, text, onderwerp, geopend, afgehandeld });
+    const { idOrder, text, onderwerp, geopend, afgehandeld, datum } = ctx.request.body;
+    const newNotification = await notificationService.createNotification({ idOrder, text, onderwerp, geopend, afgehandeld, datum });
     getLogger().info('New notification created successfully', { newNotification });
     ctx.body = newNotification;
     ctx.status = 201;
@@ -88,7 +88,8 @@ createNotification.validationSheme = {
     text: Joi.string().required(),
     onderwerp: Joi.string().required(),
     geopend: Joi.boolean().required(),
-    afgehandeld: Joi.boolean().required()
+    afgehandeld: Joi.boolean().required(),
+    datum: Joi.date().optional()
   }
 }
 

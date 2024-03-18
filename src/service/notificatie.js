@@ -38,13 +38,14 @@ const getNotificationById = async (idNotificatie) => {
   return notification
 };
 
-const createNotification = async ({ idOrder, text, onderwerp, geopend, afgehandeld }) => {
+const createNotification = async ({ idOrder, text, onderwerp, geopend, afgehandeld, datum=new Date() }) => {
   const idNewNotification = await notificationRepository.createNotification({
     idOrder,
     text,
     onderwerp,
     geopend,
     afgehandeld,
+    datum,
   });
 
   return notificationRepository.getNotificationById(idNewNotification);
