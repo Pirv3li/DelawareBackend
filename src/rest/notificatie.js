@@ -226,20 +226,11 @@ countUnopenedNotificationsByLeverancierId.validationSheme = {
   }
 }
 
-
-// BRAINROT HOLY SHIT WHO WROTE THIS GARBAGE ???
+//sok my kheb da gefixt
 const checkKlantId = (ctx, next) => {
   const { idKlant, roles } = ctx.state.session;
   const { id } = ctx.params;
 
-  const notifications = notificationRepository.getAllNotificationsByKlantId(idKlant);
-  if (notifications.length > 0) {
-    idKlantNot = notifications[0].idKlant;
-  } else {
-    throw new Error('No notifications found for this klant id');
-  }
-
-  console.log(idKlantNot);
   if (Number(id) !== idKlant && !roles.includes(Role.ADMIN)) {
     return ctx.throw(
       403,
