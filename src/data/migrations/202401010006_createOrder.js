@@ -3,7 +3,7 @@ const { tables } = require("..");
 module.exports = {
   up: async (knex) => {
     await knex.schema.createTable(tables.order, (table) => {
-      table.increments("idOrder").primary();
+      table.string("idOrder").primary();
       table.integer("idKlant").unsigned().notNullable();
       table.integer("idLeverancier").unsigned().notNullable();
       table.integer("idAdres").unsigned().notNullable();

@@ -10,7 +10,8 @@ const getAllNotifications = async (ctx) => {
   try {
     const begin = parseInt(ctx.query.begin) || 0;
     const einde = parseInt(ctx.query.einde) || 20;
-    const notifications = await notificationService.getAllNotifications(begin, einde);
+    const {aantal} = ctx.request.body;
+    const notifications = await notificationService.getAllNotifications(begin, einde, aantal);
     getLogger().info('Notifications retrieved successfully', { count: notifications.length });
     ctx.body = notifications;
   } catch (error) {
@@ -19,7 +20,15 @@ const getAllNotifications = async (ctx) => {
     ctx.body = { error: 'Internal Server Error' };
   }
 };
-getAllNotifications.validationSheme = null
+getAllNotifications.validationSheme = {
+  query: {
+    begin: Joi.number().optional(),
+    einde: Joi.number().optional(),
+  },
+  body: {
+    aantal: Joi.number().positive(),
+  }
+}
 
 
 const getNotificationById = async (ctx) => {
@@ -62,8 +71,8 @@ getNotificationByOrderId.validationSheme = {
 
 const createNotification = async (ctx) => {
   try {
-    const { idOrder, text, onderwerp, geopend, afgehandeld } = ctx.request.body;
-    const newNotification = await notificationService.createNotification({ idOrder, text, onderwerp, geopend, afgehandeld });
+    const { idOrder, text, onderwerp, geopend, afgehandeld, datum } = ctx.request.body;
+    const newNotification = await notificationService.createNotification({ idOrder, text, onderwerp, geopend, afgehandeld, datum });
     getLogger().info('New notification created successfully', { newNotification });
     ctx.body = newNotification;
     ctx.status = 201;
@@ -75,11 +84,12 @@ const createNotification = async (ctx) => {
 };
 createNotification.validationSheme = {
   body: {
-    idOrder: Joi.number().integer().positive().required(),
+    idOrder: Joi.string().required(),
     text: Joi.string().required(),
     onderwerp: Joi.string().required(),
     geopend: Joi.boolean().required(),
-    afgehandeld: Joi.boolean().required()
+    afgehandeld: Joi.boolean().required(),
+    datum: Joi.date().optional()
   }
 }
 
@@ -103,7 +113,7 @@ updateNotificationById.validationSheme = {
     id: Joi.number().integer().positive(),
   },
   body: {
-    idOrder: Joi.number().integer().positive(),
+    idOrder: Joi.string(),
     text: Joi.string(),
     onderwerp: Joi.string(),
     geopend: Joi.boolean(),
@@ -133,8 +143,9 @@ deleteNotificationById.validationSheme = {
 const getAllNotificationsByKlantId = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
   const { begin } = ctx.request.body;
+  const {aantal} = ctx.request.body;
   try {
-    const notificatieKlant = await notificationService.getAllNotificationsByKlantId(idKlant, begin);
+    const notificatieKlant = await notificationService.getAllNotificationsByKlantId(idKlant, begin, aantal);
     getLogger().info(`Notifications for Klant with ID ${idKlant} retrieved successfully`);
     ctx.status = 200;
     ctx.body = notificatieKlant;
@@ -147,14 +158,16 @@ const getAllNotificationsByKlantId = async (ctx) => {
 getAllNotificationsByKlantId.validationSheme = {
   body: {
     begin: Joi.number().optional(),
+    aantal: Joi.number().positive(),
   }
 }
 
 const getAllNotificationsByLeverancierId = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
   const { begin } = ctx.request.body;
+  const {aantal} = ctx.request.body;
   try {
-    const notifications = await notificationService.getAllNotificationsByLeverancierId(idLeverancier, begin);
+    const notifications = await notificationService.getAllNotificationsByLeverancierId(idLeverancier, begin, aantal);
     getLogger().info(`Notifications for Leverancier with ID ${idLeverancier} retrieved successfully`);
     ctx.status = 200;
     ctx.body = notifications;
@@ -168,6 +181,7 @@ const getAllNotificationsByLeverancierId = async (ctx) => {
 getAllNotificationsByLeverancierId.validationSheme = {
   body: {
     begin: Joi.number().optional(),
+    aantal: Joi.number().positive(),
   }
 }
 
@@ -212,20 +226,11 @@ countUnopenedNotificationsByLeverancierId.validationSheme = {
   }
 }
 
-
-// BRAINROT HOLY SHIT WHO WROTE THIS GARBAGE ???
+//sok my kheb da gefixt
 const checkKlantId = (ctx, next) => {
   const { idKlant, roles } = ctx.state.session;
   const { id } = ctx.params;
 
-  const notifications = notificationRepository.getAllNotificationsByKlantId(idKlant);
-  if (notifications.length > 0) {
-    idKlantNot = notifications[0].idKlant;
-  } else {
-    throw new Error('No notifications found for this klant id');
-  }
-
-  console.log(idKlantNot);
   if (Number(id) !== idKlant && !roles.includes(Role.ADMIN)) {
     return ctx.throw(
       403,

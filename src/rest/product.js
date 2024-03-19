@@ -22,8 +22,10 @@ const getProducten = async (ctx) => {
 const getProductenLimit = async (ctx) => {
 
   const {begin} = ctx.request.body;
+  const {aantal} = ctx.request.body;
+
   try {
-    const producten = await ServiceProducten.getProductenLimit(begin);
+    const producten = await ServiceProducten.getProductenLimit(begin,aantal);
 
     ctx.body = producten;
     ctx.status = 200;
@@ -38,15 +40,18 @@ const getProductenLimit = async (ctx) => {
 getProductenLimit.validationScheme = {
   body: {
     begin: Joi.number().positive(),
+    aantal: Joi.number().positive(),
+
   }
 };
 
 const getProductenByLeverancierId = async (ctx) => {
 
   const {begin} = ctx.request.body;
-  const { idLeverancier } = ctx.state.session;
+  const {aantal} = ctx.request.body;
+  const {idLeverancier } = ctx.state.session;
   try {
-    const producten = await ServiceProducten.getProductenByLeverancierId(begin, idLeverancier);
+    const producten = await ServiceProducten.getProductenByLeverancierId(begin, idLeverancier,aantal);
 
     ctx.body = producten;
     ctx.status = 200;
@@ -61,9 +66,11 @@ const getProductenByLeverancierId = async (ctx) => {
 const getProductenByZoekterm = async (ctx) => {
 
   const {begin} = ctx.request.body;
+  const {aantal} = ctx.request.body;
+
   const {zoekterm} = ctx.request.body;
   try {
-    const producten = await ServiceProducten.getProductenByZoekterm(begin, zoekterm);
+    const producten = await ServiceProducten.getProductenByZoekterm(begin, zoekterm,aantal);
 
     ctx.body = producten;
     ctx.status = 200;
@@ -78,6 +85,7 @@ const getProductenByZoekterm = async (ctx) => {
 getProductenByZoekterm.validationScheme = {
   body: {
     begin: Joi.number().positive(),
+    aantal: Joi.number().positive(),
     zoekterm: Joi.string().allow('') 
   }
 };
@@ -89,11 +97,13 @@ const getLeverancierProductenByZoekterm = async (ctx) => {
   const { idLeverancier } = ctx.state.session;
   const {begin} = ctx.request.body;
   const {zoekterm} = ctx.request.body;
+  const {aantal} = ctx.request.body;
+
 
 
   try {
     const producten = 
-    await ServiceProducten.getLeverancierProductenByZoekterm(begin, zoekterm, idLeverancier);
+    await ServiceProducten.getLeverancierProductenByZoekterm(begin, zoekterm, idLeverancier,aantal);
 
     ctx.body = producten;
     ctx.status = 200;
@@ -108,7 +118,9 @@ const getLeverancierProductenByZoekterm = async (ctx) => {
 getLeverancierProductenByZoekterm.validationScheme = {
   body: {
     begin: Joi.number().positive(),
-    zoekterm: Joi.string().allow('') 
+    zoekterm: Joi.string().allow(''),
+    aantal: Joi.number().positive(),
+
   }
 };
 
@@ -118,8 +130,9 @@ const getProductenByCategories= async (ctx) => {
 
   const {begin} = ctx.request.body;
   const {categories} = ctx.request.body;
+  const {aantal} = ctx.request.body;
   try {
-    const producten = await ServiceProducten.getProductenByCategories(begin, categories);
+    const producten = await ServiceProducten.getProductenByCategories(begin, categories,aantal);
 
     ctx.body = producten;
     ctx.status = 200;
@@ -134,7 +147,8 @@ const getProductenByCategories= async (ctx) => {
 getProductenByCategories.validationScheme = {
   body: {
     begin: Joi.number().positive(),
-    categories: Joi.array().items(Joi.string()) 
+    categories: Joi.array().items(Joi.string()).optional(),
+    aantal: Joi.number().positive(),
   }
 };
 
@@ -142,6 +156,7 @@ getProductenByCategories.validationScheme = {
 getProductenByLeverancierId.validationScheme = {
   body: {
     begin: Joi.number().positive(),
+    aantal: Joi.number().positive(),
   }
 };
 
@@ -295,6 +310,7 @@ const getDistinctCategories = async (ctx) => {
 const getLeverancierProductenByCategories = async (ctx) => {
 
   const { idLeverancier } = ctx.state.session;
+  
 
   try {
     const categories = await ServiceProducten.getDistinctCategoriesLeverancier(idLeverancier);
