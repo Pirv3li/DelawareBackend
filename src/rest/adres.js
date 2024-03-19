@@ -7,6 +7,7 @@ const Role = require("../core/roles");
 const { getLogger } = require("../core/logging");
 const bedrijfService = require("../service/bedrijf");
 const usersService = require("../service/users");
+const orderService = require("../service/order");
 
 const getAdresByUser = async (ctx) => {
   try {
@@ -45,11 +46,10 @@ getAdresByUser.validationScheme = {};
 // };
 // getAllAdressen.validationSheme = null;
 
-
-
+// voor Order
 const getAdresById = async (ctx) => {
   try {
-    let bedrijf;
+    let order;
     let user;
     const { idKlant, idLeverancier } = ctx.state.session;
     const id = ctx.params.id;
@@ -62,33 +62,37 @@ const getAdresById = async (ctx) => {
     }
 
     if (idKlant !== undefined) {
-      bedrijf = await bedrijfService.getBedrijfByKlantId(idKlant);
+      order = await orderService.getOrderByKlantId(idKlant);
       user = await usersService.getKlantById(idKlant);
     } else {
-      bedrijf = await bedrijfService.getBedrijfByKlantId(idLeverancier);
+      order = await orderService.getOrderByLeverancierId(idLeverancier);
       user = await usersService.getLeverancierById(idLeverancier);
     }
 
-    if (!bedrijf || !user) {
+    if (!user) {
+      ctx.status = 403;
+      ctx.body = { message: "Permission denied" };
+      return;
+    }
+
+
+
+    let hasCorrectAddress = false;
+
+
+    for (const ord of order) {
+      if (ord.idAdres === adres.idAdres) {
+        hasCorrectAddress = true;
+        break;
+      }
+    }
+
+    if (!hasCorrectAddress) {
       ctx.status = 403;
       ctx.body = { message: "Permission denied" };
       return;
     }
     
-    // user is klant
-    if (user[0].klant) {
-      if (adres.idAdres !== bedrijf.Adres.idAdres || user[0].klant.bedrijf.idBedrijf !== bedrijf.idBedrijf) {
-        ctx.status = 403;
-        ctx.body = { message: "Permission denied" };
-        return;
-      }
-    } else { // user is leverancier
-      if (adres.idAdres !== bedrijf.Adres.idAdres || user[0].leverancier.bedrijf.idBedrijf !== bedrijf.idBedrijf) {
-        ctx.status = 403;
-        ctx.body = { message: "Permission denied" };
-        return;
-      }
-    }
 
     ctx.body = adres;
     ctx.status = 200;
@@ -105,8 +109,6 @@ getAdresById.validationScheme = {
     id: Joi.number().integer().positive(),
   },
 };
-
-
 
 const createAdres = async (ctx) => {
   try {
@@ -202,7 +204,6 @@ createAdres.validationScheme = {
 //     id: Joi.number().integer().positive(),
 //   },
 // };
-
 
 /**
  * Install adres routes in the given router.
