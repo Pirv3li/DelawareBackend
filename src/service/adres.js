@@ -29,8 +29,8 @@ const getAdresById = async(id) => {
   return adres  
 };
 
-const createAdres = async ({ straat, nummer, stad, postcode, laatstGebruikt }) => {
-  const idNewAdres = await adresRepo.createAdres({ straat, nummer, stad, postcode, laatstGebruikt })
+const createAdres = async ({ straat, nummer, stad, postcode }) => {
+  const idNewAdres = await adresRepo.createAdres({ straat, nummer, stad, postcode})
   return await adresRepo.getAdresById(idNewAdres)
 };
 

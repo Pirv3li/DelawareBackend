@@ -29,26 +29,23 @@ const getAdresByUser = async (ctx) => {
     getLogger().error("Error occurred while fetching addresses", { error });
   }
 };
-getAdresByUser.validationSheme = null;
+getAdresByUser.validationScheme = {};
 
-const getAllAdressen = async (ctx) => {
-  try {
-    const adressen = await adresService.getAllAdressen();
-    ctx.body = adressen;
-    ctx.status = 200;
-    getLogger().info("All addresses fetched successfully");
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = { error: "Internal Server Error" };
-    getLogger().error("Error occurred while fetching addresses", { error });
-  }
-};
-getAllAdressen.validationSheme = null;
+// const getAllAdressen = async (ctx) => {
+//   try {
+//     const adressen = await adresService.getAllAdressen();
+//     ctx.body = adressen;
+//     ctx.status = 200;
+//     getLogger().info("All addresses fetched successfully");
+//   } catch (error) {
+//     ctx.status = 500;
+//     ctx.body = { error: "Internal Server Error" };
+//     getLogger().error("Error occurred while fetching addresses", { error });
+//   }
+// };
+// getAllAdressen.validationSheme = null;
 
 
-
-//REVIEW NODIG
-//Mogelijke aanpassing nodig voor klant en leverancier return of zo laten gelijk nu
 
 const getAdresById = async (ctx) => {
   try {
@@ -87,7 +84,7 @@ const getAdresById = async (ctx) => {
   }
 };
 
-getAdresById.validationSheme = {
+getAdresById.validationScheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
@@ -98,14 +95,14 @@ getAdresById.validationSheme = {
 const createAdres = async (ctx) => {
   try {
     const { straat, nummer, stad, postcode, laatstGebruikt } = ctx.request.body;
-    const laatstGebruiktDate = new Date(laatstGebruikt);
+    //const laatstGebruiktDate = new Date(laatstGebruikt);
 
     const newAdres = await adresService.createAdres({
       straat: String(straat),
       nummer: String(nummer),
       stad: String(stad),
       postcode: String(postcode),
-      laatstGebruikt: laatstGebruiktDate,
+      //laatstGebruikt: laatstGebruiktDate,
     });
 
     ctx.body = newAdres;
@@ -117,80 +114,79 @@ const createAdres = async (ctx) => {
     getLogger().error("Error occurred while creating address", { error });
   }
 };
-createAdres.validationSheme = {
+createAdres.validationScheme = {
   body: {
     straat: Joi.string().required().invalid(" ", ""),
     nummer: Joi.string().required().invalid(" ", ""),
     stad: Joi.string().required().invalid(" ", ""),
     postcode: Joi.string().required().invalid(" ", ""),
-    laatstGebruikt: Joi.date().required(),
+    //laatstGebruikt: Joi.date().required(),
   },
 };
 
-const updateAdresById = async (ctx) => {
-  try {
-    const { straat, nummer, stad, postcode, laatstGebruikt } = ctx.request.body;
-    const laatstGebruiktDate = new Date(laatstGebruikt);
+// const updateAdresById = async (ctx) => {
+//   try {
+//     const { straat, nummer, stad, postcode, laatstGebruikt } = ctx.request.body;
+//     const laatstGebruiktDate = new Date(laatstGebruikt);
 
-    const updatedAdres = await adresService.updateAdresById(
-      Number(ctx.params.id),
-      {
-        straat: String(straat),
-        nummer: String(nummer),
-        stad: String(stad),
-        postcode: String(postcode),
-        laatstGebruikt: laatstGebruiktDate,
-      }
-    );
+//     const updatedAdres = await adresService.updateAdresById(
+//       Number(ctx.params.id),
+//       {
+//         straat: String(straat),
+//         nummer: String(nummer),
+//         stad: String(stad),
+//         postcode: String(postcode),
+//         laatstGebruikt: laatstGebruiktDate,
+//       }
+//     );
 
-    ctx.body = updatedAdres;
-    ctx.status = 200;
-    getLogger().info(`Address with ID ${ctx.params.id} updated successfully`, {
-      updatedAdres,
-    });
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = { error: "Internal Server Error" };
-    getLogger().error(
-      `Error occurred while updating address with ID ${ctx.params.id}`,
-      { error }
-    );
-  }
-};
-updateAdresById.validationSheme = {
-  params: {
-    id: Joi.number().integer().positive(),
-  },
-  body: {
-    straat: Joi.string().required().invalid(" ", ""),
-    nummer: Joi.string().required().invalid(" ", ""),
-    stad: Joi.string().required().invalid(" ", ""),
-    postcode: Joi.string().required().invalid(" ", ""),
-    laatstGebruikt: Joi.date().required(),
-  },
-};
+//     ctx.body = updatedAdres;
+//     ctx.status = 200;
+//     getLogger().info(`Address with ID ${ctx.params.id} updated successfully`, {
+//       updatedAdres,
+//     });
+//   } catch (error) {
+//     ctx.status = 500;
+//     ctx.body = { error: "Internal Server Error" };
+//     getLogger().error(
+//       `Error occurred while updating address with ID ${ctx.params.id}`,
+//       { error }
+//     );
+//   }
+// };
+// updateAdresById.validationSheme = {
+//   params: {
+//     id: Joi.number().integer().positive(),
+//   },
+//   body: {
+//     straat: Joi.string().required().invalid(" ", ""),
+//     nummer: Joi.string().required().invalid(" ", ""),
+//     stad: Joi.string().required().invalid(" ", ""),
+//     postcode: Joi.string().required().invalid(" ", ""),
+//     laatstGebruikt: Joi.date().required(),
+//   },
+// };
 
-const deleteAdresById = async (ctx) => {
-  try {
-    await adresService.deleteAdresById(ctx.params.id);
-    ctx.status = 204;
-    getLogger().info(`Address with ID ${ctx.params.id} deleted successfully`);
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = { error: "Internal Server Error" };
-    getLogger().error(
-      `Error occurred while deleting address with ID ${ctx.params.id}`,
-      { error }
-    );
-  }
-};
-deleteAdresById.validationSheme = {
-  params: {
-    id: Joi.number().integer().positive(),
-  },
-};
+// const deleteAdresById = async (ctx) => {
+//   try {
+//     await adresService.deleteAdresById(ctx.params.id);
+//     ctx.status = 204;
+//     getLogger().info(`Address with ID ${ctx.params.id} deleted successfully`);
+//   } catch (error) {
+//     ctx.status = 500;
+//     ctx.body = { error: "Internal Server Error" };
+//     getLogger().error(
+//       `Error occurred while deleting address with ID ${ctx.params.id}`,
+//       { error }
+//     );
+//   }
+// };
+// deleteAdresById.validationSheme = {
+//   params: {
+//     id: Joi.number().integer().positive(),
+//   },
+// };
 
-const requireAdmin = makeRequireRole(Role.ADMIN);
 
 /**
  * Install adres routes in the given router.
@@ -205,46 +201,46 @@ module.exports = (router) => {
   adresRouter.get(
     "/user",
     requireAuthentication,
-    validate(getAdresByUser.validationSheme),
+    validate(getAdresByUser.validationScheme),
     getAdresByUser
   );
 
-  // moet normaal alleen visible zijn voor admin
-  adresRouter.get(
-    "/",
-    requireAuthentication,
-    requireAdmin,
-    validate(getAllAdressen.validationSheme),
-    getAllAdressen
-  );
+  // // moet normaal alleen visible zijn voor admin
+  // adresRouter.get(
+  //   "/",
+  //   requireAuthentication,
+  //   requireAdmin,
+  //   validate(getAllAdressen.validationSheme),
+  //   getAllAdressen
+  // );
   adresRouter.post(
     "/",
     requireAuthentication,
     // requireAdmin,
-    validate(createAdres.validationSheme),
+    validate(createAdres.validationScheme),
     createAdres
   );
   adresRouter.get(
     "/:id",
     requireAuthentication,
     // requireAdmin,
-    validate(getAdresById.validationSheme),
+    validate(getAdresById.validationScheme),
     getAdresById
   );
-  adresRouter.put(
-    "/:id",
-    requireAuthentication,
-    // requireAdmin,
-    validate(updateAdresById.validationSheme),
-    updateAdresById
-  );
-  adresRouter.delete(
-    "/:id",
-    requireAuthentication,
-    requireAdmin,
-    validate(deleteAdresById.validationSheme),
-    deleteAdresById
-  );
+  // adresRouter.put(
+  //   "/:id",
+  //   requireAuthentication,
+  //   // requireAdmin,
+  //   validate(updateAdresById.validationSheme),
+  //   updateAdresById
+  // );
+  // adresRouter.delete(
+  //   "/:id",
+  //   requireAuthentication,
+  //   requireAdmin,
+  //   validate(deleteAdresById.validationSheme),
+  //   deleteAdresById
+  // );
 
   router.use(adresRouter.routes()).use(adresRouter.allowedMethods());
 };
