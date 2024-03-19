@@ -59,7 +59,7 @@ describe("order API", () => {
   describe("GET /orderDetails/order/:id", () => {
     it("should retrieve order details for klant by orderId", async () => {
       const response = await request
-        .get("/api/orderDetails/order/2")
+        .get("/api/orderDetails/order/2402141205d4e")
         .set("Authorization", klantAuth)
 
         expect(response.status).toBe(200);
@@ -68,7 +68,7 @@ describe("order API", () => {
 
     it("should retrieve order details for leverancier by orderId", async () => {
       const response = await request
-        .get("/api/orderDetails/order/2")
+        .get("/api/orderDetails/order/2402141205d4e")
         .set("Authorization", leverAuth)
 
         expect(response.status).toBe(200);

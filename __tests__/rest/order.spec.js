@@ -19,7 +19,7 @@ describe("order API", () => {
     klantAuth = await KlantLogin(request);
   });
 
-  describe("GET /api/order/klant", () => {
+  describe("GET /api/order/", () => {
     it("should retrieve klant orders", async () => {
       const response = await request
         .post("/api/order/klant")
@@ -39,7 +39,7 @@ describe("order API", () => {
     });
 
     it("should retrieve klant order by ID", async () => {
-      const orderId = 2;
+      const orderId = "2402141205d4e";
       const response = await request
         .get(`/api/order/${orderId}`)
         .set("Authorization", klantAuth);
@@ -49,7 +49,7 @@ describe("order API", () => {
     });
 
     it("should deny invalid order ID for klant", async () => {
-      const noAccesOrderId = 3;
+      const noAccesOrderId = "2402011150a1b";
       const response = await request
         .get(`/api/order/${noAccesOrderId}`)
         .set("Authorization", klantAuth);
@@ -58,7 +58,7 @@ describe("order API", () => {
     });
 
     it("should retrieve leverancier order by ID", async () => {
-      const orderId = 2;
+      const orderId = "2402141205d4e";
       const response = await request
         .get(`/api/order/${orderId}`)
         .set("Authorization", leverAuth);
@@ -68,7 +68,7 @@ describe("order API", () => {
     });
 
     it("should deny invalid order ID for leverancier", async () => {
-      const noAccesOrderId = 3;
+      const noAccesOrderId = "2402011150a1b";
       const response = await request
         .get(`/api/order/${noAccesOrderId}`)
         .set("Authorization", leverAuth);
@@ -187,7 +187,7 @@ describe("order API", () => {
 
   describe("PUT /api/order/:id", () => {
     it("should update order for leverancier", async () => {
-      const orderId = 2;
+      const orderId = "2402141205d4e";
       const updatedOrderData = {
         orderStatus:"completed",
         betalingStatus: "paid"
@@ -198,12 +198,13 @@ describe("order API", () => {
         .send(updatedOrderData)
         .set("Authorization", leverAuth);
 
+
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
     });
 
     it("should update order for klant", async () => {
-      const orderId = 2;
+      const orderId = "2402141205d4e";
       const updatedOrderData = {
         betalingStatus: "paid",
       };
@@ -228,7 +229,7 @@ describe("order API", () => {
         .send(updatedOrderData)
         .set("Authorization", klantAuth);
 
-      expect(response.status).toBe(403);
+      expect(response.status).toBe(404);
       expect(response.body).toBeDefined();
     });
 

@@ -23,14 +23,14 @@ const getOrderById = async (ctx) => {
 
     ctx.body = order;
   } catch (error) {
-    ctx.status = error.status;
+    ctx.status = 500;
     ctx.body = { message: error.message };
   }
 };
 
 getOrderById.validationScheme = {
   params: {
-    id: Joi.string(),
+    id: Joi.string().required(),
   },
 };
 
@@ -96,7 +96,7 @@ createOrder.validationScheme = {
 
 const updateOrderById = async (ctx) => {
   const { orderStatus, betalingStatus } = ctx.request.body;
-
+  const orderId = ctx.params.id;
   const idKlant = ctx.state.session.idKlant;
   const idLeverancier = ctx.state.session.idLeverancier;
   let idUser;
@@ -104,7 +104,7 @@ const updateOrderById = async (ctx) => {
   let order;
 
   try {
-    order = await orderService.getOrderById(ctx.params.id); // Fetch order inside try block
+    order = await orderService.getOrderById(orderId); // Fetch order inside try block
   } catch (error) {
     ctx.status = 404;
     ctx.body = { message: "Order not found" };
@@ -113,7 +113,6 @@ const updateOrderById = async (ctx) => {
 
   // Rest of your code for processing the order and updating fields
   let updateFields = {};
-
   if (order.idKlant === idKlant) {
     idUser = idKlant;
     updateFields = { betalingStatus: betalingStatus };
@@ -134,7 +133,7 @@ const updateOrderById = async (ctx) => {
   try {
     // update order met juiste gegevens
     ctx.body = await orderService.updateOrderById(
-      Number(ctx.params.id),
+      orderId,
       updateFields
     );
     ctx.status = 200;
@@ -145,7 +144,7 @@ const updateOrderById = async (ctx) => {
 };
 updateOrderById.validationScheme = {
   params: {
-    id: Joi.string(),
+    id: Joi.string().required(),
   },
   body: {
     orderStatus: Joi.string().optional(),
@@ -156,12 +155,13 @@ updateOrderById.validationScheme = {
 const getOrderByKlant = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
   const {begin, aantal} = ctx.request.body;
+  
   try {
     const ordersKlant = await orderService.getOrderByKlantId(idKlant, begin, aantal);
     ctx.status = 200;
     ctx.body = ordersKlant;
   } catch (error) {
-    ctx.status = error.status;
+    ctx.status = 500;
     ctx.body = { message: error.message };
   }
 };
@@ -169,7 +169,7 @@ const getOrderByKlant = async (ctx) => {
 getOrderByKlant.validationScheme = {
   body: {
     begin: Joi.number().optional(),
-    aantal: Joi.number().positive(),
+    aantal: Joi.number().positive().optional(),
   }
 };
 
@@ -194,7 +194,7 @@ const getOrderByLeverancier = async (ctx) => {
 getOrderByLeverancier.validationScheme = {
   body: {
     begin: Joi.number().optional(),
-    aantal: Joi.number().positive(),
+    aantal: Joi.number().positive().optional(),
   }
 };
 

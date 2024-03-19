@@ -69,11 +69,27 @@ const getAdresById = async (ctx) => {
       user = await usersService.getLeverancierById(idLeverancier);
     }
 
-    if (!bedrijf || !user || adres.idAdres !== bedrijf.Adres.idAdres || user[0].klant.bedrijf.idBedrijf !== bedrijf.idBedrijf) {
+    if (!bedrijf || !user) {
       ctx.status = 403;
       ctx.body = { message: "Permission denied" };
       return;
     }
+    
+    // user is klant
+    if (user[0].klant) {
+      if (adres.idAdres !== bedrijf.Adres.idAdres || user[0].klant.bedrijf.idBedrijf !== bedrijf.idBedrijf) {
+        ctx.status = 403;
+        ctx.body = { message: "Permission denied" };
+        return;
+      }
+    } else { // user is leverancier
+      if (adres.idAdres !== bedrijf.Adres.idAdres || user[0].leverancier.bedrijf.idBedrijf !== bedrijf.idBedrijf) {
+        ctx.status = 403;
+        ctx.body = { message: "Permission denied" };
+        return;
+      }
+    }
+
     ctx.body = adres;
     ctx.status = 200;
     getLogger().info(`Address with ID ${id} fetched successfully`);

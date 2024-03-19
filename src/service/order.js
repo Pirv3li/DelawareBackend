@@ -61,7 +61,7 @@ const createOrder = async (
   }
 };
 
-const getOrderByKlantId = async (idKlant, begin = 1, aantal) => {
+const getOrderByKlantId = async (idKlant, begin = 1, aantal =10) => {
 
   try {
     const orders = await orderRepository.getOrderByKlantId(idKlant, begin, aantal);
@@ -71,7 +71,7 @@ const getOrderByKlantId = async (idKlant, begin = 1, aantal) => {
   }
 };
 
-const getOrderByLeverancierId = async (idLeverancier, begin = 1, aantal) => {
+const getOrderByLeverancierId = async (idLeverancier, begin = 1, aantal = 10) => {
   try {
     const orders = await orderRepository.getOrderByLeverancierId(idLeverancier, begin, aantal);
     return orders;

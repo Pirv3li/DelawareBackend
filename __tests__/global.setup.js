@@ -114,7 +114,7 @@ module.exports = async () => {
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
       isActief: true,
       roles: JSON.stringify([roles.LEVER]),
-      idBedrijf: 2,
+      idBedrijf: 3,
       email: "testleverancier2@example.com",
     },
   ]);
@@ -150,7 +150,7 @@ module.exports = async () => {
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
       isActief: true,
       roles: JSON.stringify([roles.KLANT]),
-      idBedrijf: 2,
+      idBedrijf: 3,
       email: "testklant2@example.com",
     },
   ]);
@@ -196,7 +196,7 @@ module.exports = async () => {
 
   await knex(tables.order).insert([
     {
-      idOrder: 1,
+      idOrder: "2402011150a1b",
       idKlant: 1,
       idLeverancier: 1,
       idAdres: 1,
@@ -206,7 +206,7 @@ module.exports = async () => {
       totaalPrijs: "15.55",
     },
     {
-      idOrder: 2,
+      idOrder: "2402141205d4e",
       idKlant: 2,
       idLeverancier: 2,
       idAdres: 2,
@@ -216,7 +216,7 @@ module.exports = async () => {
       totaalPrijs: "20.55",
     },
     {
-      idOrder: 3,
+      idOrder: "2402241211g7h",
       idKlant: 3,
       idLeverancier: 3,
       idAdres: 2,
@@ -232,21 +232,21 @@ module.exports = async () => {
       idOrderDetails: 1,
       eenheidsprijs: 10.5,
       aantal: 2,
-      idOrder: 1,
+      idOrder: "2402011150a1b",
       idProduct: 1,
     },
     {
       idOrderDetails: 2,
       eenheidsprijs: 15.0,
       aantal: 1,
-      idOrder: 2,
+      idOrder: "2402141205d4e",
       idProduct: 2,
     },
     {
       idOrderDetails: 3,
       eenheidsprijs: 7.5,
       aantal: 3,
-      idOrder: 3,
+      idOrder: "2402241211g7h",
       idProduct: 3,
     },
   ]);
