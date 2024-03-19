@@ -1,10 +1,10 @@
 const {getKnex, tables} = require('../data')
 
-const getAllAdressen = async() => {
-    return getKnex()(tables.adres)
-        .select('*')
-        .orderBy('laatstGebruikt', 'desc');
-};
+// const getAllAdressen = async() => {
+//     return getKnex()(tables.adres)
+//         .select('*')
+//         .orderBy('laatstGebruikt', 'desc');
+// };
 
 const getAdresByKlantId = async (id) => {
     const adres = await getKnex().raw(
@@ -42,7 +42,8 @@ const createAdres = async ({straat, nummer, stad, postcode}) => {
     return id;
 }
 
-const updateAdresById = async (id, { straat, nummer, stad, postcode, laatstGebruikt }) => {
+const updateAdresById = async (id, { straat, nummer, stad, postcode }) => {
+    const createdAt = new Date();
     await getKnex()(tables.adres)
     .where(`${tables.adres}.idAdres`, id)
     .update({
@@ -50,22 +51,22 @@ const updateAdresById = async (id, { straat, nummer, stad, postcode, laatstGebru
         nummer: nummer,
         stad: stad,
         postcode: postcode,
-        laatstGebruikt: laatstGebruikt,
+        laatstGebruikt: createdAt,
     })
     return id;
 }
 
-const deleteAdresById = async (id) => {
-    await getKnex()(tables.adres)
-    .where('idAdres', id).del()
-}
+// const deleteAdresById = async (id) => {
+//     await getKnex()(tables.adres)
+//     .where('idAdres', id).del()
+// }
 
 module.exports = {
-    getAllAdressen,
+    // getAllAdressen,
     getAdresById,
     createAdres,
     updateAdresById,
-    deleteAdresById,
+    // deleteAdresById,
     getAdresByKlantId,
     getAdresByLeverancierId,
 }
