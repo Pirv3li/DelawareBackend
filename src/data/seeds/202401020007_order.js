@@ -35,6 +35,57 @@ module.exports = {
       betalingStatus: '1',
       totaalPrijs: '25.55',
     },
+    {
+      idOrder: "202403192NybA",
+      idKlant: 2,
+      idLeverancier: 2,
+      idAdres: 2,
+      datum: '2024-03-19',
+      orderStatus: 'in-transit',
+      betalingStatus: '0',
+      totaalPrijs: '20.55'
+    },
+    {
+      idOrder: "20240319Dg7pQ",
+      idKlant: 2,
+      idLeverancier: 2,
+      idAdres: 2,
+      datum: '2024-03-19',
+      orderStatus: 'in-transit',
+      betalingStatus: '0',
+      totaalPrijs: '20.55'
+    },
+    {
+      idOrder: "20240319Vf6mR",
+      idKlant: 2,
+      idLeverancier: 2,
+      idAdres: 2,
+      datum: '2024-03-19',
+      orderStatus: 'in-transit',
+      betalingStatus: '0',
+      totaalPrijs: '20.55'
+    },
+    {
+      idOrder: "20240319Rp3sG",
+      idKlant: 2,
+      idLeverancier: 2,
+      idAdres: 2,
+      datum: '2024-03-19',
+      orderStatus: 'in-transit',
+      betalingStatus: '0',
+      totaalPrijs: '20.55'
+    },
+    {
+      idOrder: "20240319Mz8tF",
+      idKlant: 2,
+      idLeverancier: 2,
+      idAdres: 2,
+      datum: '2024-03-19',
+      orderStatus: 'in-transit',
+      betalingStatus: '0',
+      totaalPrijs: '20.55'
+    }
+    
     ]);
   },
 }
