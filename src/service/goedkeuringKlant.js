@@ -29,6 +29,9 @@ const getLaatsteWijziging = async (session) => {
   const laatsteWijziging = await goedkeuringKlantRepo.getLaatsteWijziging(
     session.idKlant
   );
+  if (!laatsteWijziging) {
+    return {message: 'No change request has been made yet'};
+  }
   return laatsteWijziging;
 };
 

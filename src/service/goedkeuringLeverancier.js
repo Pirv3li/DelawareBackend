@@ -26,6 +26,9 @@ const checkLeverancierId = (idLeverancier, id) => {
 const getLaatsteWijziging = async(session) => {
   checkAdminOrLeverancierRole(session.roles);
   const laatsteWijziging = await goedkeuringLeverancierRepo.getLaatsteWijziging(session.idLeverancier);
+  if(!laatsteWijziging){
+    return {message: 'No change request has been made yet'};
+  }
   return laatsteWijziging;
 }
 
