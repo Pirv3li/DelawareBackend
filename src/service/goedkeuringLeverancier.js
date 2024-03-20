@@ -1,5 +1,6 @@
 const goedkeuringLeverancierRepo = require('../repository/goedkeuringLeverancier');
 const ServiceError = require('../core/serviceError');
+const { hashPassword } = require("../core/password");
 
 
 // ENKEL DE ADMINISTRATOR MAG DEZE REQUESTS UITVOEREN. DAAROM DAT HET VOORLOPIG NOG IN COMMENTAAR STAAT
@@ -22,9 +23,18 @@ const checkLeverancierId = (idLeverancier, id) => {
   }
 }
 
+const getLaatsteWijziging = async(session) => {
+  checkAdminOrLeverancierRole(session.roles);
+  const laatsteWijziging = await goedkeuringLeverancierRepo.getLaatsteWijziging(session.idLeverancier);
+  return laatsteWijziging;
+}
+
 const getAllGoedkeuringenLeverancier = async(session) => {
   checkAdminOrLeverancierRole(session.roles);
   const items = await goedkeuringLeverancierRepo.getAllGoedkeuringenLeverancier(session.idLeverancier);
+  if (items.length === 0) {
+    throw ServiceError.notFound(`There are no requests for this leverancier.`);
+  }
   items.forEach(item => {
     checkLeverancierId(item.idLeverancier, session.idLeverancier);
   });
@@ -44,9 +54,44 @@ const getGoedkeuringLeverancierById = async(id, session) => {
   return goedkeuringWijziging  
 };
 
-const createGoedkeuringLeverancier = async ({ leverancierNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf, idLeverancier }, session) => {
+const createGoedkeuringLeverancier = async ({
+  idLeverancier,
+  leverancierNummer,
+  gebruikersnaam,
+  email,
+  password,
+  isActief,
+  roles,
+  iban,
+  btwNummer,
+  telefoonnummer,
+  sector,
+  straat,
+  nummer,
+  stad,
+  postcode,
+}, session) => {
   checkOnlyLeverancierRole(session.roles);
-  const idNewGoedkeuringWijziging = await goedkeuringLeverancierRepo.createGoedkeuringLeverancier({ leverancierNummer, gebruikersnaam, email, password_hash, isActief, roles, idBedrijf, idLeverancier });
+  const password_hash = await hashPassword(password);
+  const idNewGoedkeuringWijziging = await goedkeuringLeverancierRepo.createGoedkeuringLeverancier({
+    idLeverancier,
+    leverancierNummer,
+    gebruikersnaam,
+    email,
+    password_hash,
+    isActief,
+    roles,
+    iban,
+    btwNummer,
+    telefoonnummer,
+    sector,
+    straat,
+    nummer,
+    stad,
+    postcode,
+    afgehandeld: 'in behandeling',
+    datumAanvraag: new Date(),
+  });
   checkLeverancierId(idLeverancier, session.idLeverancier)
   return await goedkeuringLeverancierRepo.getGoedkeuringLeverancierById(idNewGoedkeuringWijziging);
 };
@@ -62,6 +107,7 @@ const deleteGoedkeuringLeverancierById = async (id, session) => {
 };
 
 module.exports = {
+  getLaatsteWijziging,
   getAllGoedkeuringenLeverancier,
   getGoedkeuringLeverancierById,
   createGoedkeuringLeverancier,

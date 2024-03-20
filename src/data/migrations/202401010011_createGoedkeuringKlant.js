@@ -10,7 +10,18 @@ module.exports = {
       table.string("password_hash").notNullable();
       table.boolean("isActief");
       table.jsonb("roles").notNullable();
-      table.integer("idBedrijf").unsigned().notNullable();
+      table.string("iban", 255).notNullable();
+      table.string("btwNummer", 255).notNullable();
+      table.string("telefoonnummer", 255).notNullable();
+      table.string("sector", 255).notNullable();
+      table.string("straat", 255).notNullable();
+      table.string("nummer", 255).notNullable();
+      table.string("stad", 255).notNullable();
+      table.string("postcode", 255).notNullable();
+      table.string("afgehandeld", 20).notNullable();
+      table.date("datumAanvraag").notNullable();
+
+      // table.integer("idBedrijf").unsigned().notNullable();
       table.integer("idKlant").unsigned().notNullable();
 
       table
@@ -18,10 +29,10 @@ module.exports = {
         .references(`${tables.klant}.idKlant`)
         .onDelete("CASCADE");
 
-      table
-        .foreign("idBedrijf", "fk_GoedkeuringKlant_Bedrijf")
-        .references(`${tables.bedrijf}.idBedrijf`)
-        .onDelete("CASCADE");
+      // table
+      //   .foreign("idBedrijf", "fk_GoedkeuringKlant_Bedrijf")
+      //   .references(`${tables.bedrijf}.idBedrijf`)
+      //   .onDelete("CASCADE");
     });
   },
   down: async (knex) => {
