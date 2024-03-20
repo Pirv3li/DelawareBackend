@@ -11,7 +11,6 @@ module.exports = {
         leverancierNummer: "123456",
         gebruikersnaam: "supplier1",
         email: "supplier1@example.com",
-        password_hash: "hashedpassword",
         isActief: true,
         roles: JSON.stringify([Role.LEVER]),
         iban: "NL20INGB0001234567",

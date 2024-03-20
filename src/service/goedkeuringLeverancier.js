@@ -59,7 +59,6 @@ const createGoedkeuringLeverancier = async ({
   leverancierNummer,
   gebruikersnaam,
   email,
-  password,
   isActief,
   roles,
   iban,
@@ -72,13 +71,12 @@ const createGoedkeuringLeverancier = async ({
   postcode,
 }, session) => {
   checkOnlyLeverancierRole(session.roles);
-  const password_hash = await hashPassword(password);
+  
   const idNewGoedkeuringWijziging = await goedkeuringLeverancierRepo.createGoedkeuringLeverancier({
     idLeverancier,
     leverancierNummer,
     gebruikersnaam,
     email,
-    password_hash,
     isActief,
     roles,
     iban,

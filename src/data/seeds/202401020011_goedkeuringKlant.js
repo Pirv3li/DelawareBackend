@@ -11,7 +11,6 @@ module.exports = {
         klantNummer: "87654321",
         gebruikersnaam: "john_doe",
         email: "john.doe@example.com",
-        password_hash: "hashed_password",
         isActief: true,
         roles: JSON.stringify([Role.KLANT]),
         iban: "NL20INGB0001234567",

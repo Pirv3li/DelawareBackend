@@ -69,7 +69,6 @@ const createGoedkeuringKlant = async (
     klantNummer,
     gebruikersnaam,
     email,
-    password,
     isActief,
     roles,
     iban,
@@ -84,14 +83,13 @@ const createGoedkeuringKlant = async (
   session
 ) => {
   checkOnlyKlantRole(session.roles);
-  const password_hash = await hashPassword(password);
+  
   const idNewGoedkeuringWijziging =
     await goedkeuringKlantRepo.createGoedkeuringKlant({
       idKlant,
       klantNummer,
       gebruikersnaam,
       email,
-      password_hash,
       isActief,
       roles,
       iban,

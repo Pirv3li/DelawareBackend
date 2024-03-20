@@ -7,8 +7,7 @@ module.exports = {
       table.string("klantNummer", 255).notNullable();
       table.string("gebruikersnaam", 50).notNullable();
       table.string("email", 50).notNullable();
-      table.string("password_hash").notNullable();
-      table.boolean("isActief");
+      table.boolean("isActief").notNullable();
       table.jsonb("roles").notNullable();
       table.string("iban", 255).notNullable();
       table.string("btwNummer", 255).notNullable();
