@@ -3,6 +3,94 @@ const { verifyPassword, hashPassword } = require("../core/password");
 const { generateJWT, verifyJWT } = require("../core/jwt");
 const ServiceError = require("../core/serviceError");
 const { getLogger } = require("../core/logging");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, 
+  auth: {
+    user: process.env.APP_EMAIL,
+    pass: process.env.APP_PASSWORD,
+  },
+});
+
+const generateNewPassword = () => {
+  const newPassword = Math.random().toString(36).slice(-8); 
+  return newPassword;
+};
+
+const forgotPasswordLeverancier = async (email, username) => {
+  const user = await userRepository.findLeverancierByEmail(email, username);
+  if (!user) {
+    ctx.status = 404;
+    ctx.body = { message: "User not found" };
+    return;
+  }
+
+  const newPassword = generateNewPassword();
+
+  const hashedPass = await hashPassword(newPassword);
+  const body = {
+    password: hashedPass
+  };
+  await userRepository.updateLeverancier(user.idLeverancier, body)
+
+  const mailOptions = {
+    from: {
+      name: "Delaware",
+      address: process.env.APP_EMAIL,
+    },
+    to: email,
+    subject: "Password Reset",
+    text: `Your new password is: ${newPassword}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error sending email: ", error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+};
+
+const forgotPasswordKlant = async (email, username) => {
+  const user = await userRepository.findKlantByEmail(email, username);
+  if (!user) {
+    ctx.status = 404;
+    ctx.body = { message: "User not found" };
+    return;
+  }
+
+  const newPassword = generateNewPassword();
+
+  const hashedPass = await hashPassword(newPassword);
+  const body = {
+    password: hashedPass
+  };
+  await userRepository.updateKlant(user.idKlant, body)
+
+  const mailOptions = {
+    from: {
+      name: "Delaware",
+      address: process.env.APP_EMAIL,
+    },
+    to: email,
+    subject: "Password Reset",
+    text: `Your new password is: ${newPassword}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error sending email: ", error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+};
+
 
 const makeExposedUser = ({
   idKlant,
@@ -238,4 +326,6 @@ module.exports = {
   updateLeverancier,
   deleteKlant,
   deleteLeverancier,
+  forgotPasswordLeverancier, 
+  forgotPasswordKlant, 
 };

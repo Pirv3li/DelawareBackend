@@ -67,10 +67,22 @@ const getKlantById = (id) => {
     .where("idKlant", id);
 };
 
+const findKlantByEmail = (email, userName) => {
+  return getKnex()(tables.klant)
+    .where("email", email).andWhere("gebruikersnaam", userName)
+    .first();
+};
+
 // Leverancier
 const findLeverancierByUsername = (userName) => {
   return getKnex()(tables.leverancier)
     .where("gebruikersnaam", userName)
+    .first();
+};
+
+const findLeverancierByEmail = (email, userName) => {
+  return getKnex()(tables.leverancier)
+    .where("email", email).andWhere("gebruikersnaam", userName)
     .first();
 };
 
@@ -117,4 +129,6 @@ module.exports = {
   updateLeverancier,
   deleteKlantById,
   deleteLeverancierById,
+  findLeverancierByEmail,
+  findKlantByEmail,
 };

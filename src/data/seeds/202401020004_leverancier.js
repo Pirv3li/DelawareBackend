@@ -15,7 +15,7 @@ module.exports = {
         isActief: true,
         roles: JSON.stringify([Role.LEVER]),
         idBedrijf: 1,
-        email: "leverancier1@example.com",
+        email: "papunanoniashvili@gmail.com",
       },
 
       {

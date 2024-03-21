@@ -17,6 +17,24 @@ login.validationScheme = {
   },
 };
 
+const forgotPassword = async (ctx) => {
+  try{
+    const {username, email} = ctx.request.body;
+    const resetPassword = await userService.forgotPasswordKlant(email,username);
+    ctx.status = 200;
+    ctx.body = "password reseted", resetPassword;
+    }catch(error){
+      ctx.body = "error during resetting password:"; 
+    }
+};
+
+forgotPassword.validationScheme = {
+  body:{
+    username: Joi.string().required(),
+    email: Joi.string().email().required(),
+  }
+}
+
 const getKlant = async (ctx) => {
   try {
     const { idKlant } = ctx.state.session;
@@ -117,6 +135,12 @@ module.exports = (router) => {
     validate(getKlant.validationScheme),
     getKlant
   );
+  userRouter.post(
+    "/reset",
+    validate(forgotPassword.validationScheme),
+    forgotPassword
+  );
+
   userRouter.put(
     "/",
     requireAuthentication,
