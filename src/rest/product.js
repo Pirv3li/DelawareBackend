@@ -85,7 +85,7 @@ getProductenByZoekterm.validationScheme = {
   params: {
     begin: Joi.number().positive(),
     aantal: Joi.number().positive(),
-    zoekterm: Joi.string().allow('') 
+    zoekterm: Joi.string().optional().allow(""),
   }
 };
 
@@ -117,8 +117,8 @@ const getLeverancierProductenByZoekterm = async (ctx) => {
 getLeverancierProductenByZoekterm.validationScheme = {
   params: {
     begin: Joi.number().positive(),
-    zoekterm: Joi.string().allow(''),
-    aantal: Joi.number().positive(),
+    zoekterm: Joi.string().optional(),
+    aantal: Joi.number().positive().allow(""),
 
   }
 };
@@ -128,7 +128,7 @@ getLeverancierProductenByZoekterm.validationScheme = {
 const getProductenByCategories= async (ctx) => {
 
   const {begin} = ctx.params;
-  const {categories} = ctx.params;
+  const categories = ctx.params.categories.split(',');
   const {aantal} = ctx.params;
   try {
     const producten = await ServiceProducten.getProductenByCategories(begin, categories,aantal);
@@ -146,14 +146,14 @@ const getProductenByCategories= async (ctx) => {
 getProductenByCategories.validationScheme = {
   params: {
     begin: Joi.number().positive(),
-    categories: Joi.array().items(Joi.string()).optional(),
+    categories: Joi.string().required(),
     aantal: Joi.number().positive(),
   }
 };
 
 
 getProductenByLeverancierId.validationScheme = {
-  body: {
+  params: {
     begin: Joi.number().positive(),
     aantal: Joi.number().positive(),
   }
@@ -309,7 +309,7 @@ const getDistinctCategories = async (ctx) => {
 const getLeverancierProductenByCategories = async (ctx) => {
 
   const { idLeverancier } = ctx.state.session;
-  
+
 
   try {
     const categories = await ServiceProducten.getDistinctCategoriesLeverancier(idLeverancier);
@@ -341,9 +341,10 @@ module.exports = (router) => {
   ProductRouter.get("/categories", getDistinctCategories);
   ProductRouter.get("/:id", getProductByID);
   ProductRouter.get("/begin/:begin/:aantal",validate(getProductenLimit.validationScheme), getProductenLimit);
-  ProductRouter.get("/zoekterm/:begin/:aantal/:zoekterm",validate(getProductenByZoekterm.validationScheme), getProductenByZoekterm);
+  ProductRouter.get("/zoekterm/:begin/:aantal/:zoekterm?",validate(getProductenByZoekterm.validationScheme), getProductenByZoekterm);
+
   ProductRouter.get("/zoekcategorie/:begin/:aantal/:categories",validate(getProductenByCategories.validationScheme), getProductenByCategories);
-  ProductRouter.get("/leverancier/zoekterm/:begin/:aantal/:zoekterm",requireAuthentication, validate(getLeverancierProductenByZoekterm.validationScheme), getLeverancierProductenByZoekterm);
+  ProductRouter.get("/leverancier/zoekterm/:begin/:aantal/:zoekterm?",requireAuthentication, validate(getLeverancierProductenByZoekterm.validationScheme), getLeverancierProductenByZoekterm);
   ProductRouter.get("/leverancier/categories",requireAuthentication, validate(getLeverancierProductenByCategories.validationScheme), getLeverancierProductenByCategories);
 
 

@@ -31,6 +31,9 @@ const getProductenByLeverancierId = async (begin, idLeverancier,aantal) => {
 
 const getProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => {
 
+  if(zoekterm === undefined || zoekterm === null || zoekterm === ""){
+    zoekterm=""
+  }
   try {
     const producten = repoProducten.getProductenByZoekterm(begin, zoekterm, idLeverancier,aantal);
     return producten;
@@ -43,6 +46,10 @@ const getProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => 
 
 const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => {
 
+  if(zoekterm === undefined || zoekterm === null || zoekterm === ""){
+    zoekterm=""
+  }
+  
   try {
     const producten = repoProducten.getLeverancierProductenByZoekterm(begin, zoekterm, idLeverancier,aantal);
     return producten;
