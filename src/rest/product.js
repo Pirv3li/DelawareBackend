@@ -21,8 +21,8 @@ const getProducten = async (ctx) => {
 
 const getProductenLimit = async (ctx) => {
 
-  const {begin} = ctx.request.body;
-  const {aantal} = ctx.request.body;
+  const {begin} = ctx.params;
+  const {aantal} = ctx.params;
 
   try {
     const producten = await ServiceProducten.getProductenLimit(begin,aantal);
@@ -38,7 +38,7 @@ const getProductenLimit = async (ctx) => {
 };
 
 getProductenLimit.validationScheme = {
-  body: {
+  params: {
     begin: Joi.number().positive(),
     aantal: Joi.number().positive(),
 
@@ -47,8 +47,8 @@ getProductenLimit.validationScheme = {
 
 const getProductenByLeverancierId = async (ctx) => {
 
-  const {begin} = ctx.request.body;
-  const {aantal} = ctx.request.body;
+  const {begin} = ctx.params;
+  const {aantal} = ctx.params;
   const {idLeverancier } = ctx.state.session;
   try {
     const producten = await ServiceProducten.getProductenByLeverancierId(begin, idLeverancier,aantal);
@@ -65,10 +65,9 @@ const getProductenByLeverancierId = async (ctx) => {
 
 const getProductenByZoekterm = async (ctx) => {
 
-  const {begin} = ctx.request.body;
-  const {aantal} = ctx.request.body;
-
-  const {zoekterm} = ctx.request.body;
+  const {begin} = ctx.params;
+  const {aantal} = ctx.params;
+  const {zoekterm} = ctx.params;
   try {
     const producten = await ServiceProducten.getProductenByZoekterm(begin, zoekterm,aantal);
 
@@ -83,7 +82,7 @@ const getProductenByZoekterm = async (ctx) => {
 };
 
 getProductenByZoekterm.validationScheme = {
-  body: {
+  params: {
     begin: Joi.number().positive(),
     aantal: Joi.number().positive(),
     zoekterm: Joi.string().allow('') 
@@ -95,9 +94,9 @@ getProductenByZoekterm.validationScheme = {
 const getLeverancierProductenByZoekterm = async (ctx) => {
 
   const { idLeverancier } = ctx.state.session;
-  const {begin} = ctx.request.body;
-  const {zoekterm} = ctx.request.body;
-  const {aantal} = ctx.request.body;
+  const {begin} = ctx.params;
+  const {zoekterm} = ctx.params;
+  const {aantal} = ctx.params;
 
 
 
@@ -116,7 +115,7 @@ const getLeverancierProductenByZoekterm = async (ctx) => {
 };
 
 getLeverancierProductenByZoekterm.validationScheme = {
-  body: {
+  params: {
     begin: Joi.number().positive(),
     zoekterm: Joi.string().allow(''),
     aantal: Joi.number().positive(),
@@ -128,9 +127,9 @@ getLeverancierProductenByZoekterm.validationScheme = {
 
 const getProductenByCategories= async (ctx) => {
 
-  const {begin} = ctx.request.body;
-  const {categories} = ctx.request.body;
-  const {aantal} = ctx.request.body;
+  const {begin} = ctx.params;
+  const {categories} = ctx.params;
+  const {aantal} = ctx.params;
   try {
     const producten = await ServiceProducten.getProductenByCategories(begin, categories,aantal);
 
@@ -145,7 +144,7 @@ const getProductenByCategories= async (ctx) => {
 };
 
 getProductenByCategories.validationScheme = {
-  body: {
+  params: {
     begin: Joi.number().positive(),
     categories: Joi.array().items(Joi.string()).optional(),
     aantal: Joi.number().positive(),
@@ -341,10 +340,10 @@ module.exports = (router) => {
   ProductRouter.get("/", validate(getProducten.validationScheme), getProducten);
   ProductRouter.get("/categories", getDistinctCategories);
   ProductRouter.get("/:id", getProductByID);
-  ProductRouter.post("/begin",validate(getProductenLimit.validationScheme), getProductenLimit);
-  ProductRouter.post("/zoekterm",validate(getProductenByZoekterm.validationScheme), getProductenByZoekterm);
-  ProductRouter.post("/zoekcategorie",validate(getProductenByCategories.validationScheme), getProductenByCategories);
-  ProductRouter.post("/leverancier/zoekterm",requireAuthentication, validate(getLeverancierProductenByZoekterm.validationScheme), getLeverancierProductenByZoekterm);
+  ProductRouter.get("/begin/:begin/:aantal",validate(getProductenLimit.validationScheme), getProductenLimit);
+  ProductRouter.get("/zoekterm/:begin/:aantal/:zoekterm",validate(getProductenByZoekterm.validationScheme), getProductenByZoekterm);
+  ProductRouter.get("/zoekcategorie/:begin/:aantal/:categories",validate(getProductenByCategories.validationScheme), getProductenByCategories);
+  ProductRouter.get("/leverancier/zoekterm/:begin/:aantal/:zoekterm",requireAuthentication, validate(getLeverancierProductenByZoekterm.validationScheme), getLeverancierProductenByZoekterm);
   ProductRouter.get("/leverancier/categories",requireAuthentication, validate(getLeverancierProductenByCategories.validationScheme), getLeverancierProductenByCategories);
 
 
@@ -361,8 +360,8 @@ module.exports = (router) => {
   );
 
   //hier
-  ProductRouter.post(
-    "/leverancier",
+  ProductRouter.get(
+    "/leverancier/:begin/:aantal",
     requireAuthentication,
     requireLeverancier,
     validate(getProductenByLeverancierId.validationScheme),

@@ -142,8 +142,8 @@ deleteNotificationById.validationSheme = {
 
 const getAllNotificationsByKlantId = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
-  const { begin } = ctx.request.body;
-  const {aantal} = ctx.request.body;
+  const { begin } = ctx.params;
+  const {aantal} = ctx.params;
   try {
     const notificatieKlant = await notificationService.getAllNotificationsByKlantId(idKlant, begin, aantal);
     getLogger().info(`Notifications for Klant with ID ${idKlant} retrieved successfully`);
@@ -156,7 +156,7 @@ const getAllNotificationsByKlantId = async (ctx) => {
   }
 };
 getAllNotificationsByKlantId.validationSheme = {
-  body: {
+  params: {
     begin: Joi.number().optional(),
     aantal: Joi.number().positive(),
   }
@@ -164,8 +164,8 @@ getAllNotificationsByKlantId.validationSheme = {
 
 const getAllNotificationsByLeverancierId = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
-  const { begin } = ctx.request.body;
-  const {aantal} = ctx.request.body;
+  const { begin } = ctx.params;
+  const {aantal} = ctx.params;
   try {
     const notifications = await notificationService.getAllNotificationsByLeverancierId(idLeverancier, begin, aantal);
     getLogger().info(`Notifications for Leverancier with ID ${idLeverancier} retrieved successfully`);
@@ -179,7 +179,7 @@ const getAllNotificationsByLeverancierId = async (ctx) => {
 };
 
 getAllNotificationsByLeverancierId.validationSheme = {
-  body: {
+  params: {
     begin: Joi.number().optional(),
     aantal: Joi.number().positive(),
   }
@@ -304,15 +304,17 @@ module.exports = (router) => {
     validate(createNotification.validationSheme),
     createNotification
   );
-  notificationRouter.post(
-    "/klant",
+
+  notificationRouter.get(
+    "/klant/:begin/:aantal",
     requireAuthentication,
     requireKlant,
     validate(getAllNotificationsByKlantId.validationSheme),
     getAllNotificationsByKlantId
   );
-  notificationRouter.post(
-    "/leverancier",
+
+  notificationRouter.get(
+    "/leverancier/:begin/:aantal",
     requireAuthentication,
     requireLeverancier,
     validate(getAllNotificationsByLeverancierId.validationSheme),

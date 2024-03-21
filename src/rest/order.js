@@ -154,7 +154,7 @@ updateOrderById.validationScheme = {
 
 const getOrderByKlant = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
-  const {begin, aantal} = ctx.request.body;
+  const {begin, aantal} = ctx.params;
   
   try {
     const ordersKlant = await orderService.getOrderByKlantId(idKlant, begin, aantal);
@@ -167,7 +167,7 @@ const getOrderByKlant = async (ctx) => {
 };
 
 getOrderByKlant.validationScheme = {
-  body: {
+  params: {
     begin: Joi.number().optional(),
     aantal: Joi.number().positive().optional(),
   }
@@ -175,7 +175,7 @@ getOrderByKlant.validationScheme = {
 
 const getOrderByLeverancier = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
-  const {begin, aantal} = ctx.request.body;
+  const {begin, aantal} = ctx.params;
   try {
     const ordersLeverancier = await 
     orderService.getOrderByLeverancierId(
@@ -192,7 +192,7 @@ const getOrderByLeverancier = async (ctx) => {
 };
 
 getOrderByLeverancier.validationScheme = {
-  body: {
+  params: {
     begin: Joi.number().optional(),
     aantal: Joi.number().positive().optional(),
   }
@@ -225,17 +225,15 @@ module.exports = (router) => {
     validate(updateOrderById.validationScheme),
     updateOrderById
   );
-
-  orderRouter.post(
-    "/klant",
+  orderRouter.get(
+    "/klant/:begin/:aantal",
     requireAuthentication,
     requireKlant,
     validate(getOrderByKlant.validationScheme),
     getOrderByKlant
   );
-
-  orderRouter.post(
-    "/leverancier",
+  orderRouter.get(
+    "/leverancier/:begin/:aantal",
     requireAuthentication,
     requireLeverancier,
     validate(getOrderByLeverancier.validationScheme),
