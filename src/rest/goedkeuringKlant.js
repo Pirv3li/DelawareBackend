@@ -19,7 +19,7 @@ const getLaatsteWijziging = async (ctx) => {
     ctx.body = { error: "Internal Server Error" };
   }
 };
-getLaatsteWijziging.validationSheme = null;
+getLaatsteWijziging.validationScheme = null;
 
 const getAllGoedkeuringenKlant = async (ctx) => {
   try {
@@ -35,7 +35,7 @@ const getAllGoedkeuringenKlant = async (ctx) => {
     ctx.body = { error: "Internal Server Error" };
   }
 };
-getAllGoedkeuringenKlant.validationSheme = null;
+getAllGoedkeuringenKlant.validationScheme = null;
 
 const getGoedkeuringKlantById = async (ctx) => {
   try {
@@ -54,7 +54,7 @@ const getGoedkeuringKlantById = async (ctx) => {
     ctx.body = { error: "Internal Server Error" };
   }
 };
-getGoedkeuringKlantById.validationSheme = {
+getGoedkeuringKlantById.validationScheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
@@ -109,7 +109,7 @@ const createGoedkeuringKlant = async (ctx) => {
     ctx.body = { error: "Internal Server Error" };
   }
 };
-createGoedkeuringKlant.validationSheme = {
+createGoedkeuringKlant.validationScheme = {
   body: {
     klantNummer: Joi.string().max(255).required(),
     gebruikersnaam: Joi.string().max(50).required(),
@@ -143,7 +143,8 @@ const deleteGoedkeuringKlantById = async (ctx) => {
     ctx.body = { error: "Internal Server Error" };
   }
 };
-deleteGoedkeuringKlantById.validationSheme = {
+
+deleteGoedkeuringKlantById.validationScheme = {
   params: {
     id: Joi.number().integer().positive(),
   },
@@ -157,32 +158,32 @@ module.exports = (router) => {
   goedkeuringKlantRouter.get(
     '/laatsteWijziging',
     requireAuthentication,
-    validate(getLaatsteWijziging.validationSheme),
+    validate(getLaatsteWijziging.validationScheme),
     getLaatsteWijziging
   );
 
   goedkeuringKlantRouter.get(
     "/",
     requireAuthentication,
-    validate(getAllGoedkeuringenKlant.validationSheme),
+    validate(getAllGoedkeuringenKlant.validationScheme),
     getAllGoedkeuringenKlant
   );
   goedkeuringKlantRouter.get(
     "/:id",
     requireAuthentication,
-    validate(getGoedkeuringKlantById.validationSheme),
+    validate(getGoedkeuringKlantById.validationScheme),
     getGoedkeuringKlantById
   );
   goedkeuringKlantRouter.post(
     "/",
     requireAuthentication,
-    validate(createGoedkeuringKlant.validationSheme),
+    validate(createGoedkeuringKlant.validationScheme),
     createGoedkeuringKlant
   );
   goedkeuringKlantRouter.delete(
     "/:id",
     requireAuthentication,
-    validate(deleteGoedkeuringKlantById.validationSheme),
+    validate(deleteGoedkeuringKlantById.validationScheme),
     deleteGoedkeuringKlantById
   );
 

@@ -103,6 +103,7 @@ const updateNotificationById = async (ctx) => {
   try {
     const { idOrder, text, onderwerp, geopend, afgehandeld, datum } =
       ctx.request.body;
+
     const updatedNotification =
       await notificationService.updateNotificationById(ctx.params.id, {
         idOrder,
@@ -264,6 +265,7 @@ const countUnopenedNotificationsByLeverancierId = async (ctx) => {
     getLogger().info(
       `Unopened notification count for Leverancier with ID ${ctx.params.id} retrieved successfully`
     );
+
     ctx.status = 200;
     ctx.body = unopenedCount;
   } catch (error) {
@@ -391,6 +393,7 @@ module.exports = (router) => {
     "/:id",
     requireAuthentication,
     validate(updateNotificationById.validationScheme),
+    checkId,
     updateNotificationById
   );
 

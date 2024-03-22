@@ -4,7 +4,7 @@ const Role = require("../../src/core/roles");
 const { deleteLeverancier } = require("../../src/service/users");
 
 describe("Users API", () => {
-  let request, knex, leverAuth;
+  let request, knex, leverAuth, leverAuth2;
 
   withServer(({ supertest, knex: k }) => {
     request = supertest;

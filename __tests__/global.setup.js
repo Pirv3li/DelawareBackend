@@ -250,4 +250,61 @@ module.exports = async () => {
       idProduct: 3,
     },
   ]);
+
+  await knex(tables.notificatie).insert([
+    {
+      idNotificatie: 1,
+      idOrder: "2402011150a1b",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu gravida nunc. Quisque id lectus at neque blandit ultrices. Suspendisse placerat mauris quis libero condimentum dictum. Phasellus sit amet quam nec lacus euismod tincidunt sed efficitur risus. Sed at accumsan elit. Nunc consequat in nunc non varius. Proin luctus aliquet facilisis. Morbi finibus ante a dapibus hendrerit.",
+      onderwerp: "Order",
+      geopend: false,
+      afgehandeld: false,
+      datum: "2024-02-01",
+    },
+    {
+      idNotificatie: 2,
+      idOrder: "2402141205d4e",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu gravida nunc. Quisque id lectus at neque blandit ultrices. Suspendisse placerat mauris quis libero condimentum dictum. Phasellus sit amet quam nec lacus euismod tincidunt sed efficitur risus. Sed at accumsan elit. Nunc consequat in nunc non varius. Proin luctus aliquet facilisis. Morbi finibus ante a dapibus hendrerit.",
+      onderwerp: "Shipping",
+      geopend: false,
+      afgehandeld: false,
+      datum: "2022-12-25",
+    },
+    {
+      idNotificatie: 3,
+      idOrder: "2402241211g7h",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu gravida nunc. Quisque id lectus at neque blandit ultrices. Suspendisse placerat mauris quis libero condimentum dictum. Phasellus sit amet quam nec lacus euismod tincidunt sed efficitur risus. Sed at accumsan elit. Nunc consequat in nunc non varius. Proin luctus aliquet facilisis. Morbi finibus ante a dapibus hendrerit.",
+      onderwerp: "Delivery",
+      geopend: false,
+      afgehandeld: false,
+      datum: "2024-03-08",
+    },
+    {
+      idNotificatie: 4,
+      idOrder: "2402011150a1b",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu gravida nunc. Quisque id lectus at neque blandit ultrices. Suspendisse placerat mauris quis libero condimentum dictum. Phasellus sit amet quam nec lacus euismod tincidunt sed efficitur risus. Sed at accumsan elit. Nunc consequat in nunc non varius. Proin luctus aliquet facilisis. Morbi finibus ante a dapibus hendrerit.",
+      onderwerp: "Order",
+      geopend: false,
+      afgehandeld: false,
+      datum: "2023-12-03",
+    },
+    {
+      idNotificatie: 5,
+      idOrder: "2402011150a1b",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu gravida nunc. Quisque id lectus at neque blandit ultrices. Suspendisse placerat mauris quis libero condimentum dictum. Phasellus sit amet quam nec lacus euismod tincidunt sed efficitur risus. Sed at accumsan elit. Nunc consequat in nunc non varius. Proin luctus aliquet facilisis. Morbi finibus ante a dapibus hendrerit.",
+      onderwerp: "Order",
+      geopend: false,
+      afgehandeld: false,
+      datum: "2021-02-15",
+    },
+    {
+      idNotificatie: 6,
+      idOrder: "2402011150a1b",
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu gravida nunc. Quisque id lectus at neque blandit ultrices. Suspendisse placerat mauris quis libero condimentum dictum. Phasellus sit amet quam nec lacus euismod tincidunt sed efficitur risus. Sed at accumsan elit. Nunc consequat in nunc non varius. Proin luctus aliquet facilisis. Morbi finibus ante a dapibus hendrerit.",
+      onderwerp: "Order",
+      geopend: false,
+      afgehandeld: false,
+      datum: "2024-01-17",
+    },
+  ]);
 };

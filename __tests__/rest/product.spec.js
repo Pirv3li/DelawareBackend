@@ -15,6 +15,7 @@ describe("product API", () => {
   });
 
   beforeAll(async () => {
+    klantAuth = await KlantLogin(request);
     leverAuth = await LeverancierLogin(request);
   });
 
@@ -138,4 +139,68 @@ describe("product API", () => {
       expect(response.status).toBe(404);
     });
   });
+
+
+  describe("GET /api/producten/leverancier/:begin/:aantal", () => {
+    it("should get products for the authenticated leverancier", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/1/10")
+        .set("Authorization", leverAuth);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should return 403 for klant", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/1/10")
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(403);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should handle invalid authentication for leverancier", async () => {
+      const response = await request.get("/api/producten/leverancier/0/10");
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe("GET /api/producten/categories", () => {
+    it("should get distinct categories of products", async () => {
+      const response = await request.get("/api/producten/categories");
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+  });
+
+  describe("GET /api/producten/leverancier/categories", () => {
+    it("should get distinct categories of products for authenticated leverancier", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/categories")
+        .set("Authorization", leverAuth);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should return 403 for klant", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/categories")
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(403);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should handle invalid authentication for leverancier", async () => {
+      const response = await request.get("/api/producten/leverancier/categories");
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+
 });

@@ -10,7 +10,7 @@ const getAdresByKlantId = async (id) => {
 
 const getAdresByLeverancierId = async (id) => {
     const adres = await getKnex().raw(
-        `select straat,nummer,stad,postcode from leverancier k join bedrijf b on b.idBedrijf = k.idBedrijf join adres a on a.idAdres = b.idAdres where idKlant = ${id}`
+        `select straat,nummer,stad,postcode from leverancier k join bedrijf b on b.idBedrijf = k.idBedrijf join adres a on a.idAdres = b.idAdres where idLeverancier = ${id}`
     );
     return adres[0];
 }
