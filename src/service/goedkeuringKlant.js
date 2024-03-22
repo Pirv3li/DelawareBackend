@@ -10,6 +10,7 @@ const checkAdminOrKlantRole = (role) => {
   }
 };
 
+
 const checkOnlyKlantRole = (role) => {
   if (!role || !role.includes("klant")) {
     throw ServiceError.forbidden(`User does not have the required Klant role.`);
@@ -111,6 +112,7 @@ const createGoedkeuringKlant = async (
     idNewGoedkeuringWijziging
   );
 };
+
 
 const deleteGoedkeuringKlantById = async (id, session) => {
   checkAdminOrKlantRole(session.roles);

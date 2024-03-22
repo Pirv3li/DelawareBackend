@@ -22,7 +22,7 @@ module.exports = {
         stad: "Supplier City",
         postcode: "1234AB",
         afgehandeld: "afgekeurd",
-        datumAanvraag: new Date(2024, 20, 3),
+        datumAanvraag: new Date(2022, 20, 3),
         idLeverancier: 1,
       },
     ]);
