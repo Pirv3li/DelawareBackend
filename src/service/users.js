@@ -44,7 +44,12 @@ const forgotPasswordLeverancier = async (email, username) => {
     },
     to: email,
     subject: "Password Reset",
-    text: `Your new password is: ${newPassword}`,
+    html: `
+    <p>Beste,</p>
+    <p>Uw nieuw wachtwoord is: <b><b>${newPassword}</b></b></p>
+    <p>met vriendelijke groeten, <br> Delaware Support</p>
+  `,
+
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -79,7 +84,11 @@ const forgotPasswordKlant = async (email, username) => {
     },
     to: email,
     subject: "Password Reset",
-    text: `Your new password is: ${newPassword}`,
+    html: `
+    <p>Beste,</p>
+    <p>Uw nieuw wachtwoord is: <b><b>${newPassword}</b></b></p>
+    <p>met vriendelijke groeten, <br> Delaware Support</p>
+  `,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
