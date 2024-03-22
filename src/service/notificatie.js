@@ -1,4 +1,5 @@
 const notificationRepository = require('../repository/notificatie');
+const ServiceError = require('../core/serviceError');
 
 const getAllNotifications = async (ctx) => {
   const begin = parseInt(ctx.query.begin) || 0;

@@ -2,7 +2,6 @@ const Router = require('@koa/router');
 const installKlantRouter = require('./klant');
 const installLeverancierRouter = require('./leverancier');
 const installProductRouter = require('./product');
-const installBedrijfRouter = require('./bedrijf');
 const installOrderRouter = require('./order');
 const installOrderDetailsRouter = require('./orderDetails');
 const installNotificatieRouter = require('./notificatie');
@@ -22,7 +21,6 @@ module.exports = (app) => {
   installKlantRouter(router);
   installLeverancierRouter(router);
   installProductRouter(router);
-  installBedrijfRouter(router);
   installOrderRouter(router);
   installOrderDetailsRouter(router);
   installNotificatieRouter(router);

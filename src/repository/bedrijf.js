@@ -46,17 +46,7 @@ const formatBedrijf = (result) => {
   return formattedResult;
 };
 
-const getAllBedrijven = async () => {
-  const bedrijven = await getKnex()(tables.bedrijf)
-    .select("*")
-    .leftJoin(
-      `${tables.adres}`,
-      `${tables.bedrijf}.idAdres`,
-      `${tables.adres}.idAdres`
-    );
 
-  return bedrijven.map(formatBedrijf);
-};
 
 const getBedrijfById = async (id) => {
   const bedrijf = await getKnex()(tables.bedrijf)
@@ -74,51 +64,6 @@ const getBedrijfById = async (id) => {
 
 const findBedrijfByName = (naam) => {
   return getKnex()(tables.bedrijf).where("naam", naam).first();
-};
-
-const createBedrijf = async ({
-  naam,
-  logo,
-  sector,
-  iban,
-  btwNummer,
-  email,
-  telefoonnummer,
-  gebruikerSinds,
-  idAdres,
-}) => {
-  const [id] = await getKnex()(tables.bedrijf).insert({
-    naam,
-    logo,
-    sector,
-    iban,
-    btwNummer,
-    email,
-    telefoonnummer,
-    gebruikerSinds,
-    idAdres,
-  });
-  return id;
-};
-
-const updateBedrijfById = async (id, bedrijfUpdates ) => {
-  await getKnex()(tables.bedrijf)
-    .where(`${tables.bedrijf}.idBedrijf`, id)
-    .update(
-      bedrijfUpdates
-    );
-
-  const bedrijf = await getKnex()(tables.bedrijf)
-    .where("idBedrijf", id)
-    .select("*")
-    .first();
-  return formatBedrijf(bedrijf);
-};
-
-const deleteBedrijfById = async (id) => {
-  await getKnex()(tables.bedrijf)
-    .where(`${tables.bedrijf}.idBedrijf`, id)
-    .del();
 };
 
 const getBedrijfByKlantId = async (id) => {
@@ -160,11 +105,7 @@ const getBedrijfByLeverancierId = async (id) => {
 };
 
 module.exports = {
-  getAllBedrijven,
   getBedrijfById,
-  createBedrijf,
-  updateBedrijfById,
-  deleteBedrijfById,
   findBedrijfByName,
   getBedrijfByKlantId,
   getBedrijfByLeverancierId,
