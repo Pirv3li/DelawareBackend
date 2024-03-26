@@ -82,8 +82,27 @@ describe("product API", () => {
 
       expect(response.status).toBe(400);
     });
-  });
 
+    it("should handle permission denied error during product creation", async () => {
+      const productData = {
+        foto: "https://media.nu.nl/m/un2xpm3ag029_wd854/zwitserse-kaas.jpg",
+        naam: "kaas",
+        eenheidsprijs: 10,
+        btwtarief: 2,
+        aantal: 1,
+        gewicht: 1,
+        categorie: "test",
+        beschrijving: "beschrijving",
+      };
+
+      const response = await request
+        .post("/api/producten")
+        .send(productData)
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(403);
+    });
+  });
 
   describe("GET /api/producten/leverancier/:begin/:aantal", () => {
     it("should get products for the authenticated leverancier", async () => {
@@ -140,11 +159,61 @@ describe("product API", () => {
     });
 
     it("should handle invalid authentication for leverancier", async () => {
-      const response = await request.get("/api/producten/leverancier/categories");
+      const response = await request.get(
+        "/api/producten/leverancier/categories"
+      );
 
       expect(response.status).toBe(401);
     });
   });
 
+  describe("GET /api/producten/zoekterm/:begin/:aantal/:zoekterm?", () => {
+    it("should get producten by zoekterm", async () => {
+      const response = await request
+        .get("/api/producten/zoekterm/1/10/kaas")
+        .set("Authorization", klantAuth);
 
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+  });
+
+  describe("GET /api/producten/zoekcategorie/:begin/:aantal/:categories", () => {
+    it("should get producten by categories", async () => {
+      const response = await request
+        .get("/api/producten/zoekcategorie/1/10/test")
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+  });
+
+  describe("GET /api/producten/leverancier/zoekterm/:begin/:aantal/:zoekterm?", () => {
+    it("should get producten by zoekterm for leverancier", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/zoekterm/1/10/kaas")
+        .set("Authorization", leverAuth);
+
+      expect(response.status).toBe(200);
+    });
+
+    it("should return permission denied for klant", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/zoekterm/1/10/kaas")
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(403);
+    });
+  });
+
+  describe("GET /api/producten/zoekcategorie/:begin/:aantal/:zoekterm?", () => {
+    it("should get producten by zoekterm for leverancier", async () => {
+      const response = await request
+        .get("/api/producten/zoekcategorie/1/10/test")
+        .set("Authorization", leverAuth);
+
+      expect(response.status).toBe(200);
+    });
+  });
 });
