@@ -20,74 +20,71 @@ const getProducten = async () => {
 };
 
 const getProductenLimit = async (begin, aantal) => {
-  const pageSize = aantal; 
+  const pageSize = aantal;
   const offset = begin - 1;
-  
-  const producten = getKnex()(tables.product)
-  .select(...SELECT_COLUMNS)
-  .limit(pageSize)
-  .offset(offset);
 
-  return producten;
-};
-
-
-const getProductenByLeverancierId = async (begin, idLeverancier,aantal) => {
-  const pageSize = aantal; 
-  const offset = begin - 1;
-  
-  const producten = getKnex()(tables.product)
-  .select(...SELECT_COLUMNS)
-  .where("idLeverancier", idLeverancier)
-  .limit(pageSize)
-  .offset(offset);
-
-  return producten;
-};
-
-
-
-const getProductenByZoekterm = async (begin, zoekterm,aantal) => {
-  const pageSize = aantal; 
-  const offset = begin - 1;
-  
   const producten = getKnex()(tables.product)
     .select(...SELECT_COLUMNS)
-    .where('naam', 'like', `%${zoekterm}%`)
     .limit(pageSize)
     .offset(offset);
 
   return producten;
 };
 
-const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => {
-  const pageSize = aantal; 
+const getProductenByLeverancierId = async (begin, idLeverancier, aantal) => {
+  const pageSize = aantal;
   const offset = begin - 1;
-  
+
   const producten = getKnex()(tables.product)
     .select(...SELECT_COLUMNS)
-    .where('naam', 'like', `%${zoekterm}%`)
-    .where('idLeverancier', idLeverancier)
+    .where("idLeverancier", idLeverancier)
     .limit(pageSize)
     .offset(offset);
 
   return producten;
 };
 
-
-
-const getProductenByCategories = async (begin, categories,aantal) => {
-  const pageSize = aantal; 
+const getProductenByZoekterm = async (begin, zoekterm, aantal) => {
+  const pageSize = aantal;
   const offset = begin - 1;
-  
-  
+
+  const producten = getKnex()(tables.product)
+    .select(...SELECT_COLUMNS)
+    .where("naam", "like", `%${zoekterm}%`)
+    .limit(pageSize)
+    .offset(offset);
+
+  return producten;
+};
+
+const getLeverancierProductenByZoekterm = async (
+  begin,
+  zoekterm,
+  idLeverancier,
+  aantal
+) => {
+  const pageSize = aantal;
+  const offset = begin - 1;
+
+  const producten = getKnex()(tables.product)
+    .select(...SELECT_COLUMNS)
+    .where("naam", "like", `%${zoekterm}%`)
+    .where("idLeverancier", idLeverancier)
+    .limit(pageSize)
+    .offset(offset);
+
+  return producten;
+};
+
+const getProductenByCategories = async (begin, categories, aantal) => {
+  const pageSize = aantal;
+  const offset = begin - 1;
 
   const query = getKnex()(tables.product)
     .select(...SELECT_COLUMNS)
-    .whereIn('categorie', categories)
+    .whereIn("categorie", categories)
     .limit(pageSize)
     .offset(offset);
-    
 
   const producten = await query;
 
@@ -111,10 +108,9 @@ const getDistinctCategories = async () => {
 };
 
 const getDistinctCategoriesLeverancier = async (idLeverancier) => {
-  const categories = 
-  await getKnex()("product")
-  .distinct("categorie")
-  .where("idLeverancier", idLeverancier);
+  const categories = await getKnex()("product")
+    .distinct("categorie")
+    .where("idLeverancier", idLeverancier);
 
   return categories.map((categoryObj) => categoryObj.categorie);
 };
@@ -147,67 +143,15 @@ const createProducten = async (
   return idProduct;
 };
 
-const updateProduct = async (idProduct, updateData) => {
-  const updatedFields = {};
-
-  if (updateData.foto) {
-    updatedFields.foto = updateData.foto;
-  }
-
-  if (updateData.naam) {
-    updatedFields.naam = updateData.naam;
-  }
-
-  if (updateData.eenheidsprijs) {
-    updatedFields.eenheidsprijs = updateData.eenheidsprijs;
-  }
-
-  if (updateData.btwtarief) {
-    updatedFields.btwtarief = updateData.btwtarief;
-  }
-
-  if (updateData.aantal) {
-    updatedFields.aantal = updateData.aantal;
-  }
-
-  if (updateData.gewicht) {
-    updatedFields.gewicht = updateData.gewicht;
-  }
-
-  if (updateData.beschrijving) {
-    updatedFields.beschrijving = updateData.beschrijving;
-  }
-
-  await getKnex()(tables.product)
-    .where("idProduct", idProduct)
-    .update(updatedFields);
-
-  const updatedProduct = await getKnex()(tables.product)
-    .where("idProduct", idProduct)
-    .first();
-
-  return updatedProduct;
-};
-
-const deleteProduct = async (idProduct) => {
-  const deletedProduct = await getKnex()(tables.product)
-    .where("idProduct", idProduct)
-    .delete();
-
-  return deletedProduct;
-};
-
 module.exports = {
   getProducten,
   createProducten,
   getProductById,
-  updateProduct,
-  deleteProduct,
   getDistinctCategories,
   getProductenLimit,
   getProductenByLeverancierId,
   getProductenByZoekterm,
   getProductenByCategories,
   getLeverancierProductenByZoekterm,
-  getDistinctCategoriesLeverancier
+  getDistinctCategoriesLeverancier,
 };

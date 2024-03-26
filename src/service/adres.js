@@ -4,11 +4,20 @@ const adresRepo = require('../repository/adres');
 
 const getAdresByKlantId = async (id) => {
   const adres = await adresRepo.getAdresByKlantId(id);
+
+  if(!adres) {
+    throw ServiceError.notFound("Not found");
+  }
   return adres;
 }
 
 const getAdresByLeverancierId = async (id) => {
   const adres = await adresRepo.getAdresByLeverancierId(id);
+
+  if(!adres) {
+    throw ServiceError.notFound("Not found");
+  }
+  
   return adres;
 }
 

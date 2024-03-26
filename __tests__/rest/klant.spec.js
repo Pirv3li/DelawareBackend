@@ -3,7 +3,7 @@ const { withServer, KlantLogin, deleteKlantLogin } = require("../supertest.setup
 const Role = require("../../src/core/roles");
 
 describe("Users API", () => {
-  let request, knex, klantAuth, leverAuth;
+  let request, knex, klantAuth, leverAuth, klantAuth2;
 
   withServer(({ supertest, knex: k }) => {
     request = supertest;
@@ -86,4 +86,5 @@ describe("Users API", () => {
       expect(response.body.message).toBe('Klant deleted');
     });
   });
+
 });

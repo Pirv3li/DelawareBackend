@@ -38,30 +38,6 @@ const getLeverancier = async (ctx) => {
 
 getLeverancier.validationScheme = null;
 
-const getLeverancierById = async (ctx) => {
-  try {
-    const { id } = ctx.params;
-    const leverancier = await userService.getLeverancierById(id);
-
-    if (leverancier) {
-      ctx.status = 200;
-      ctx.body = leverancier;
-    } else {
-      ctx.status = 404;
-      ctx.body = { message: "leverancier not found" };
-    }
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = { message: "Error fetching leverancier data" };
-  }
-};
-
-getLeverancierById.validationScheme = {
-  params: {
-    id: Joi.number().required(),
-  },
-};
-
 const forgotPassword = async (ctx) => {
   try{
     const {username, email} = ctx.request.body;
@@ -119,7 +95,6 @@ const deleteLeverancier = async (ctx) => {
 deleteLeverancier.validationScheme = {};
 
 
-const adminRole = makeRequireRole(Role.ADMIN);
 
 /**
  * Install team routes in the given router.
@@ -150,13 +125,7 @@ module.exports = (router) => {
     validate(updateLeverancier.validationScheme),
     updateLeverancier
   );
-  userRouter.get(
-    "/:id",
-    requireAuthentication,
-    adminRole,
-    validate(getLeverancierById.validationScheme),
-    getLeverancierById
-  );
+
   userRouter.delete(
     "/",
     requireAuthentication,

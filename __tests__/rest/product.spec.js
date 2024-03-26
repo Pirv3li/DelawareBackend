@@ -15,6 +15,7 @@ describe("product API", () => {
   });
 
   beforeAll(async () => {
+    klantAuth = await KlantLogin(request);
     leverAuth = await LeverancierLogin(request);
   });
 
@@ -81,61 +82,138 @@ describe("product API", () => {
 
       expect(response.status).toBe(400);
     });
-  });
 
-  describe("PUT /api/producten/:id", () => {
-    it("should update product", async () => {
-      const productId = 1;
-      const updatedProductData = {
-        idLeverancier: 2,
-        naam: "Updated product name",
-        beschrijving: "Updated description",
+    it("should handle permission denied error during product creation", async () => {
+      const productData = {
+        foto: "https://media.nu.nl/m/un2xpm3ag029_wd854/zwitserse-kaas.jpg",
+        naam: "kaas",
+        eenheidsprijs: 10,
+        btwtarief: 2,
+        aantal: 1,
+        gewicht: 1,
+        categorie: "test",
+        beschrijving: "beschrijving",
       };
 
       const response = await request
-        .put(`/api/producten/${productId}`)
-        .send(updatedProductData)
+        .post("/api/producten")
+        .send(productData)
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(403);
+    });
+  });
+
+  describe("GET /api/producten/leverancier/:begin/:aantal", () => {
+    it("should get products for the authenticated leverancier", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/1/10")
         .set("Authorization", leverAuth);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
     });
 
-    it("should handle invalid product ID during update", async () => {
-      const invalidProductId = 99999999;
-      const updatedProductData = {
-        idLeverancier: 2,
-        naam: "Updated product name",
-        beschrijving: "Updated error description",
-      };
-
+    it("should return 403 for klant", async () => {
       const response = await request
-        .put(`/api/producten/${invalidProductId}`)
-        .send(updatedProductData)
-        .set("Authorization", leverAuth);
+        .get("/api/producten/leverancier/1/10")
+        .set("Authorization", klantAuth);
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(403);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should handle invalid authentication for leverancier", async () => {
+      const response = await request.get("/api/producten/leverancier/0/10");
+
+      expect(response.status).toBe(401);
     });
   });
 
-  describe("DELETE /api/producten/:id", () => {
-    it("should delete product", async () => {
-      const productId = 1;
+  describe("GET /api/producten/categories", () => {
+    it("should get distinct categories of products", async () => {
+      const response = await request.get("/api/producten/categories");
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+  });
+
+  describe("GET /api/producten/leverancier/categories", () => {
+    it("should get distinct categories of products for authenticated leverancier", async () => {
       const response = await request
-        .delete(`/api/producten/${productId}`)
+        .get("/api/producten/leverancier/categories")
         .set("Authorization", leverAuth);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
     });
 
-    it("should handle invalid product ID during deletion", async () => {
-      const invalidProductId = 9999;
+    it("should return 403 for klant", async () => {
       const response = await request
-        .delete(`/api/producten/${invalidProductId}`)
+        .get("/api/producten/leverancier/categories")
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(403);
+      expect(response.body).toBeDefined();
+    });
+
+    it("should handle invalid authentication for leverancier", async () => {
+      const response = await request.get(
+        "/api/producten/leverancier/categories"
+      );
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe("GET /api/producten/zoekterm/:begin/:aantal/:zoekterm?", () => {
+    it("should get producten by zoekterm", async () => {
+      const response = await request
+        .get("/api/producten/zoekterm/1/10/kaas")
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+  });
+
+  describe("GET /api/producten/zoekcategorie/:begin/:aantal/:categories", () => {
+    it("should get producten by categories", async () => {
+      const response = await request
+        .get("/api/producten/zoekcategorie/1/10/test")
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+    });
+  });
+
+  describe("GET /api/producten/leverancier/zoekterm/:begin/:aantal/:zoekterm?", () => {
+    it("should get producten by zoekterm for leverancier", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/zoekterm/1/10/kaas")
         .set("Authorization", leverAuth);
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(200);
+    });
+
+    it("should return permission denied for klant", async () => {
+      const response = await request
+        .get("/api/producten/leverancier/zoekterm/1/10/kaas")
+        .set("Authorization", klantAuth);
+
+      expect(response.status).toBe(403);
+    });
+  });
+
+  describe("GET /api/producten/zoekcategorie/:begin/:aantal/:zoekterm?", () => {
+    it("should get producten by zoekterm for leverancier", async () => {
+      const response = await request
+        .get("/api/producten/zoekcategorie/1/10/test")
+        .set("Authorization", leverAuth);
+
+      expect(response.status).toBe(200);
     });
   });
 });

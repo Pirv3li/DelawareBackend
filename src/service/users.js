@@ -259,6 +259,12 @@ const loginKlant = async (userName, password) => {
 
 const getKlantById = async (id) => {
   const klant = await userRepository.getKlantById(id);
+
+  if(!klant){
+    throw ServiceError.notFound(
+      "user not found"
+    );
+  }
   const exposedKlant = klant.map(makeExposedKlant);
   return exposedKlant;
 };

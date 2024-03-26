@@ -1,81 +1,47 @@
-const goedkeuringLeverancierRepo = require('../repository/goedkeuringLeverancier');
-const ServiceError = require('../core/serviceError');
-const { hashPassword } = require("../core/password");
-
-
-// ENKEL DE ADMINISTRATOR MAG DEZE REQUESTS UITVOEREN. DAAROM DAT HET VOORLOPIG NOG IN COMMENTAAR STAAT
+const goedkeuringLeverancierRepo = require("../repository/goedkeuringLeverancier");
+const ServiceError = require("../core/serviceError");
 
 const checkAdminOrLeverancierRole = (role) => {
-  if (!role || (!role.includes('admin') && !role.includes('leverancier'))) {
-    throw ServiceError.forbidden(`User does not have the required admin or leverancier role.`);
+  if (!role || (!role.includes("admin") && !role.includes("leverancier"))) {
+    return false;
   }
+  return true;
 };
 
 const checkOnlyLeverancierRole = (role) => {
-  if (!role || !role.includes('leverancier')) {
-    throw ServiceError.forbidden(`User does not have the required leverancier role.`);
+  if (!role || !role.includes("leverancier")) {
+    return false;
   }
+  return true;
 };
 
 const checkLeverancierId = (idLeverancier, id) => {
   if (idLeverancier !== id) {
-    throw ServiceError.forbidden(`User does not have permission to access or modify this data.`);
+    return false;
   }
-}
+  return true;
+};
 
-const getLaatsteWijziging = async(session) => {
-  checkAdminOrLeverancierRole(session.roles);
-  const laatsteWijziging = await goedkeuringLeverancierRepo.getLaatsteWijziging(session.idLeverancier);
-  if(!laatsteWijziging){
-    return {message: 'No change request has been made yet'};
-  }
-  return laatsteWijziging;
-}
-
-const getAllGoedkeuringenLeverancier = async(session) => {
-  checkAdminOrLeverancierRole(session.roles);
-  const items = await goedkeuringLeverancierRepo.getAllGoedkeuringenLeverancier(session.idLeverancier);
-  if (items.length === 0) {
-    throw ServiceError.notFound(`There are no requests for this leverancier.`);
-  }
-  items.forEach(item => {
-    checkLeverancierId(item.idLeverancier, session.idLeverancier);
-  });
-  return {
-    items,
-    count: items.length
+const getLaatsteWijziging = async (session) => {
+  try {
+    if (!checkAdminOrLeverancierRole(session.roles)) {
+      throw ServiceError.unauthorized("Permission denied");
+    }
+    const laatsteWijziging =
+      await goedkeuringLeverancierRepo.getLaatsteWijziging(
+        session.idLeverancier
+      );
+    if (!laatsteWijziging) {
+      return { message: "No change request has been made yet" };
+    }
+    return laatsteWijziging;
+  } catch (error) {
+    throw error;
   }
 };
 
-const getGoedkeuringLeverancierById = async(id, session) => {
-  checkAdminOrLeverancierRole(session.roles);
-  const goedkeuringWijziging = await goedkeuringLeverancierRepo.getGoedkeuringLeverancierById(id)
-  if(!goedkeuringWijziging){
-    throw ServiceError.notFound(`There is no goedkeuringWijziging with id ${id}.`, {id})
-  }
-  checkLeverancierId(goedkeuringWijziging.idLeverancier, session.idLeverancier);
-  return goedkeuringWijziging  
-};
-
-const createGoedkeuringLeverancier = async ({
-  idLeverancier,
-  leverancierNummer,
-  gebruikersnaam,
-  email,
-  isActief,
-  roles,
-  iban,
-  btwNummer,
-  telefoonnummer,
-  sector,
-  straat,
-  nummer,
-  stad,
-  postcode,
-}, session) => {
-  checkOnlyLeverancierRole(session.roles);
-  
-  const idNewGoedkeuringWijziging = await goedkeuringLeverancierRepo.createGoedkeuringLeverancier({
+const createGoedkeuringLeverancier = async (
+  {
     idLeverancier,
     leverancierNummer,
     gebruikersnaam,
@@ -90,27 +56,43 @@ const createGoedkeuringLeverancier = async ({
     nummer,
     stad,
     postcode,
-    afgehandeld: 'in behandeling',
-    datumAanvraag: new Date(),
-  });
-  checkLeverancierId(idLeverancier, session.idLeverancier)
-  return await goedkeuringLeverancierRepo.getGoedkeuringLeverancierById(idNewGoedkeuringWijziging);
-};
+  },
+  session
+) => {
+  try {
+    if (!checkOnlyLeverancierRole(session.roles)) {
+      throw ServiceError.unauthorized("Permission denied");
+    }
+    if (!checkLeverancierId(idLeverancier, session.idLeverancier)) {
+      throw ServiceError.unauthorized("Permission denied");
+    }
+    const idNewGoedkeuringWijziging =
+      await goedkeuringLeverancierRepo.createGoedkeuringLeverancier({
+        idLeverancier,
+        leverancierNummer,
+        gebruikersnaam,
+        email,
+        isActief,
+        roles,
+        iban,
+        btwNummer,
+        telefoonnummer,
+        sector,
+        straat,
+        nummer,
+        stad,
+        postcode,
+        afgehandeld: "in behandeling",
+        datumAanvraag: new Date(),
+      });
 
-const deleteGoedkeuringLeverancierById = async (id, session) => {
-  checkAdminOrLeverancierRole(session.roles);
-  const goedkeuringLeverancier = await goedkeuringLeverancierRepo.getGoedkeuringLeverancierById(id);
-  if (!goedkeuringLeverancier) {
-    throw ServiceError.notFound(`There is no goedkeuringLeverancier with id ${id}.`, {id});
+    return idNewGoedkeuringWijziging;
+  } catch (error) {
+    throw error;
   }
-  checkLeverancierId(goedkeuringLeverancier.idLeverancier, session.idLeverancier);
-  await goedkeuringLeverancierRepo.deleteGoedkeuringLeverancierById(id);
 };
 
 module.exports = {
   getLaatsteWijziging,
-  getAllGoedkeuringenLeverancier,
-  getGoedkeuringLeverancierById,
   createGoedkeuringLeverancier,
-  deleteGoedkeuringLeverancierById,
 };

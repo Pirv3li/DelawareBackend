@@ -53,30 +53,6 @@ const getKlant = async (ctx) => {
 };
 getKlant.validationScheme = null;
 
-const getKlantById = async (ctx) => {
-  try {
-    const { id } = ctx.params;
-    const klant = await userService.getKlantById(id);
-
-    if (klant) {
-      ctx.status = 200;
-      ctx.body = klant;
-    } else {
-      ctx.status = 404;
-      ctx.body = { message: "klant not found" };
-    }
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = { message: "Error fetching klant data:" + error.message };
-  }
-};
-
-getKlantById.validationScheme = {
-  params: {
-    id: Joi.number().required(),
-  },
-};
-
 const updateKlant = async (ctx) => {
   try{
   const {idKlant} = ctx.state.session;
@@ -116,7 +92,6 @@ const deleteKlant = async (ctx) => {
 
 deleteKlant.validationScheme = {};
 
-const adminRole = makeRequireRole(Role.ADMIN);
 
 /**
  * Install team routes in the given router.
@@ -147,13 +122,7 @@ module.exports = (router) => {
     validate(updateKlant.validationScheme),
     updateKlant
   );
-  userRouter.get(
-    "/:id",
-    requireAuthentication,
-    adminRole,
-    validate(getKlantById.validationScheme),
-    getKlantById
-  );
+
   userRouter.delete(
     "/",
     requireAuthentication,

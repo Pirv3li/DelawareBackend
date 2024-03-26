@@ -14,15 +14,16 @@ const getAdresByUser = async (ctx) => {
     const { idKlant, idLeverancier } = ctx.state.session;
     if (idKlant !== undefined) {
       adres = await adresService.getAdresByKlantId(idKlant);
-    } else {
+    }
+    if(idLeverancier !== undefined){
       adres = await adresService.getAdresByLeverancierId(idLeverancier);
     }
-
     ctx.body = adres;
     ctx.status = 200;
 
     getLogger().info("Addresses fetched successfully", { adres });
   } catch (error) {
+    console.log(error)
     ctx.status = 500;
     ctx.body = { error: "Internal Server Error" };
 
@@ -38,15 +39,18 @@ const getAdresById = async (ctx) => {
   try {
     let order;
     let user;
+    let adres;
     const { idKlant, idLeverancier } = ctx.state.session;
     const id = ctx.params.id;
-    const adres = await adresService.getAdresById(id);
 
-    if (!adres) {
-      ctx.status = 404;
+    try {
+      adres = await adresService.getAdresById(id);
+    } catch (error) {
       ctx.body = { message: "Address not found" };
+      ctx.status = 404;
       return;
     }
+
 
     if (idKlant !== undefined) {
       order = await orderService.getOrderByKlantId(idKlant);

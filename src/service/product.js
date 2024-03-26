@@ -11,68 +11,96 @@ const getProducten = async () => {
 };
 
 const getProductenLimit = async (begin, aantal) => {
-
   try {
-    const producten = repoProducten.getProductenLimit(begin,aantal);
+    const producten = repoProducten.getProductenLimit(begin, aantal);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
   }
 };
 
-const getProductenByLeverancierId = async (begin, idLeverancier,aantal) => {
+const getProductenByLeverancierId = async (begin, idLeverancier, aantal) => {
   try {
-    const producten = repoProducten.getProductenByLeverancierId(begin, idLeverancier,aantal);
+    const producten = repoProducten.getProductenByLeverancierId(
+      begin,
+      idLeverancier,
+      aantal
+    );
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
   }
 };
 
-const getProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => {
-
-  if(zoekterm === undefined || zoekterm === null || zoekterm === ""){
-    zoekterm=""
+const getProductenByZoekterm = async (
+  begin,
+  zoekterm,
+  idLeverancier,
+  aantal
+) => {
+  if (zoekterm === undefined || zoekterm === null || zoekterm === "") {
+    zoekterm = "";
   }
   try {
-    const producten = repoProducten.getProductenByZoekterm(begin, zoekterm, idLeverancier,aantal);
+    const producten = repoProducten.getProductenByZoekterm(
+      begin,
+      zoekterm,
+      idLeverancier,
+      aantal
+    );
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
   }
 };
 
-
-
-const getLeverancierProductenByZoekterm = async (begin, zoekterm, idLeverancier,aantal) => {
-
-  if(zoekterm === undefined || zoekterm === null || zoekterm === ""){
-    zoekterm=""
-  }
-  
-  try {
-    const producten = repoProducten.getLeverancierProductenByZoekterm(begin, zoekterm, idLeverancier,aantal);
-    return producten;
-  } catch (error) {
-    throw new Error("Error while fetching producten");
+const getLeverancierProductenByZoekterm = async (
+  begin,
+  zoekterm,
+  idLeverancier,
+  aantal
+) => {
+  if (zoekterm === undefined || zoekterm === null || zoekterm === "") {
+    zoekterm = "";
   }
 
-};
-
-const getProductenByCategories = async (begin, categories,aantal) => {
-
   try {
-    const producten = repoProducten.getProductenByCategories(begin, categories,aantal);
+    const producten = repoProducten.getLeverancierProductenByZoekterm(
+      begin,
+      zoekterm,
+      idLeverancier,
+      aantal
+    );
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
   }
 };
 
-const getLeverancierProductenByCategories = async (begin, categories,aantal) => {
-
+const getProductenByCategories = async (begin, categories, aantal) => {
   try {
-    const producten = repoProducten.getLeverancierProductenByCategories(begin, categories,aantal);
+    const producten = repoProducten.getProductenByCategories(
+      begin,
+      categories,
+      aantal
+    );
+    return producten;
+  } catch (error) {
+    throw new Error("Error while fetching producten");
+  }
+};
+
+const getLeverancierProductenByCategories = async (
+  begin,
+  categories,
+  aantal
+) => {
+  try {
+    const producten = repoProducten.getLeverancierProductenByCategories(
+      begin,
+      categories,
+      aantal
+    );
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
@@ -119,78 +147,6 @@ const createProducten = async (
   }
 };
 
-const updateProduct = async (idProduct, idLeverancier, updates) => {
-  const prodUpdates = {};
-  const product = await repoProducten.getProductById(idProduct);
-  if (!product) {
-    throw ServiceError.notFound("No product found");
-  }
-
-  if (updates.foto) {
-    prodUpdates.foto = updates.foto;
-  }
-
-  if (updates.naam) {
-    prodUpdates.naam = updates.naam;
-  }
-
-  if (updates.eenheidsprijs) {
-    prodUpdates.eenheidsprijs = updates.eenheidsprijs;
-  }
-
-  if (updates.btwtarief) {
-    prodUpdates.btwtarief = updates.btwtarief;
-  }
-
-  if (updates.aantal) {
-    prodUpdates.aantal = updates.aantal;
-  }
-
-  if (updates.gewicht) {
-    prodUpdates.gewicht = updates.gewicht;
-  }
-
-  if (updates.beschrijving) {
-    prodUpdates.beschrijving = updates.beschrijving;
-  }
-  try {
-    if (updates.idLeverancier !== idLeverancier) {
-      throw ServiceError.isForbidden("Permission denied");
-    }
-    const updatedProd = await repoProducten.updateProduct(
-      idProduct,
-      prodUpdates
-    );
-
-    return updatedProd;
-  } catch (error) {
-    throw handleDBError(error);
-  }
-};
-
-const deleteProduct = async (idLeverancier, idProduct) => {
-  const product = await repoProducten.getProductById(idProduct);
-  if (!product) {
-    throw ServiceError.notFound("No product found");
-  }
-
-  try {
-    if (idLeverancier !== product.idLeverancier) {
-      throw new Error("Permission denied");
-    } else {
-      const deletedProduct = await repoProducten.deleteProduct(idProduct);
-      if (!deletedProduct) {
-        getLogger().error(`Product not found`);
-        throw ServiceError.notFound("Product not found");
-      }
-      return { message: "Product deleted" };
-    }
-  } catch (error) {
-    getLogger().error(`Error deleting user`);
-    throw handleDBError(error);
-  }
-};
-
 const getDistinctCategories = async () => {
   try {
     const categories = await repoProducten.getDistinctCategories();
@@ -200,24 +156,21 @@ const getDistinctCategories = async () => {
   }
 };
 
-
-
 const getDistinctCategoriesLeverancier = async (idLeverancier) => {
   try {
-    const categories = await repoProducten.getDistinctCategoriesLeverancier(idLeverancier);
+    const categories = await repoProducten.getDistinctCategoriesLeverancier(
+      idLeverancier
+    );
     return categories;
   } catch (error) {
     throw new Error("Error while fetching distinct categories");
   }
 };
 
-
 module.exports = {
   getProducten,
   createProducten,
   getProductByID,
-  updateProduct,
-  deleteProduct,
   getDistinctCategories,
   getProductenLimit,
   getProductenByLeverancierId,

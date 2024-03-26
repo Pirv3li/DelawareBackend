@@ -9,7 +9,7 @@ module.exports = async () => {
   await getKnex()(tables.product).delete();
   await getKnex()(tables.order).delete();
   await getKnex()(tables.orderDetails).delete();
-
+  await getKnex()(tables.notificatie).delete();
   // Close database connection
   await shutdownData();
 };
