@@ -6,7 +6,7 @@ const {
 } = require("../supertest.setup");
 const Role = require("../../src/core/roles");
 
-describe("/goedkeuringKlant/", () => {
+describe("/goedkeuringLeverancier/", () => {
   let request, knex, klantAuth, leverAuth;
 
   withServer(({ supertest, knex: k }) => {
@@ -19,12 +19,12 @@ describe("/goedkeuringKlant/", () => {
     leverAuth = await LeverancierLogin(request);
   });
 
-  describe("GET /goedkeuringKlant/laatsteWijziging", () => {
+  describe("GET /goedkeuringLeverancier/laatsteWijziging", () => {
     it("should fetch the latest modification", async () => {
 
       const response = await request
-        .get("/api/goedkeuringKlant/laatsteWijziging")
-        .set("Authorization",klantAuth)
+        .get("/api/goedkeuringLeverancier/laatsteWijziging")
+        .set("Authorization",leverAuth)
 
       expect(response.status).toBe(200);
     });
@@ -32,45 +32,20 @@ describe("/goedkeuringKlant/", () => {
     it("should return 403 Permission denied", async () => {
     
       const response = await request
-        .get("/api/goedkeuringKlant/laatsteWijziging")
-        .set("Authorization",leverAuth)
+        .get("/api/goedkeuringLeverancier/laatsteWijziging")
+        .set("Authorization",klantAuth)
 
 
       expect(response.status).toBe(403);
     });
   });
 
-  describe('POST /goedkeuringKlant', () => {
+  describe('POST /goedkeuringLeverancier', () => {
     it('should create a goedkeuring request for a klant', async() => {
       const response = await request
-        .post('/api/goedkeuringKlant')
+        .post('/api/goedkeuringLeverancier')
         .send({
-          klantNummer: "123456789",
-          gebruikersnaam: "john_doe",
-          email: "john.doe@example.com",
-          isActief: true,
-          roles: ["klant", "admin"],
-          iban: "NL91ABNA0417164300",
-          btwNummer: "NL123456789B01",
-          telefoonnummer: "+1234567890",
-          sector: "IT",
-          straat: "Main Street",
-          nummer: "123",
-          stad: "City",
-          postcode: "12345"
-        })
-        .set("Authorization",klantAuth);
-
-        
-
-        expect(response.status).toBe(201); 
-    });
-  
-    it('should return 403 PERMISSION DENIED', async() => {
-      const response = await request
-        .post('/api/goedkeuringKlant')
-        .send({
-          klantNummer: "123456789",
+          leverancierNummer: "123456789",
           gebruikersnaam: "john_doe",
           email: "john.doe@example.com",
           isActief: true,
@@ -85,6 +60,31 @@ describe("/goedkeuringKlant/", () => {
           postcode: "12345"
         })
         .set("Authorization",leverAuth);
+
+        
+
+        expect(response.status).toBe(201); 
+    });
+  
+    it('should return 403 PERMISSION DENIED', async() => {
+      const response = await request
+        .post('/api/goedkeuringLeverancier')
+        .send({
+          leverancierNummer: "123456789",
+          gebruikersnaam: "john_doe",
+          email: "john.doe@example.com",
+          isActief: true,
+          roles: ["klant", "admin"],
+          iban: "NL91ABNA0417164300",
+          btwNummer: "NL123456789B01",
+          telefoonnummer: "+1234567890",
+          sector: "IT",
+          straat: "Main Street",
+          nummer: "123",
+          stad: "City",
+          postcode: "12345"
+        })
+        .set("Authorization",klantAuth);
         
 
         expect(response.status).toBe(403); 

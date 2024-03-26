@@ -4,61 +4,30 @@ const { requireAuthentication } = require("../core/auth");
 const goedkeuringKlantService = require("../service/goedkeuringKlant");
 const validate = require("../core/validation");
 const { getLogger } = require("../core/logging");
+const ServiceError = require("../core/serviceError");
 
 const getLaatsteWijziging = async (ctx) => {
   try {
-    ctx.body = await goedkeuringKlantService.getLaatsteWijziging(
+    const laatsteWijziging = await goedkeuringKlantService.getLaatsteWijziging(
       ctx.state.session
     );
+    ctx.body = laatsteWijziging;
     ctx.status = 200;
   } catch (error) {
-    getLogger().error("Error occurred while fetching laatste wijziging", {
-      error,
-    });
-    ctx.status = 500;
-    ctx.body = { error: "Internal Server Error" };
+    if (error instanceof ServiceError && error.code === "UNAUTHORIZED") {
+      ctx.status = 403;
+      ctx.body = { error: "Permission denied" };
+    } else {
+      getLogger().error("Error occurred while fetching laatste wijziging", {
+        error,
+      });
+      ctx.status = 500;
+      ctx.body = { error: "Internal Server Error" };
+    }
   }
 };
-getLaatsteWijziging.validationScheme = null;
 
-const getAllGoedkeuringenKlant = async (ctx) => {
-  try {
-    const goedkeuringen =
-      await goedkeuringKlantService.getAllGoedkeuringenKlant(ctx.state.session);
-    ctx.body = goedkeuringen;
-    ctx.status = 200;
-  } catch (error) {
-    getLogger().error("Error occurred while fetching goedkeuringen for klant", {
-      error,
-    });
-    ctx.status = 500;
-    ctx.body = { error: "Internal Server Error" };
-  }
-};
-getAllGoedkeuringenKlant.validationScheme = null;
-
-const getGoedkeuringKlantById = async (ctx) => {
-  try {
-    const goedkeuring = await goedkeuringKlantService.getGoedkeuringKlantById(
-      ctx.params.id,
-      ctx.state.session
-    );
-    ctx.body = goedkeuring;
-    ctx.status = 200;
-  } catch (error) {
-    getLogger().error(
-      "Error occurred while fetching goedkeuring for klant by ID",
-      { error }
-    );
-    ctx.status = 500;
-    ctx.body = { error: "Internal Server Error" };
-  }
-};
-getGoedkeuringKlantById.validationScheme = {
-  params: {
-    id: Joi.number().integer().positive(),
-  },
-};
+getLaatsteWijziging.validationScheme = {};
 
 const createGoedkeuringKlant = async (ctx) => {
   try {
@@ -78,7 +47,6 @@ const createGoedkeuringKlant = async (ctx) => {
       postcode,
     } = ctx.request.body;
     const { idKlant } = ctx.state.session;
-
     const newGoedkeuringWijziging =
       await goedkeuringKlantService.createGoedkeuringKlant(
         {
@@ -102,11 +70,17 @@ const createGoedkeuringKlant = async (ctx) => {
     ctx.body = newGoedkeuringWijziging;
     ctx.status = 201;
   } catch (error) {
-    getLogger().error("Error occurred while creating goedkeuring for klant", {
-      error,
-    });
-    ctx.status = 500;
-    ctx.body = { error: "Internal Server Error" };
+    if (error instanceof ServiceError && error.code === "UNAUTHORIZED") {
+      ctx.status = 403;
+      ctx.body = { error: "Permission denied" };
+    } else {
+      getLogger().error(
+        "Error occurred while creating goedkeuring for klant",
+        { error }
+      );
+      ctx.status = 500;
+      ctx.body = { error: "Internal Server Error" };
+    }
   }
 };
 createGoedkeuringKlant.validationScheme = {
@@ -127,64 +101,23 @@ createGoedkeuringKlant.validationScheme = {
   },
 };
 
-const deleteGoedkeuringKlantById = async (ctx) => {
-  try {
-    await goedkeuringKlantService.deleteGoedkeuringKlantById(
-      Number(ctx.params.id),
-      ctx.state.session
-    );
-    ctx.status = 204;
-  } catch (error) {
-    getLogger().error(
-      "Error occurred while deleting goedkeuring for klant by ID",
-      { error }
-    );
-    ctx.status = 500;
-    ctx.body = { error: "Internal Server Error" };
-  }
-};
-
-deleteGoedkeuringKlantById.validationScheme = {
-  params: {
-    id: Joi.number().integer().positive(),
-  },
-};
-
 module.exports = (router) => {
   const goedkeuringKlantRouter = new KoaRouter({
     prefix: "/goedkeuringKlant",
   });
 
   goedkeuringKlantRouter.get(
-    '/laatsteWijziging',
+    "/laatsteWijziging",
     requireAuthentication,
     validate(getLaatsteWijziging.validationScheme),
     getLaatsteWijziging
   );
 
-  goedkeuringKlantRouter.get(
-    "/",
-    requireAuthentication,
-    validate(getAllGoedkeuringenKlant.validationScheme),
-    getAllGoedkeuringenKlant
-  );
-  goedkeuringKlantRouter.get(
-    "/:id",
-    requireAuthentication,
-    validate(getGoedkeuringKlantById.validationScheme),
-    getGoedkeuringKlantById
-  );
   goedkeuringKlantRouter.post(
     "/",
     requireAuthentication,
     validate(createGoedkeuringKlant.validationScheme),
     createGoedkeuringKlant
-  );
-  goedkeuringKlantRouter.delete(
-    "/:id",
-    requireAuthentication,
-    validate(deleteGoedkeuringKlantById.validationScheme),
-    deleteGoedkeuringKlantById
   );
 
   router

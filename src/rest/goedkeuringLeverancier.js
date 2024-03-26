@@ -1,52 +1,33 @@
 const KoaRouter = require("@koa/router");
-const Joi = require('joi');
-const { requireAuthentication } = require('../core/auth'); 
-const goedkeuringLeverancierService = require('../service/goedkeuringLeverancier');
-const validate = require('../core/validation');
+const Joi = require("joi");
+const { requireAuthentication } = require("../core/auth");
+const goedkeuringLeverancierService = require("../service/goedkeuringLeverancier");
+const validate = require("../core/validation");
 const { getLogger } = require("../core/logging");
+const ServiceError = require("../core/serviceError");
 
 const getLaatsteWijziging = async (ctx) => {
   try {
-    ctx.body = await goedkeuringLeverancierService.getLaatsteWijziging(ctx.state.session);
+    const laatsteWijziging =
+      await goedkeuringLeverancierService.getLaatsteWijziging(
+        ctx.state.session
+      );
+    ctx.body = laatsteWijziging;
     ctx.status = 200;
   } catch (error) {
-    getLogger().error('Error occurred while fetching laatste wijziging', { error });
-    ctx.status = 500;
-    ctx.body = { error: 'Internal Server Error' };
+    if (error instanceof ServiceError && error.code === "UNAUTHORIZED") {
+      ctx.status = 403;
+      ctx.body = { error: "Permission denied" };
+    } else {
+      getLogger().error("Error occurred while fetching laatste wijziging", {
+        error,
+      });
+      ctx.status = 500;
+      ctx.body = { error: "Internal Server Error" };
+    }
   }
 };
-getLaatsteWijziging.validationSheme = null
-
-
-const getAllGoedkeuringenLeverancier = async (ctx) => {
-  try {
-    ctx.body = await goedkeuringLeverancierService.getAllGoedkeuringenLeverancier(ctx.state.session);
-    ctx.status = 200;
-  } catch (error) {
-    getLogger().error('Error occurred while fetching all goedkeuringen for leverancier', { error });
-    ctx.status = 500;
-    ctx.body = { error: 'Internal Server Error' };
-  }
-};
-getAllGoedkeuringenLeverancier.validationSheme = null
-
-const getGoedkeuringLeverancierById = async (ctx) => {
-  try {
-    ctx.body = await goedkeuringLeverancierService.getGoedkeuringLeverancierById(ctx.params.id, ctx.state.session);
-    ctx.status = 200;
-  } catch (error) {
-    getLogger().error('Error occurred while fetching goedkeuring for leverancier by ID', { error });
-    ctx.status = 500;
-    ctx.body = { error: 'Internal Server Error' };
-  }
-};
-getGoedkeuringLeverancierById.validationSheme={
-  params: {
-    id: Joi.number()
-      .integer()
-      .positive()
-  }
-}
+getLaatsteWijziging.validationScheme = {};
 
 const createGoedkeuringLeverancier = async (ctx) => {
   try {
@@ -66,31 +47,43 @@ const createGoedkeuringLeverancier = async (ctx) => {
       postcode,
     } = ctx.request.body;
     const { idLeverancier } = ctx.state.session;
-    const newGoedkeuringWijziging = await goedkeuringLeverancierService.createGoedkeuringLeverancier({
-      idLeverancier,
-      leverancierNummer,
-      gebruikersnaam,
-      email,
-      isActief,
-      roles,
-      iban,
-      btwNummer,
-      telefoonnummer,
-      sector,
-      straat,
-      nummer,
-      stad,
-      postcode,
-    }, ctx.state.session);
+    const newGoedkeuringWijziging =
+      await goedkeuringLeverancierService.createGoedkeuringLeverancier(
+        {
+          idLeverancier,
+          leverancierNummer,
+          gebruikersnaam,
+          email,
+          isActief,
+          roles,
+          iban,
+          btwNummer,
+          telefoonnummer,
+          sector,
+          straat,
+          nummer,
+          stad,
+          postcode,
+        },
+        ctx.state.session
+      );
     ctx.body = newGoedkeuringWijziging;
     ctx.status = 201;
   } catch (error) {
-    getLogger().error('Error occurred while creating goedkeuring for leverancier', { error });
-    ctx.status = 500;
-    ctx.body = { error: 'Internal Server Error' };
+    if (error instanceof ServiceError && error.code === "UNAUTHORIZED") {
+      ctx.status = 403;
+      ctx.body = { error: "Permission denied" };
+    } else {
+      getLogger().error(
+        "Error occurred while creating goedkeuring for leverancier",
+        { error }
+      );
+      ctx.status = 500;
+      ctx.body = { error: "Internal Server Error" };
+    }
   }
 };
-createGoedkeuringLeverancier.validationSheme = {
+createGoedkeuringLeverancier.validationScheme = {
   body: {
     leverancierNummer: Joi.string().max(255).required(),
     gebruikersnaam: Joi.string().max(50).required(),
@@ -105,61 +98,29 @@ createGoedkeuringLeverancier.validationSheme = {
     nummer: Joi.string().max(255).required(),
     stad: Joi.string().max(255).required(),
     postcode: Joi.string().max(255).required(),
-  }
-}
-
-const deleteGoedkeuringLeverancierById = async (ctx) => {
-  try {
-    await goedkeuringLeverancierService.deleteGoedkeuringLeverancierById(Number(ctx.params.id), ctx.state.session);
-    ctx.status = 204;
-  } catch (error) {
-    getLogger().error('Error occurred while deleting goedkeuring for leverancier by ID', { error });
-    ctx.status = 500;
-    ctx.body = { error: 'Internal Server Error' };
-  }
-};
-deleteGoedkeuringLeverancierById.validationSheme={
-  params: {
-    id: Joi.number().integer().positive(),
   },
-}
+};
 
 module.exports = (router) => {
   const goedkeuringLeverancierRouter = new KoaRouter({
-    prefix: '/goedkeuringLeverancier',
+    prefix: "/goedkeuringLeverancier",
   });
 
   goedkeuringLeverancierRouter.get(
-    '/laatsteWijziging',
+    "/laatsteWijziging",
     requireAuthentication,
-    validate(getLaatsteWijziging.validationSheme),
+    validate(getLaatsteWijziging.validationScheme),
     getLaatsteWijziging
   );
 
-  goedkeuringLeverancierRouter.get(
-    '/',
-    requireAuthentication,
-    validate(getAllGoedkeuringenLeverancier.validationSheme),
-    getAllGoedkeuringenLeverancier
-  );
-  goedkeuringLeverancierRouter.get(
-    '/:id',
-    requireAuthentication,
-    validate(getGoedkeuringLeverancierById.validationSheme),
-    getGoedkeuringLeverancierById
-  );
   goedkeuringLeverancierRouter.post(
-    '/',
+    "/",
     requireAuthentication,
-    validate(createGoedkeuringLeverancier.validationSheme),
+    validate(createGoedkeuringLeverancier.validationScheme),
     createGoedkeuringLeverancier
   );
-  goedkeuringLeverancierRouter.delete(
-    '/:id',
-    requireAuthentication,
-    validate(deleteGoedkeuringLeverancierById.validationSheme),
-    deleteGoedkeuringLeverancierById
-  );
 
-  router.use(goedkeuringLeverancierRouter.routes()).use(goedkeuringLeverancierRouter.allowedMethods());
+  router
+    .use(goedkeuringLeverancierRouter.routes())
+    .use(goedkeuringLeverancierRouter.allowedMethods());
 };
