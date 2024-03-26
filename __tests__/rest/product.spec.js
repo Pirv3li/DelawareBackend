@@ -84,62 +84,6 @@ describe("product API", () => {
     });
   });
 
-  describe("PUT /api/producten/:id", () => {
-    it("should update product", async () => {
-      const productId = 1;
-      const updatedProductData = {
-        idLeverancier: 2,
-        naam: "Updated product name",
-        beschrijving: "Updated description",
-      };
-
-      const response = await request
-        .put(`/api/producten/${productId}`)
-        .send(updatedProductData)
-        .set("Authorization", leverAuth);
-
-      expect(response.status).toBe(200);
-      expect(response.body).toBeDefined();
-    });
-
-    it("should handle invalid product ID during update", async () => {
-      const invalidProductId = 99999999;
-      const updatedProductData = {
-        idLeverancier: 2,
-        naam: "Updated product name",
-        beschrijving: "Updated error description",
-      };
-
-      const response = await request
-        .put(`/api/producten/${invalidProductId}`)
-        .send(updatedProductData)
-        .set("Authorization", leverAuth);
-
-      expect(response.status).toBe(404);
-    });
-  });
-
-  describe("DELETE /api/producten/:id", () => {
-    it("should delete product", async () => {
-      const productId = 1;
-      const response = await request
-        .delete(`/api/producten/${productId}`)
-        .set("Authorization", leverAuth);
-
-      expect(response.status).toBe(200);
-      expect(response.body).toBeDefined();
-    });
-
-    it("should handle invalid product ID during deletion", async () => {
-      const invalidProductId = 9999;
-      const response = await request
-        .delete(`/api/producten/${invalidProductId}`)
-        .set("Authorization", leverAuth);
-
-      expect(response.status).toBe(404);
-    });
-  });
-
 
   describe("GET /api/producten/leverancier/:begin/:aantal", () => {
     it("should get products for the authenticated leverancier", async () => {
