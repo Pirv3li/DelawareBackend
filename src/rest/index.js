@@ -8,6 +8,8 @@ const installNotificatieRouter = require('./notificatie');
 const installAdresRouter = require('./adres');
 const installGoedkeuringLeverancierRouter = require('./goedkeuringLeverancier');
 const installGoedkeuringKlantRouter = require('./goedkeuringKlant');
+const installBedrijfRouter = require('./bedrijf');
+const installAdminRouter = require('./admin');
 /**
  * Install all routes in the given Koa application.
  *
@@ -27,6 +29,8 @@ module.exports = (app) => {
   installAdresRouter(router);
   installGoedkeuringLeverancierRouter(router);
   installGoedkeuringKlantRouter(router);
+  installBedrijfRouter(router);
+  installAdminRouter(router);
   
 
   app.use(async (ctx, next) => {

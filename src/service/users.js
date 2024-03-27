@@ -103,6 +103,7 @@ const forgotPasswordKlant = async (email, username) => {
 
 const makeExposedUser = ({
   idKlant,
+  idAdmin,
   klantNummer,
   idLeverancier,
   leverancierNummer,
@@ -111,6 +112,7 @@ const makeExposedUser = ({
   roles,
 }) => ({
   idKlant,
+  idAdmin,
   klantNummer,
   idLeverancier,
   leverancierNummer,
@@ -330,6 +332,25 @@ const updateLeverancier = async (id, body) => {
   return updateLeverancier;
 }
 
+// klant
+const loginAdmin = async (userName, password) => {
+  const user = await userRepository.findAdminByUsername(userName);
+  if (!user) {
+    throw ServiceError.unauthorized(
+      "The given username and password do not match"
+    );
+  }
+
+  const passwordValid = await verifyPassword(password, user.password_hash);
+
+  if (!passwordValid) {
+    throw ServiceError.unauthorized(
+      "The given email and password do not match"
+    );
+  }
+  return await makeLoginData(user);
+};
+
 module.exports = {
   loginLeverancier,
   loginKlant,
@@ -343,4 +364,5 @@ module.exports = {
   deleteLeverancier,
   forgotPasswordLeverancier, 
   forgotPasswordKlant, 
+  loginAdmin,
 };

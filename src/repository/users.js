@@ -118,6 +118,12 @@ const deleteLeverancierById = async (id) => {
   return deletedLeverancier;
 };
 
+// admin
+
+const findAdminByUsername = (userName) => {
+  return getKnex()(tables.admin).where("gebruikersnaam", userName).first();
+};
+
 
 module.exports = {
   findKlantByUsername,
@@ -131,4 +137,5 @@ module.exports = {
   deleteLeverancierById,
   findLeverancierByEmail,
   findKlantByEmail,
+  findAdminByUsername,
 };

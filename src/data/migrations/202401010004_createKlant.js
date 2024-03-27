@@ -8,7 +8,6 @@ module.exports = {
       table.string("gebruikersnaam", 50).notNullable();
       table.string("email", 50).notNullable();
       table.string("password_hash").notNullable();
-      table.boolean("isActief");
       table.jsonb("roles").notNullable();
       table.integer("idBedrijf").unsigned().notNullable();
 

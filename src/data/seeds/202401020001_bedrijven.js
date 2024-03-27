@@ -16,6 +16,7 @@ module.exports = {
         btwNummer: "BE1234567890",
         telefoonnummer: "0477777777",
         gebruikerSinds: knex.fn.now(),
+        isActief: true,
       },
       {
         idBedrijf: 2,
@@ -28,6 +29,7 @@ module.exports = {
         btwNummer: "BE1234567890",
         telefoonnummer: "0477777777",
         gebruikerSinds: knex.fn.now(),
+        isActief: true,
       },
       {
         idBedrijf: 3,
@@ -40,6 +42,7 @@ module.exports = {
         btwNummer: "BE1234567890",
         telefoonnummer: "0477777777",
         gebruikerSinds: knex.fn.now(),
+        isActief: true,
       },
     ]);
   },

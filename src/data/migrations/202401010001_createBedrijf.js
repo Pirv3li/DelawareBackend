@@ -13,6 +13,7 @@ module.exports = {
       table.string("telefoonnummer", 255).notNullable();
       table.timestamp("gebruikerSinds").notNullable();
       table.integer("idAdres").unsigned().notNullable();
+      table.boolean("isActief");
 
       table
         .foreign("idAdres", "fk_bedrijf_adres")

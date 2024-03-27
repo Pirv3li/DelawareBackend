@@ -87,7 +87,8 @@ const tables = Object.freeze({
   orderDetails: 'orderdetails',
   goedkeuringleverancier: 'goedkeuringleverancier',
   goedkeuringklant: 'goedkeuringklant',
-
+  admin: 'admin',
+  
 });
 
 async function shutdownData() {
