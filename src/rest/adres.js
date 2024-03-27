@@ -32,7 +32,6 @@ const getAdresByUser = async (ctx) => {
 };
 getAdresByUser.validationScheme = {};
 
-// voor Order
 const getAdresById = async (ctx) => {
   try {
     let order;

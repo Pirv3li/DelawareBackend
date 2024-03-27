@@ -20,18 +20,12 @@ module.exports = {
       table.string("afgehandeld", 20).notNullable();
       table.date("datumAanvraag").notNullable();
 
-      // table.integer("idBedrijf").unsigned().notNullable();
       table.integer("idKlant").unsigned().notNullable();
 
       table
         .foreign("idKlant", "fk_GoedkeuringKlant_Klant")
         .references(`${tables.klant}.idKlant`)
         .onDelete("CASCADE");
-
-      // table
-      //   .foreign("idBedrijf", "fk_GoedkeuringKlant_Bedrijf")
-      //   .references(`${tables.bedrijf}.idBedrijf`)
-      //   .onDelete("CASCADE");
     });
   },
   down: async (knex) => {
