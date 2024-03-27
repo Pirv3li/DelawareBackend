@@ -42,7 +42,7 @@ module.exports = {
       idAdres: 2,
       datum: '2024-03-19',
       orderStatus: 'in-transit',
-      betalingStatus: '0',
+      betalingStatus: '1',
       totaalPrijs: '20.55'
     },
     {

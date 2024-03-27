@@ -3,7 +3,7 @@ const { getKnex, tables } = require('../data');
 const getAllNotifications = async () => {
   return getKnex()(tables.notificatie)
     .select('*')
-    .orderBy('geopend', 'asc')
+    .orderBy('geopend', 'desc')
     .orderBy('datum')
 };
 
@@ -33,7 +33,7 @@ const getAllNotificationsByKlantId = async (idKlant, begin, aantal) => {
   .where(`${tables.order}.idKlant`, idKlant)
   .select(`${tables.notificatie}.*`)
   .orderBy('geopend', 'asc')
-  .orderBy('datum', 'asc')
+  .orderBy('datum', 'desc')
   .limit(pageSize)
   .offset(offset);
 };
@@ -51,7 +51,7 @@ const getAllNotificationsByLeverancierId = async (idLeverancier, begin, aantal) 
   .where(`${tables.order}.idLeverancier`, idLeverancier)
   .select(`${tables.notificatie}.*`)
   .orderBy('geopend', 'asc')
-  .orderBy('datum')
+  .orderBy('datum', 'desc')
   .limit(pageSize)
   .offset(offset);
 };
