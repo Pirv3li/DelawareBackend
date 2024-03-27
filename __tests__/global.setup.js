@@ -56,6 +56,7 @@ module.exports = async () => {
       btwNummer: "BE1234567890",
       telefoonnummer: "0477777777",
       gebruikerSinds: new Date(2024, 3, 1, 18, 40, 24, 0),
+      isActief: true,
     },
     {
       idBedrijf: 2,
@@ -68,6 +69,7 @@ module.exports = async () => {
       btwNummer: "BE1234567890",
       telefoonnummer: "0471234568",
       gebruikerSinds: new Date(2024, 3, 1, 18, 40, 24, 0),
+      isActief: true,
     },
     {
       idBedrijf: 3,
@@ -80,6 +82,7 @@ module.exports = async () => {
       btwNummer: "BE1234567890",
       telefoonnummer: "047758569",
       gebruikerSinds: new Date(2024, 3, 1, 18, 40, 24, 0),
+      isActief: true,
     },
   ]);
 
@@ -90,7 +93,6 @@ module.exports = async () => {
       gebruikersnaam: "test_leverancier1",
       password_hash:
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
-      isActief: true,
       roles: JSON.stringify([roles.LEVER]),
       idBedrijf: 1,
       email: "testleverancier1@example.com",
@@ -101,7 +103,6 @@ module.exports = async () => {
       gebruikersnaam: "Test Leverancier User2",
       password_hash:
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
-      isActief: true,
       roles: JSON.stringify([roles.LEVER]),
       idBedrijf: 2,
       email: "testleverancier2@example.com",
@@ -112,7 +113,6 @@ module.exports = async () => {
       gebruikersnaam: "Test Leverancier User3",
       password_hash:
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
-      isActief: true,
       roles: JSON.stringify([roles.LEVER]),
       idBedrijf: 3,
       email: "testleverancier2@example.com",
@@ -126,7 +126,6 @@ module.exports = async () => {
       gebruikersnaam: "tester_klant1",
       password_hash:
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
-      isActief: true,
       roles: JSON.stringify([roles.KLANT]),
       idBedrijf: 1,
       email: "testklant1@example.com",
@@ -137,7 +136,6 @@ module.exports = async () => {
       gebruikersnaam: "Test Klant User2",
       password_hash:
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
-      isActief: true,
       roles: JSON.stringify([roles.KLANT]),
       idBedrijf: 2,
       email: "testklant2@example.com",
@@ -148,7 +146,6 @@ module.exports = async () => {
       gebruikersnaam: "Test Klant User3",
       password_hash:
         "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4",
-      isActief: true,
       roles: JSON.stringify([roles.KLANT]),
       idBedrijf: 3,
       email: "testklant2@example.com",
