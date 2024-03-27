@@ -161,8 +161,6 @@ const getProductenleverancierByCategories = async (ctx) => {
   const categories = ctx.params.categories.split(",");
   const { aantal } = ctx.params;
   let producten;
-  console.log(ctx.state.session);
-  console.log("hier");
   try {
     producten = await ServiceProducten.getProductenByCategories(
       begin,
@@ -171,7 +169,6 @@ const getProductenleverancierByCategories = async (ctx) => {
     );
 
     if (ctx.state.session.roles.includes("leverancier")) {
-      console.log("hierhahah");
       const idLeverancier = ctx.state.session.idLeverancier;
       producten = producten.filter(
         (product) => product.idLeverancier === idLeverancier
