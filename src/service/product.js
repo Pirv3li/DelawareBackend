@@ -3,7 +3,7 @@ const repoProducten = require("../repository/product");
 
 const getProducten = async () => {
   try {
-    const producten = repoProducten.getProducten();
+    const producten = await repoProducten.getProducten();
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
@@ -12,7 +12,7 @@ const getProducten = async () => {
 
 const getProductenLimit = async (begin, aantal) => {
   try {
-    const producten = repoProducten.getProductenLimit(begin, aantal);
+    const producten = await repoProducten.getProductenLimit(begin, aantal);
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");
@@ -21,7 +21,7 @@ const getProductenLimit = async (begin, aantal) => {
 
 const getProductenByLeverancierId = async (begin, idLeverancier, aantal) => {
   try {
-    const producten = repoProducten.getProductenByLeverancierId(
+    const producten = await repoProducten.getProductenByLeverancierId(
       begin,
       idLeverancier,
       aantal
@@ -42,7 +42,7 @@ const getProductenByZoekterm = async (
     zoekterm = "";
   }
   try {
-    const producten = repoProducten.getProductenByZoekterm(
+    const producten = await repoProducten.getProductenByZoekterm(
       begin,
       zoekterm,
       idLeverancier,
@@ -65,7 +65,7 @@ const getLeverancierProductenByZoekterm = async (
   }
 
   try {
-    const producten = repoProducten.getLeverancierProductenByZoekterm(
+    const producten = await repoProducten.getLeverancierProductenByZoekterm(
       begin,
       zoekterm,
       idLeverancier,
@@ -97,7 +97,7 @@ const getLeverancierProductenByCategories = async (
   aantal
 ) => {
   try {
-    const producten = repoProducten.getLeverancierProductenByCategories(
+    const producten = await repoProducten.getLeverancierProductenByCategories(
       begin,
       categories,
       aantal
