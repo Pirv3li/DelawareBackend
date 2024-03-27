@@ -86,7 +86,6 @@ const getProductenByCategories = async (begin, categories, aantal) => {
     .limit(pageSize)
     .offset(offset);
 
-
   return producten;
 };
 

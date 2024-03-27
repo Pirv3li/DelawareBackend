@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, 
+  secure: false,
   auth: {
     user: process.env.APP_EMAIL,
     pass: process.env.APP_PASSWORD,
@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const generateNewPassword = () => {
-  const newPassword = Math.random().toString(36).slice(-8); 
+  const newPassword = Math.random().toString(36).slice(-8);
   return newPassword;
 };
 
@@ -33,9 +33,9 @@ const forgotPasswordLeverancier = async (email, username) => {
 
   const hashedPass = await hashPassword(newPassword);
   const body = {
-    password: hashedPass
+    password: hashedPass,
   };
-  await userRepository.updateLeverancier(user.idLeverancier, body)
+  await userRepository.updateLeverancier(user.idLeverancier, body);
 
   const mailOptions = {
     from: {
@@ -49,7 +49,6 @@ const forgotPasswordLeverancier = async (email, username) => {
     <p>Uw nieuw wachtwoord is: <b><b>${newPassword}</b></b></p>
     <p>met vriendelijke groeten, <br> Delaware Support</p>
   `,
-
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -73,9 +72,9 @@ const forgotPasswordKlant = async (email, username) => {
 
   const hashedPass = await hashPassword(newPassword);
   const body = {
-    password: hashedPass
+    password: hashedPass,
   };
-  await userRepository.updateKlant(user.idKlant, body)
+  await userRepository.updateKlant(user.idKlant, body);
 
   const mailOptions = {
     from: {
@@ -99,7 +98,6 @@ const forgotPasswordKlant = async (email, username) => {
     }
   });
 };
-
 
 const makeExposedUser = ({
   idKlant,
@@ -214,7 +212,6 @@ const makeLoginData = async (user) => {
 };
 
 const checkAndParseSession = async (authHeader) => {
-
   if (!authHeader) {
     throw ServiceError.unauthorized("You need to be signed in");
   }
@@ -262,10 +259,8 @@ const loginKlant = async (userName, password) => {
 const getKlantById = async (id) => {
   const klant = await userRepository.getKlantById(id);
 
-  if(!klant){
-    throw ServiceError.notFound(
-      "user not found"
-    );
+  if (!klant) {
+    throw ServiceError.notFound("user not found");
   }
   const exposedKlant = klant.map(makeExposedKlant);
   return exposedKlant;
@@ -274,13 +269,13 @@ const getKlantById = async (id) => {
 const deleteKlant = async (id) => {
   const deleteKlant = await userRepository.deleteKlantById(id);
   return deleteKlant;
-}
+};
 
 // Leverancier
 const deleteLeverancier = async (id) => {
   const deleteLeverancier = await userRepository.deleteLeverancierById(id);
   return deleteLeverancier;
-}
+};
 
 const loginLeverancier = async (userName, password) => {
   const user = await userRepository.findLeverancierByUsername(userName);
@@ -317,20 +312,20 @@ const checkRole = (role, roles) => {
 };
 
 const updateKlant = async (id, body) => {
-  if(body.password != undefined) {
-  body.password = await hashPassword(body.password);
-  };
+  if (body.password != undefined) {
+    body.password = await hashPassword(body.password);
+  }
   const updatedKlant = await userRepository.updateKlant(id, body);
   return updatedKlant;
-}
+};
 
 const updateLeverancier = async (id, body) => {
-  if(body.password != undefined) {
-  body.password = await hashPassword(body.password);
-  };
+  if (body.password != undefined) {
+    body.password = await hashPassword(body.password);
+  }
   const updateLeverancier = await userRepository.updateLeverancier(id, body);
   return updateLeverancier;
-}
+};
 
 // klant
 const loginAdmin = async (userName, password) => {
@@ -362,7 +357,7 @@ module.exports = {
   updateLeverancier,
   deleteKlant,
   deleteLeverancier,
-  forgotPasswordLeverancier, 
-  forgotPasswordKlant, 
+  forgotPasswordLeverancier,
+  forgotPasswordKlant,
   loginAdmin,
 };

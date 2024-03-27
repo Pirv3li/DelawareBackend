@@ -1,5 +1,9 @@
 const { tables } = require("../../src/data");
-const { withServer, LeverancierLogin, DeleteLeverancierLogin } = require("../supertest.setup");
+const {
+  withServer,
+  LeverancierLogin,
+  DeleteLeverancierLogin,
+} = require("../supertest.setup");
 const Role = require("../../src/core/roles");
 const { deleteLeverancier } = require("../../src/service/users");
 
@@ -50,37 +54,37 @@ describe("Users API", () => {
       expect(response.body.code).toBe("UNAUTHORIZED");
     });
   });
-  describe('PUT /api/leverancier', () => {
-    it('should update leverancier', async () => {
+  describe("PUT /api/leverancier", () => {
+    it("should update leverancier", async () => {
       const response = await request
-        .put('/api/leverancier')
+        .put("/api/leverancier")
         .send({
-          username: 'UpdatedUser',
-          password: 'newPassword',
+          username: "UpdatedUser",
+          password: "newPassword",
         })
-        .set('Authorization', leverAuth2);
+        .set("Authorization", leverAuth2);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
     });
 
-    it('should return 400 for invalid update data', async () => {
+    it("should return 400 for invalid update data", async () => {
       const response = await request
-        .put('/api/leverancier')
+        .put("/api/leverancier")
         .send({
-          invalidField: 'InvalidValue',
+          invalidField: "InvalidValue",
         })
-        .set('Authorization', leverAuth);
+        .set("Authorization", leverAuth);
 
       expect(response.status).toBe(400);
     });
   });
 
-  describe('DELETE /api/leverancier', () => {
-    it('should delete the authenticated leverancier', async () => {
+  describe("DELETE /api/leverancier", () => {
+    it("should delete the authenticated leverancier", async () => {
       const response = await request
-        .delete('/api/leverancier')
-        .set('Authorization', leverAuth2);
+        .delete("/api/leverancier")
+        .set("Authorization", leverAuth2);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();

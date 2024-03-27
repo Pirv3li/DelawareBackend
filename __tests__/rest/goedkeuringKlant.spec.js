@@ -2,7 +2,7 @@ const { tables } = require("../../src/data");
 const {
   withServer,
   KlantLogin,
-  LeverancierLogin
+  LeverancierLogin,
 } = require("../supertest.setup");
 const Role = require("../../src/core/roles");
 
@@ -21,29 +21,26 @@ describe("/goedkeuringKlant/", () => {
 
   describe("GET /goedkeuringKlant/laatsteWijziging", () => {
     it("should fetch the latest modification", async () => {
-
       const response = await request
         .get("/api/goedkeuringKlant/laatsteWijziging")
-        .set("Authorization",klantAuth)
+        .set("Authorization", klantAuth);
 
       expect(response.status).toBe(200);
     });
 
     it("should return 403 Permission denied", async () => {
-    
       const response = await request
         .get("/api/goedkeuringKlant/laatsteWijziging")
-        .set("Authorization",leverAuth)
-
+        .set("Authorization", leverAuth);
 
       expect(response.status).toBe(403);
     });
   });
 
-  describe('POST /goedkeuringKlant', () => {
-    it('should create a goedkeuring request for a klant', async() => {
+  describe("POST /goedkeuringKlant", () => {
+    it("should create a goedkeuring request for a klant", async () => {
       const response = await request
-        .post('/api/goedkeuringKlant')
+        .post("/api/goedkeuringKlant")
         .send({
           klantNummer: "123456789",
           gebruikersnaam: "john_doe",
@@ -57,18 +54,16 @@ describe("/goedkeuringKlant/", () => {
           straat: "Main Street",
           nummer: "123",
           stad: "City",
-          postcode: "12345"
+          postcode: "12345",
         })
-        .set("Authorization",klantAuth);
+        .set("Authorization", klantAuth);
 
-        
-
-        expect(response.status).toBe(201); 
+      expect(response.status).toBe(201);
     });
-  
-    it('should return 403 PERMISSION DENIED', async() => {
+
+    it("should return 403 PERMISSION DENIED", async () => {
       const response = await request
-        .post('/api/goedkeuringKlant')
+        .post("/api/goedkeuringKlant")
         .send({
           klantNummer: "123456789",
           gebruikersnaam: "john_doe",
@@ -82,13 +77,11 @@ describe("/goedkeuringKlant/", () => {
           straat: "Main Street",
           nummer: "123",
           stad: "City",
-          postcode: "12345"
+          postcode: "12345",
         })
-        .set("Authorization",leverAuth);
-        
+        .set("Authorization", leverAuth);
 
-        expect(response.status).toBe(403); 
+      expect(response.status).toBe(403);
     });
   });
-
 });

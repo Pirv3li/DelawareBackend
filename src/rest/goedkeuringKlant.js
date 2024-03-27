@@ -74,10 +74,9 @@ const createGoedkeuringKlant = async (ctx) => {
       ctx.status = 403;
       ctx.body = { error: "Permission denied" };
     } else {
-      getLogger().error(
-        "Error occurred while creating goedkeuring for klant",
-        { error }
-      );
+      getLogger().error("Error occurred while creating goedkeuring for klant", {
+        error,
+      });
       ctx.status = 500;
       ctx.body = { error: "Internal Server Error" };
     }

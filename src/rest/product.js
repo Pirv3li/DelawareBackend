@@ -15,7 +15,7 @@ const getProducten = async (ctx) => {
     ctx.body = {
       message: "Error while fetching producten",
     };
-    //ctx.status = 500;
+    ctx.status = 500;
   }
 };
 
@@ -32,7 +32,7 @@ const getProductenLimit = async (ctx) => {
     ctx.body = {
       message: "Error while fetching producten limit",
     };
-    //ctx.status = 500;
+    ctx.status = 500;
   }
 };
 
@@ -60,7 +60,7 @@ const getProductenByLeverancierId = async (ctx) => {
     ctx.body = {
       message: "Error while fetching producten limit",
     };
-    //ctx.status = 500;
+    ctx.status = 500;
   }
 };
 
@@ -81,7 +81,7 @@ const getProductenByZoekterm = async (ctx) => {
     ctx.body = {
       message: "Error while fetching producten limit",
     };
-    //ctx.status = 500;
+    ctx.status = 500;
   }
 };
 
@@ -113,7 +113,7 @@ const getLeverancierProductenByZoekterm = async (ctx) => {
     ctx.body = {
       message: "Error while fetching producten limit",
     };
-    //ctx.status = 500;
+    ctx.status = 500;
   }
 };
 
@@ -140,11 +140,11 @@ const getProductenByCategories = async (ctx) => {
     ctx.body = producten;
     ctx.status = 200;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     ctx.body = {
       message: "Error while fetching producten limit",
     };
-    //ctx.status = 500;
+    ctx.status = 500;
   }
 };
 
@@ -161,17 +161,17 @@ const getProductenleverancierByCategories = async (ctx) => {
   const categories = ctx.params.categories.split(",");
   const { aantal } = ctx.params;
   let producten;
-  console.log(ctx.state.session)
-  console.log("hier")
+  console.log(ctx.state.session);
+  console.log("hier");
   try {
     producten = await ServiceProducten.getProductenByCategories(
       begin,
       categories,
       aantal
     );
-    
+
     if (ctx.state.session.roles.includes("leverancier")) {
-      console.log("hierhahah")
+      console.log("hierhahah");
       const idLeverancier = ctx.state.session.idLeverancier;
       producten = producten.filter(
         (product) => product.idLeverancier === idLeverancier
@@ -183,11 +183,11 @@ const getProductenleverancierByCategories = async (ctx) => {
     ctx.body = producten;
     ctx.status = 200;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     ctx.body = {
       message: "Error while fetching producten limit",
     };
-    //ctx.status = 500;
+    ctx.status = 500;
   }
 };
 

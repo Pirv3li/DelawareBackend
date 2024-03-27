@@ -1,5 +1,5 @@
 const { getKnex, tables } = require("../data");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 const formatOrder = (result) => ({
   idOrder: result.idOrder,
@@ -36,7 +36,7 @@ const getOrderById = async (idOrder) => {
 };
 
 const getOrderByKlantId = async (idKlant, begin, aantal) => {
-  const pageSize = aantal; 
+  const pageSize = aantal;
   const offset = begin - 1;
   const orders = await getKnex()(tables.order)
     .where("idKlant", idKlant)
@@ -47,7 +47,6 @@ const getOrderByKlantId = async (idKlant, begin, aantal) => {
 
   return orders;
 };
-
 
 const getOrderByLeverancierId = async (idLeverancier, begin, aantal) => {
   const pageSize = aantal;
@@ -62,23 +61,17 @@ const getOrderByLeverancierId = async (idLeverancier, begin, aantal) => {
   return orders;
 };
 
-
-const createOrder = async (idKlant, {
-  idLeverancier,
-  idAdres,
-  datum,
-  orderStatus,
-  betalingStatus,
-  totaalPrijs,
-}) => {
-
+const createOrder = async (
+  idKlant,
+  { idLeverancier, idAdres, datum, orderStatus, betalingStatus, totaalPrijs }
+) => {
   const date = new Date();
-  const year = String(date.getFullYear()).slice(-2); 
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hour = String(date.getHours()).padStart(2, '0');
-  const minute = String(date.getMinutes()).padStart(2, '0');
-  const counter = uuidv4().replace(/-/g, '').substring(0, 3);
+  const year = String(date.getFullYear()).slice(-2);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  const counter = uuidv4().replace(/-/g, "").substring(0, 3);
 
   const idOrder = `${year}${month}${day}${hour}${minute}${counter}`;
 

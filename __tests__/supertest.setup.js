@@ -54,19 +54,6 @@ const DeleteLeverancierLogin = async (supertest) => {
   return `Bearer ${response.body.token}`;
 };
 
-// const AdminLogin = async (supertest) => {
-//   const response = await supertest.post('/api/users/login').send({
-//     email: 'admin.user@hogent.be',
-//     password: '12345678',
-//   });
-
-//   if (response.statusCode !== 200) {
-//     throw new Error(response.body.message || 'Unknown error occured');
-//   }
-
-//   return `Bearer ${response.body.token}`;
-// };
-
 const withServer = (setter) => {
   let server;
 
@@ -87,7 +74,6 @@ const withServer = (setter) => {
 module.exports = {
   KlantLogin,
   withServer,
-  //adminLogin,
   LeverancierLogin,
   deleteKlantLogin,
   DeleteLeverancierLogin,

@@ -6,43 +6,20 @@ const validate = require("../core/validation");
 const Role = require("../core/roles");
 const { getLogger } = require("../core/logging");
 
-// const getAllNotifications = async (ctx) => {
-//   try {
-//     const begin = parseInt(ctx.query.begin) || 0;
-//     const einde = parseInt(ctx.query.einde) || 20;
-//     const {aantal} = ctx.request.body;
-//     const notifications = await notificationService.getAllNotifications(begin, einde, aantal);
-//     getLogger().info('Notifications retrieved successfully', { count: notifications.length });
-//     ctx.body = notifications;
-//   } catch (error) {
-//     getLogger().error('Error occurred while retrieving notifications', { error });
-//     ctx.status = 500;
-//     ctx.body = { error: 'Internal Server Error' };
-//   }
-// };
-// getAllNotifications.validationSheme = {
-//   query: {
-//     begin: Joi.number().optional(),
-//     einde: Joi.number().optional(),
-//   },
-//   body: {
-//     aantal: Joi.number().positive(),
-//   }
-// }
-
 const getNotificationById = async (ctx) => {
   let notification;
   const idNotificatie = ctx.params.id;
   try {
-
     try {
-      notification = await notificationService.getNotificationById(idNotificatie);
+      notification = await notificationService.getNotificationById(
+        idNotificatie
+      );
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       ctx.status = 404;
       ctx.body = error.message;
     }
-    
+
     getLogger().info(
       `Notification with ID ${ctx.params.id} retrieved successfully`
     );
@@ -61,7 +38,6 @@ getNotificationById.validationScheme = {
     id: Joi.number().integer().positive(),
   },
 };
-
 
 const createNotification = async (ctx) => {
   try {
@@ -141,28 +117,6 @@ updateNotificationById.validationScheme = {
     datum: Joi.date(),
   },
 };
-
-// const deleteNotificationById = async (ctx) => {
-//   try {
-//     await notificationService.deleteNotificationById(ctx.params.id);
-//     getLogger().info(
-//       `Notification with ID ${ctx.params.id} deleted successfully`
-//     );
-//     ctx.status = 204;
-//   } catch (error) {
-//     getLogger().error(
-//       `Error occurred while deleting notification with ID ${ctx.params.id}`,
-//       { error }
-//     );
-//     ctx.status = 500;
-//     ctx.body = { error: "Internal Server Error" };
-//   }
-// };
-// deleteNotificationById.validationScheme = {
-//   params: {
-//     id: Joi.number().integer().positive(),
-//   },
-// };
 
 const getAllNotificationsByKlantId = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
@@ -283,7 +237,6 @@ countUnopenedNotificationsByLeverancierId.validationScheme = {
   },
 };
 
-//sok my kheb da gefixt
 const checkKlantId = (ctx, next) => {
   const { idKlant, roles } = ctx.state.session;
   const { id } = ctx.params;
@@ -352,13 +305,6 @@ module.exports = (router) => {
     prefix: "/notificatie",
   });
 
-  // notificationRouter.get(
-  //   '/',
-  //   requireAuthentication,
-  //   validate(getAllNotifications.validationSheme),
-  //   getAllNotifications
-  // );
-
   notificationRouter.post(
     "/",
     requireAuthentication,
@@ -396,13 +342,6 @@ module.exports = (router) => {
     checkId,
     updateNotificationById
   );
-
-  // notificationRouter.delete(
-  //   '/:id',
-  //   requireAuthentication,
-  //   validate(deleteNotificationById.validationSheme),
-  //   deleteNotificationById
-  // );
 
   notificationRouter.get(
     "/ongeopend/klant/:id",

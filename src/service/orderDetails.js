@@ -1,13 +1,5 @@
 const orderDetailsRepository = require("../repository/orderDetails");
-const ServiceError = require('../core/serviceError');
-
-// const getAllOrderDetails = async () => {
-//   const items = await orderDetailsRepository.getAllOrderDetails();
-//   return {
-//     items,
-//     count: items.length,
-//   };
-// };
+const ServiceError = require("../core/serviceError");
 
 const getOrderDetailsById = async (idOrderDetails) => {
   try {
@@ -44,27 +36,6 @@ const getOrderDetailsByOrderId = async (idOrder) => {
     throw error;
   }
 };
-
-// const createOrderDetails = async ({ eenheidsprijs, aantal, idOrder, idProduct }) => {
-//   const idNewOrderDetails = await orderDetailsRepository.createOrderDetails({
-//     eenheidsprijs,
-//     aantal,
-//     idOrder,
-//     idProduct,
-//   });
-
-//   return await orderDetailsRepository.getOrderDetailsById(idNewOrderDetails);
-// };
-
-// const updateOrderDetailsById = async (id, { eenheidsprijs, aantal, idOrder, idProduct }) => {
-//   const idUpdatedOrderDetails = await orderDetailsRepository.updateOrderDetailsById(id, {
-//     eenheidsprijs,
-//     aantal,
-//     idOrder,
-//     idProduct,
-//   });
-//   return await orderDetailsRepository.getOrderDetailsById(idUpdatedOrderDetails);
-// };
 
 module.exports = {
   getOrderDetailsById,

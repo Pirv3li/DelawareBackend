@@ -1,15 +1,14 @@
-const {getKnex, tables} = require('../data')
+const { getKnex, tables } = require("../data");
 
 const deactivateBedrijf = async (id) => {
   await getKnex()(tables.bedrijf)
-  .where('idBedrijf', id)
-  .update('isActief', false);
+    .where("idBedrijf", id)
+    .update("isActief", false);
 
-  const bedrijf = await getKnex()(tables.bedrijf)
-  .where('idBedrijf', id);
+  const bedrijf = await getKnex()(tables.bedrijf).where("idBedrijf", id);
 
   return bedrijf;
-}
+};
 
 const createBedrijf = async ({
   naam,
@@ -41,9 +40,11 @@ const createBedrijf = async ({
 const getBedrijfById = async (id) => {
   const bedrijf = await getKnex()(tables.bedrijf)
     .select("*")
-    .leftJoin(`${tables.adres}`,
+    .leftJoin(
+      `${tables.adres}`,
       `${tables.bedrijf}.idAdres`,
-      `${tables.adres}.idAdres`, )
+      `${tables.adres}.idAdres`
+    )
     .where(`${tables.bedrijf}.idBedrijf`, id)
     .first();
 

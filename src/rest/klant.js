@@ -18,22 +18,25 @@ login.validationScheme = {
 };
 
 const forgotPassword = async (ctx) => {
-  try{
-    const {username, email} = ctx.request.body;
-    const resetPassword = await userService.forgotPasswordKlant(email,username);
+  try {
+    const { username, email } = ctx.request.body;
+    const resetPassword = await userService.forgotPasswordKlant(
+      email,
+      username
+    );
     ctx.status = 200;
-    ctx.body = "password reseted", resetPassword;
-    }catch(error){
-      ctx.body = "error during resetting password:"; 
-    }
+    (ctx.body = "password reseted"), resetPassword;
+  } catch (error) {
+    ctx.body = "error during resetting password:";
+  }
 };
 
 forgotPassword.validationScheme = {
-  body:{
+  body: {
     username: Joi.string().required(),
     email: Joi.string().email().required(),
-  }
-}
+  },
+};
 
 const getKlant = async (ctx) => {
   try {
@@ -54,44 +57,41 @@ const getKlant = async (ctx) => {
 getKlant.validationScheme = null;
 
 const updateKlant = async (ctx) => {
-  try{
-  const {idKlant} = ctx.state.session;
-  const body = ctx.request.body;
-  const updateKlant = await userService.updateKlant(idKlant,body);
-  if(updateKlant){
-    ctx.status = 200;
-    ctx.body = updateKlant;
+  try {
+    const { idKlant } = ctx.state.session;
+    const body = ctx.request.body;
+    const updateKlant = await userService.updateKlant(idKlant, body);
+    if (updateKlant) {
+      ctx.status = 200;
+      ctx.body = updateKlant;
+    } else {
+      ctx.status = 404;
+    }
+  } catch (error) {
+    ctx.status = 500;
   }
-  else {
-    ctx.status = 404;
-  }
-  }catch(error){
-    ctx.status=500;
-  }
-}
+};
 
 updateKlant.validationScheme = {
   body: {
     username: Joi.string().optional(),
     password: Joi.string().optional(),
-  }
+  },
 };
 
 const deleteKlant = async (ctx) => {
   const { idKlant } = ctx.state.session;
   const deletedUser = await userService.deleteKlant(idKlant);
-    if (deletedUser) {
-      ctx.status = 200;
-      ctx.body = { message: 'Klant deleted' };
-    }
-    else {
+  if (deletedUser) {
+    ctx.status = 200;
+    ctx.body = { message: "Klant deleted" };
+  } else {
     ctx.status = 403;
-    ctx.body = { message: 'Permission denied' };
+    ctx.body = { message: "Permission denied" };
   }
 };
 
 deleteKlant.validationScheme = {};
-
 
 /**
  * Install team routes in the given router.

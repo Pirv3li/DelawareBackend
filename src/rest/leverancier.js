@@ -39,62 +39,64 @@ const getLeverancier = async (ctx) => {
 getLeverancier.validationScheme = null;
 
 const forgotPassword = async (ctx) => {
-  try{
-    const {username, email} = ctx.request.body;
-    const resetPassword = await userService.forgotPasswordLeverancier(email,username);
+  try {
+    const { username, email } = ctx.request.body;
+    const resetPassword = await userService.forgotPasswordLeverancier(
+      email,
+      username
+    );
     ctx.status = 200;
-    ctx.body = "password reseted", resetPassword;
-    }catch(error){
-      ctx.body = "error during resetting password:"; 
-    }
+    (ctx.body = "password reseted"), resetPassword;
+  } catch (error) {
+    ctx.body = "error during resetting password:";
+  }
 };
 
 forgotPassword.validationScheme = {
-  body:{
+  body: {
     username: Joi.string().required(),
     email: Joi.string().email().required(),
-  }
-}
+  },
+};
 
 const updateLeverancier = async (ctx) => {
-  try{
-  const {idLeverancier} = ctx.state.session;
-  const body = ctx.request.body;
-  const updateLeverancier = await userService.updateLeverancier(idLeverancier,body);
-  if(updateLeverancier){
-    ctx.status = 200;
-    ctx.body = updateLeverancier;
-  }
-  else {
-    ctx.status = 404;
-  }
-  }catch(error){
-    ctx.status=500;
+  try {
+    const { idLeverancier } = ctx.state.session;
+    const body = ctx.request.body;
+    const updateLeverancier = await userService.updateLeverancier(
+      idLeverancier,
+      body
+    );
+    if (updateLeverancier) {
+      ctx.status = 200;
+      ctx.body = updateLeverancier;
+    } else {
+      ctx.status = 404;
+    }
+  } catch (error) {
+    ctx.status = 500;
   }
 };
 updateLeverancier.validationScheme = {
   body: {
     username: Joi.string().optional(),
     password: Joi.string().optional(),
-  }
+  },
 };
 
 const deleteLeverancier = async (ctx) => {
   const { idLeverancier } = ctx.state.session;
   const deletedUser = await userService.deleteLeverancier(idLeverancier);
-    if (deletedUser) {
-      ctx.status = 200;
-      ctx.body = { message: 'Leverancier deleted' };
-    }
-    else {
+  if (deletedUser) {
+    ctx.status = 200;
+    ctx.body = { message: "Leverancier deleted" };
+  } else {
     ctx.status = 403;
-    ctx.body = { message: 'Permission denied' };
+    ctx.body = { message: "Permission denied" };
   }
 };
 
 deleteLeverancier.validationScheme = {};
-
-
 
 /**
  * Install team routes in the given router.

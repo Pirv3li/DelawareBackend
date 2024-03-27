@@ -4,14 +4,11 @@ const { requireAuthentication, makeRequireRole } = require("../core/auth");
 const orderService = require("../service/order");
 const validate = require("../core/validation");
 const Role = require("../core/roles");
-const ServiceError = require("../core/serviceError");
-const { Console } = require("winston/lib/winston/transports");
 
 const getOrderById = async (ctx) => {
   try {
     const orderId = ctx.params.id;
     const order = await orderService.getOrderById(orderId);
-    // Check als user authorized is
     if (
       order.idKlant !== ctx.state.session.idKlant &&
       order.idLeverancier !== ctx.state.session.idLeverancier
@@ -46,7 +43,6 @@ const createOrder = async (ctx) => {
     products,
   } = ctx.request.body;
   try {
-    // request creer order
     const newOrder = await orderService.createOrder(idKlant, {
       idLeverancier,
       datum: new Date(datum),
@@ -57,7 +53,6 @@ const createOrder = async (ctx) => {
       products,
     });
 
-    //als succes, return orderID
     ctx.body = newOrder;
     ctx.status = 201;
   } catch (error) {
@@ -99,22 +94,19 @@ const updateOrderById = async (ctx) => {
   const orderId = ctx.params.id;
   const idKlant = ctx.state.session.idKlant;
   const idLeverancier = ctx.state.session.idLeverancier;
-  let idUser;
 
   let order;
 
   try {
-    order = await orderService.getOrderById(orderId); // Fetch order inside try block
+    order = await orderService.getOrderById(orderId);
   } catch (error) {
     ctx.status = 404;
     ctx.body = { message: "Order not found" };
     return;
   }
 
-  // Rest of your code for processing the order and updating fields
   let updateFields = {};
   if (order.idKlant === idKlant) {
-    idUser = idKlant;
     updateFields = { betalingStatus: betalingStatus };
     if (orderStatus !== undefined) {
       ctx.status = 403;
@@ -122,7 +114,6 @@ const updateOrderById = async (ctx) => {
       return;
     }
   } else if (order.idLeverancier === idLeverancier) {
-    idUser = idLeverancier;
     updateFields = { orderStatus: orderStatus, betalingStatus: betalingStatus };
   } else {
     ctx.status = 403;
@@ -131,11 +122,7 @@ const updateOrderById = async (ctx) => {
   }
 
   try {
-    // update order met juiste gegevens
-    ctx.body = await orderService.updateOrderById(
-      orderId,
-      updateFields
-    );
+    ctx.body = await orderService.updateOrderById(orderId, updateFields);
     ctx.status = 200;
   } catch (error) {
     ctx.status = 500;
@@ -154,10 +141,14 @@ updateOrderById.validationScheme = {
 
 const getOrderByKlant = async (ctx) => {
   const idKlant = ctx.state.session.idKlant;
-  const {begin, aantal} = ctx.params;
-  
+  const { begin, aantal } = ctx.params;
+
   try {
-    const ordersKlant = await orderService.getOrderByKlantId(idKlant, begin, aantal);
+    const ordersKlant = await orderService.getOrderByKlantId(
+      idKlant,
+      begin,
+      aantal
+    );
     ctx.status = 200;
     ctx.body = ordersKlant;
   } catch (error) {
@@ -170,15 +161,14 @@ getOrderByKlant.validationScheme = {
   params: {
     begin: Joi.number().optional(),
     aantal: Joi.number().positive().optional(),
-  }
+  },
 };
 
 const getOrderByLeverancier = async (ctx) => {
   const idLeverancier = ctx.state.session.idLeverancier;
-  const {begin, aantal} = ctx.params;
+  const { begin, aantal } = ctx.params;
   try {
-    const ordersLeverancier = await 
-    orderService.getOrderByLeverancierId(
+    const ordersLeverancier = await orderService.getOrderByLeverancierId(
       idLeverancier,
       begin,
       aantal
@@ -195,7 +185,7 @@ getOrderByLeverancier.validationScheme = {
   params: {
     begin: Joi.number().optional(),
     aantal: Joi.number().positive().optional(),
-  }
+  },
 };
 
 const requireLeverancier = makeRequireRole(Role.LEVER);

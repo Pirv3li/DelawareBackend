@@ -5,24 +5,24 @@ const bedrijfRepo = require("../repository/bedrijf");
 const validate = require("../core/validation");
 const Role = require("../core/roles");
 const { getLogger } = require("../core/logging");
-const bedrijfServer = require("../service/bedrijf")
+const bedrijfServer = require("../service/bedrijf");
 
 const deactivateBedrijf = async (ctx) => {
-  try{
-  const {idBedrijf} = ctx.request.body;
-  const bedrijf = await bedrijfRepo.deactivateBedrijf(idBedrijf);
-  ctx.status = 200;
-  ctx.body = bedrijf;
-  }catch(error){
-    ctx.body = 'error while deactivating bedrijf ', error;
+  try {
+    const { idBedrijf } = ctx.request.body;
+    const bedrijf = await bedrijfRepo.deactivateBedrijf(idBedrijf);
+    ctx.status = 200;
+    ctx.body = bedrijf;
+  } catch (error) {
+    (ctx.body = "error while deactivating bedrijf "), error;
   }
 };
 
 deactivateBedrijf.validationScheme = {
   body: {
     idBedrijf: Joi.number().integer().required(),
-  }
-}
+  },
+};
 
 const createBedrijf = async (ctx) => {
   try {
@@ -53,11 +53,11 @@ const createBedrijf = async (ctx) => {
     });
     ctx.body = newBedrijf;
     ctx.status = 201;
-    getLogger().info('New bedrijf created successfully', { newBedrijf });
+    getLogger().info("New bedrijf created successfully", { newBedrijf });
   } catch (error) {
-    getLogger().error('Error occurred while creating bedrijf', { error });
+    getLogger().error("Error occurred while creating bedrijf", { error });
     ctx.status = 500;
-    ctx.body = { error: 'Internal Server Error' };
+    ctx.body = { error: "Internal Server Error" };
   }
 };
 createBedrijf.validationSheme = {

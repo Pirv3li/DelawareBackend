@@ -1,5 +1,9 @@
 const { tables } = require("../../src/data");
-const { withServer, KlantLogin, deleteKlantLogin } = require("../supertest.setup");
+const {
+  withServer,
+  KlantLogin,
+  deleteKlantLogin,
+} = require("../supertest.setup");
 const Role = require("../../src/core/roles");
 
 describe("Users API", () => {
@@ -50,41 +54,40 @@ describe("Users API", () => {
       expect(response.body.code).toBe("UNAUTHORIZED");
     });
   });
-  describe('PUT /api/klant', () => {
-    it('should update klant', async () => {
+  describe("PUT /api/klant", () => {
+    it("should update klant", async () => {
       const response = await request
-        .put('/api/klant')
+        .put("/api/klant")
         .send({
-          username: 'UpdatedUser',
-          password: 'newPassword',
+          username: "UpdatedUser",
+          password: "newPassword",
         })
-        .set('Authorization', klantAuth2);
+        .set("Authorization", klantAuth2);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
     });
 
-    it('should return 400 for invalid update data', async () => {
+    it("should return 400 for invalid update data", async () => {
       const response = await request
-        .put('/api/klant')
+        .put("/api/klant")
         .send({
-          invalidField: 'InvalidValue',
+          invalidField: "InvalidValue",
         })
-        .set('Authorization', klantAuth);
+        .set("Authorization", klantAuth);
 
       expect(response.status).toBe(400);
     });
   });
 
-  describe('DELETE /api/klant', () => {
-    it('should delete the authenticated user', async () => {
+  describe("DELETE /api/klant", () => {
+    it("should delete the authenticated user", async () => {
       const response = await request
-        .delete('/api/klant')
-        .set('Authorization', klantAuth2);
+        .delete("/api/klant")
+        .set("Authorization", klantAuth2);
 
       expect(response.status).toBe(200);
-      expect(response.body.message).toBe('Klant deleted');
+      expect(response.body.message).toBe("Klant deleted");
     });
   });
-
 });

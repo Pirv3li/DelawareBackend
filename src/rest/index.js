@@ -1,15 +1,15 @@
-const Router = require('@koa/router');
-const installKlantRouter = require('./klant');
-const installLeverancierRouter = require('./leverancier');
-const installProductRouter = require('./product');
-const installOrderRouter = require('./order');
-const installOrderDetailsRouter = require('./orderDetails');
-const installNotificatieRouter = require('./notificatie');
-const installAdresRouter = require('./adres');
-const installGoedkeuringLeverancierRouter = require('./goedkeuringLeverancier');
-const installGoedkeuringKlantRouter = require('./goedkeuringKlant');
-const installBedrijfRouter = require('./bedrijf');
-const installAdminRouter = require('./admin');
+const Router = require("@koa/router");
+const installKlantRouter = require("./klant");
+const installLeverancierRouter = require("./leverancier");
+const installProductRouter = require("./product");
+const installOrderRouter = require("./order");
+const installOrderDetailsRouter = require("./orderDetails");
+const installNotificatieRouter = require("./notificatie");
+const installAdresRouter = require("./adres");
+const installGoedkeuringLeverancierRouter = require("./goedkeuringLeverancier");
+const installGoedkeuringKlantRouter = require("./goedkeuringKlant");
+const installBedrijfRouter = require("./bedrijf");
+const installAdminRouter = require("./admin");
 /**
  * Install all routes in the given Koa application.
  *
@@ -17,7 +17,7 @@ const installAdminRouter = require('./admin');
  */
 module.exports = (app) => {
   const router = new Router({
-    prefix: '/api',
+    prefix: "/api",
   });
 
   installKlantRouter(router);
@@ -31,15 +31,13 @@ module.exports = (app) => {
   installGoedkeuringKlantRouter(router);
   installBedrijfRouter(router);
   installAdminRouter(router);
-  
 
   app.use(async (ctx, next) => {
-    ctx.set('Access-Control-Allow-Origin', '*');
-    ctx.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    ctx.set('Access-Control-Allow-Headers', 'Content-Type');
+    ctx.set("Access-Control-Allow-Origin", "*");
+    ctx.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    ctx.set("Access-Control-Allow-Headers", "Content-Type");
     await next();
   });
 
-  app.use(router.routes())
-     .use(router.allowedMethods());
+  app.use(router.routes()).use(router.allowedMethods());
 };

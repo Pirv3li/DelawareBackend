@@ -1,9 +1,5 @@
 const { getKnex, tables } = require("../data");
 
-// const getAllOrderDetails = async () => {
-//   return getKnex()(tables.orderDetails).select("*");
-// };
-
 const getOrderDetailsById = async (idOrderDetails) => {
   const orderDetails = await getKnex()(tables.orderDetails)
     .where("idOrderDetails", idOrderDetails)
@@ -26,7 +22,6 @@ const getOrderDetailsByOrderId = async (idOrder) => {
 };
 
 const createOrderDetails = async (idOrder, products) => {
-  // doorloop elke product en insert in databank
   const insertedIds = await Promise.all(
     products.map(async (product) => {
       const { eenheidsprijs, aantal, idProduct } = product;
@@ -42,10 +37,8 @@ const createOrderDetails = async (idOrder, products) => {
     })
   );
 
-  return insertedIds; // Return alle Id's van orderdetails
+  return insertedIds;
 };
-
-
 
 module.exports = {
   createOrderDetails,

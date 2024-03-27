@@ -5,8 +5,7 @@ const findKlantByUsername = (userName) => {
   return getKnex()(tables.klant).where("gebruikersnaam", userName).first();
 };
 
-const updateKlant = async (id, {username, password}) => {
-
+const updateKlant = async (id, { username, password }) => {
   const updateData = {};
   if (username !== undefined) {
     updateData.gebruikersnaam = username;
@@ -14,17 +13,14 @@ const updateKlant = async (id, {username, password}) => {
   if (password !== undefined) {
     updateData.password_hash = password;
   }
-  
+
   if (Object.keys(updateData).length > 0) {
-    await getKnex()(tables.klant)
-      .where('idKlant', id)
-      .update(updateData);
+    await getKnex()(tables.klant).where("idKlant", id).update(updateData);
   }
   return { id, username };
-}
+};
 
-const updateLeverancier = async (id, {username, password}) => {
-
+const updateLeverancier = async (id, { username, password }) => {
   const updateData = {};
   if (username !== undefined) {
     updateData.gebruikersnaam = username;
@@ -32,19 +28,19 @@ const updateLeverancier = async (id, {username, password}) => {
   if (password !== undefined) {
     updateData.password_hash = password;
   }
-  
+
   if (Object.keys(updateData).length > 0) {
     await getKnex()(tables.leverancier)
-      .where('idLeverancier', id)
+      .where("idLeverancier", id)
       .update(updateData);
   }
   return { id, username };
-}
+};
 
 const deleteKlantById = async (id) => {
   const deletedKlant = await getKnex()(tables.klant)
-  .where('idKlant', id)
-  .delete();
+    .where("idKlant", id)
+    .delete();
 
   return deletedKlant;
 };
@@ -69,7 +65,8 @@ const getKlantById = (id) => {
 
 const findKlantByEmail = (email, userName) => {
   return getKnex()(tables.klant)
-    .where("email", email).andWhere("gebruikersnaam", userName)
+    .where("email", email)
+    .andWhere("gebruikersnaam", userName)
     .first();
 };
 
@@ -82,14 +79,13 @@ const findLeverancierByUsername = (userName) => {
 
 const findLeverancierByEmail = (email, userName) => {
   return getKnex()(tables.leverancier)
-    .where("email", email).andWhere("gebruikersnaam", userName)
+    .where("email", email)
+    .andWhere("gebruikersnaam", userName)
     .first();
 };
 
 const findLeverancierById = (id) => {
-  return getKnex()(tables.leverancier)
-    .where("idLeverancier", id)
-    .first();
+  return getKnex()(tables.leverancier).where("idLeverancier", id).first();
 };
 
 const getLeverancierById = (id) => {
@@ -112,8 +108,8 @@ const getLeverancierById = (id) => {
 
 const deleteLeverancierById = async (id) => {
   const deletedLeverancier = await getKnex()(tables.leverancier)
-  .where('idLeverancier', id)
-  .delete();
+    .where("idLeverancier", id)
+    .delete();
 
   return deletedLeverancier;
 };
@@ -123,7 +119,6 @@ const deleteLeverancierById = async (id) => {
 const findAdminByUsername = (userName) => {
   return getKnex()(tables.admin).where("gebruikersnaam", userName).first();
 };
-
 
 module.exports = {
   findKlantByUsername,

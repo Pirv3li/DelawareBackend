@@ -15,7 +15,7 @@ const getAdresByUser = async (ctx) => {
     if (idKlant !== undefined) {
       adres = await adresService.getAdresByKlantId(idKlant);
     }
-    if(idLeverancier !== undefined){
+    if (idLeverancier !== undefined) {
       adres = await adresService.getAdresByLeverancierId(idLeverancier);
     }
     ctx.body = adres;
@@ -23,7 +23,7 @@ const getAdresByUser = async (ctx) => {
 
     getLogger().info("Addresses fetched successfully", { adres });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     ctx.status = 500;
     ctx.body = { error: "Internal Server Error" };
 
@@ -31,8 +31,6 @@ const getAdresByUser = async (ctx) => {
   }
 };
 getAdresByUser.validationScheme = {};
-
-
 
 // voor Order
 const getAdresById = async (ctx) => {
@@ -51,7 +49,6 @@ const getAdresById = async (ctx) => {
       return;
     }
 
-
     if (idKlant !== undefined) {
       order = await orderService.getOrderByKlantId(idKlant);
       user = await usersService.getKlantById(idKlant);
@@ -66,10 +63,7 @@ const getAdresById = async (ctx) => {
       return;
     }
 
-
-
     let hasCorrectAddress = false;
-
 
     for (const ord of order) {
       if (ord.idAdres === adres.idAdres) {
@@ -83,7 +77,6 @@ const getAdresById = async (ctx) => {
       ctx.body = { message: "Permission denied" };
       return;
     }
-    
 
     ctx.body = adres;
     ctx.status = 200;
@@ -105,13 +98,11 @@ const createAdres = async (ctx) => {
   try {
     const { straat, nummer, stad, postcode, laatstGebruikt } = ctx.request.body;
 
-
     const newAdres = await adresService.createAdres({
       straat: String(straat),
       nummer: String(nummer),
       stad: String(stad),
       postcode: String(postcode),
-
     });
 
     ctx.body = newAdres;
@@ -129,10 +120,8 @@ createAdres.validationScheme = {
     nummer: Joi.string().required().invalid(" ", ""),
     stad: Joi.string().required().invalid(" ", ""),
     postcode: Joi.string().required().invalid(" ", ""),
-
   },
 };
-
 
 /**
  * Install adres routes in the given router.
@@ -163,7 +152,6 @@ module.exports = (router) => {
     validate(getAdresById.validationScheme),
     getAdresById
   );
- 
 
   router.use(adresRouter.routes()).use(adresRouter.allowedMethods());
 };

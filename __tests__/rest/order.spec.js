@@ -84,25 +84,25 @@ describe("order API", () => {
         datum: "2024-03-07",
         orderStatus: "Pending",
         betalingStatus: "Paid",
-        totaalPrijs: 100.00,
+        totaalPrijs: 100.0,
         adres: {
           straat: "Main Street",
           stad: "Cityville",
           nummer: "123",
-          postcode: "12345"
+          postcode: "12345",
         },
         products: [
           {
-            eenheidsprijs: 10.00,
+            eenheidsprijs: 10.0,
             aantal: 2,
-            idProduct: 1
+            idProduct: 1,
           },
           {
-            eenheidsprijs: 15.00,
+            eenheidsprijs: 15.0,
             aantal: 4,
-            idProduct: 2
-          }
-        ]
+            idProduct: 2,
+          },
+        ],
       };
 
       const response = await request
@@ -120,21 +120,20 @@ describe("order API", () => {
         datum: "2024-03-07",
         orderStatus: "Pending",
         betalingStatus: "Paid",
-        totaalPrijs: 100.00,
+        totaalPrijs: 100.0,
         products: [
           {
-            eenheidsprijs: 10.00,
+            eenheidsprijs: 10.0,
             aantal: 2,
-            idProduct: 1
+            idProduct: 1,
           },
           {
-            eenheidsprijs: 15.00,
+            eenheidsprijs: 15.0,
             aantal: 4,
-            idProduct: 2
-          }
-        ]
+            idProduct: 2,
+          },
+        ],
       };
-
 
       const response = await request
         .post("/api/order")
@@ -144,36 +143,32 @@ describe("order API", () => {
       expect(response.status).toBe(400);
     });
 
-    
-
-    
     it("should handle denied permission for leverancier", async () => {
       const orderData = {
         idLeverancier: 2,
         datum: "2024-03-07",
         orderStatus: "Pending",
         betalingStatus: "Paid",
-        totaalPrijs: 100.00,
+        totaalPrijs: 100.0,
         adres: {
           straat: "Main Street",
           stad: "Cityville",
           nummer: "123",
-          postcode: "12345"
+          postcode: "12345",
         },
         products: [
           {
-            eenheidsprijs: 10.00,
+            eenheidsprijs: 10.0,
             aantal: 2,
-            idProduct: 1
+            idProduct: 1,
           },
           {
-            eenheidsprijs: 15.00,
+            eenheidsprijs: 15.0,
             aantal: 4,
-            idProduct: 2
-          }
-        ]
+            idProduct: 2,
+          },
+        ],
       };
-
 
       const response = await request
         .post("/api/order")
@@ -182,22 +177,20 @@ describe("order API", () => {
 
       expect(response.status).toBe(403);
     });
-    
   });
 
   describe("PUT /api/order/:id", () => {
     it("should update order for leverancier", async () => {
       const orderId = "2402141205d4e";
       const updatedOrderData = {
-        orderStatus:"completed",
-        betalingStatus: "paid"
+        orderStatus: "completed",
+        betalingStatus: "paid",
       };
 
       const response = await request
         .put(`/api/order/${orderId}`)
         .send(updatedOrderData)
         .set("Authorization", leverAuth);
-
 
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
@@ -236,7 +229,7 @@ describe("order API", () => {
     it("should handle invalid order ID during update", async () => {
       const invalidOrderId = 9999;
       const updatedOrderData = {
-        orderStatus:"completed",
+        orderStatus: "completed",
       };
 
       const response = await request
@@ -247,5 +240,4 @@ describe("order API", () => {
       expect(response.status).toBe(404);
     });
   });
-
 });
