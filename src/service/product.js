@@ -79,11 +79,12 @@ const getLeverancierProductenByZoekterm = async (
 
 const getProductenByCategories = async (begin, categories, aantal) => {
   try {
-    const producten = repoProducten.getProductenByCategories(
+    const producten = await repoProducten.getProductenByCategories(
       begin,
       categories,
       aantal
     );
+    
     return producten;
   } catch (error) {
     throw new Error("Error while fetching producten");

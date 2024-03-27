@@ -80,13 +80,12 @@ const getProductenByCategories = async (begin, categories, aantal) => {
   const pageSize = aantal;
   const offset = begin - 1;
 
-  const query = getKnex()(tables.product)
+  const producten = await getKnex()(tables.product)
     .select(...SELECT_COLUMNS)
     .whereIn("categorie", categories)
     .limit(pageSize)
     .offset(offset);
 
-  const producten = await query;
 
   return producten;
 };

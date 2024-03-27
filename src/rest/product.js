@@ -129,8 +129,9 @@ const getProductenByCategories = async (ctx) => {
   const { begin } = ctx.params;
   const categories = ctx.params.categories.split(",");
   const { aantal } = ctx.params;
+  let producten;
   try {
-    const producten = await ServiceProducten.getProductenByCategories(
+    producten = await ServiceProducten.getProductenByCategories(
       begin,
       categories,
       aantal
@@ -139,6 +140,7 @@ const getProductenByCategories = async (ctx) => {
     ctx.body = producten;
     ctx.status = 200;
   } catch (error) {
+    console.log(error)
     ctx.body = {
       message: "Error while fetching producten limit",
     };
@@ -147,6 +149,49 @@ const getProductenByCategories = async (ctx) => {
 };
 
 getProductenByCategories.validationScheme = {
+  params: {
+    begin: Joi.number().positive(),
+    categories: Joi.string().required(),
+    aantal: Joi.number().positive(),
+  },
+};
+
+const getProductenleverancierByCategories = async (ctx) => {
+  const { begin } = ctx.params;
+  const categories = ctx.params.categories.split(",");
+  const { aantal } = ctx.params;
+  let producten;
+  console.log(ctx.state.session)
+  console.log("hier")
+  try {
+    producten = await ServiceProducten.getProductenByCategories(
+      begin,
+      categories,
+      aantal
+    );
+    
+    if (ctx.state.session.roles.includes("leverancier")) {
+      console.log("hierhahah")
+      const idLeverancier = ctx.state.session.idLeverancier;
+      producten = producten.filter(
+        (product) => product.idLeverancier === idLeverancier
+      );
+      ctx.body = producten;
+      ctx.status = 200;
+      return;
+    }
+    ctx.body = producten;
+    ctx.status = 200;
+  } catch (error) {
+    console.log(error)
+    ctx.body = {
+      message: "Error while fetching producten limit",
+    };
+    //ctx.status = 500;
+  }
+};
+
+getProductenleverancierByCategories.validationScheme = {
   params: {
     begin: Joi.number().positive(),
     categories: Joi.string().required(),
@@ -284,6 +329,13 @@ module.exports = (router) => {
   );
 
   //private
+
+  ProductRouter.get(
+    "/leverancier/zoekcategorie/:begin/:aantal/:categories",
+    requireAuthentication,
+    validate(getProductenleverancierByCategories.validationScheme),
+    getProductenleverancierByCategories
+  );
 
   ProductRouter.get(
     "/leverancier/zoekterm/:begin/:aantal/:zoekterm?",
